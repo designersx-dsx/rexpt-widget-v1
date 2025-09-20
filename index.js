@@ -614,7 +614,7 @@ function injectCSS() {
   document.head.appendChild(style);
 }
 const currentSiteURL = window.location.origin;
-const API_URL = "https://rexpt.truet.net/api/";
+const API_URL = "https://rex-bk.truet.net/api/";
 // const API_URL = "http://localhost:2512/api";
 
 // --- CHAT PERSISTENCE ----
