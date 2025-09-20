@@ -665,6 +665,7 @@ async function endChatArchiveNow({ silent = false } = {}) {
           chat_id: chatId,
         }),
       });
+      console.log("end chat", res);
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
         throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
@@ -980,7 +981,7 @@ function createReviewWidget() {
       if (voicesRes.ok) {
         const voicesData = await voicesRes.json();
         const voice = voicesData.find((v) => v.voice_id === agentVoiceId);
-        console.log(voice,"voice ")
+        console.log(voice, "voice ");
         if (voice) {
           agentVoiceName = voice.avatar_url || "https:i.pravatar.cc/100?img=68";
         }
@@ -1703,10 +1704,18 @@ function createReviewWidget() {
 
       // initial greeting from bot (optional)
       if ($msgs.children.length === 0) {
-        const greet = `Hi! ${
-          agentName || "I"
-        } am here to help. Send your question below.`;
+        const greet = `Hello! My name is ${agentName || "I"} from ${
+          businessName?.length > 10
+            ? `${businessName.substring(0, 8)}..`
+            : businessName
+        } How can I assist you today?`;
+
         appendMessage("bot", greet);
+
+        // const greet = `Hi! ${
+        //   agentName || "I"
+        // } am here to help. Send your question below.`;
+        // appendMessage("bot", greet);
       }
       async function sendMessage() {
         const t = ($input.value || "").trim();
