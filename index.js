@@ -614,8 +614,8 @@ function injectCSS() {
   document.head.appendChild(style);
 }
 const currentSiteURL = window.location.origin;
-const API_URL = "https://rex-bk.truet.net/api/";
-// const API_URL = "http://localhost:2512/api";
+// const API_URL = "https://rex-bk.truet.net/api/";
+const API_URL = "http://localhost:2512/api";
 
 // --- CHAT PERSISTENCE ----
 const CHAT_LS_KEY = "rex_chat_history";
@@ -1704,11 +1704,9 @@ function createReviewWidget() {
 
       // initial greeting from bot (optional)
       if ($msgs.children.length === 0) {
-        const greet = `Hello! My name is ${agentName || "I"} from ${
-          businessName?.length > 10
-            ? `${businessName.substring(0, 8)}..`
-            : businessName
-        } How can I assist you today?`;
+        const greet = `Hello! My name is ${
+          agentName || "I"
+        } from ${businessName} How can I assist you today?`;
 
         appendMessage("bot", greet);
 
