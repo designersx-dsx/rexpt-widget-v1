@@ -628,6 +628,98 @@ function loadChatHistory() {
     return [];
   }
 }
+
+let __rex_end_called__ = false;
+
+function isGoodbye(text = "") {
+  const t = String(text).toLowerCase();
+  // Common English + Hinglish/Hindi variants
+  const patterns = [
+    /\bgood\s*bye\b/,
+    /\bgoodbye\b/,
+    /\bbye\b/,
+    /\bbye bye\b/,
+    /\bsee you\b/,
+    /\btalk to you later\b/,
+    /\btake care\b/,
+    /\balvida\b/,
+    /\bphir milenge\b/,
+    /\bchat (?:end|ended|closing)\b/,
+  ];
+  return patterns.some((re) => re.test(t));
+}
+
+async function endChatArchiveNow({ silent = false } = {}) {
+  if (__rex_end_called__) return; // ensure single fire
+  __rex_end_called__ = true;
+
+  try {
+    const chatId = localStorage.getItem("chat_id");
+    const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+    if (chatId && knowledgeBaseId) {
+      const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          knowledge_base_id: knowledgeBaseId,
+          chat_id: chatId,
+        }),
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+      }
+    }
+  } catch (e) {
+    console.error("[Rex] auto end-chat failed:", e);
+    if (!silent) {
+      // Optional: show a subtle, non-blocking note in the thread
+      appendMessage?.(
+        "bot",
+        "⚠️ Unable to auto-end the chat. You can close the window.",
+        Date.now()
+      );
+    }
+  } finally {
+    localStorage.removeItem("rex_last_ui");
+    localStorage.removeItem(CHAT_LS_KEY);
+    localStorage.removeItem("chat_id");
+    try {
+      clearInactivityTimers?.();
+    } catch {}
+    try {
+      const cp = document.getElementById("rexChatPopup");
+      if (cp) cp.classList.remove("show");
+      window.location.reload();
+    } catch {}
+  }
+}
+let __rex_close_timer__ = null;
+function startCloseTimer() {
+  clearCloseTimer();
+  // 4 minutes
+  const WAIT_MS = 4 * 60 * 1000;
+
+  __rex_close_timer__ = setTimeout(() => {
+    try {
+      const cp = document.getElementById("rexChatPopup");
+      const isOpen = cp && cp.classList.contains("show");
+      if (!isOpen) {
+        endChatArchiveNow({ silent: true });
+      }
+    } catch (e) {
+      console.warn("[Rex] close timer execution failed:", e);
+    }
+  }, WAIT_MS);
+}
+
+function clearCloseTimer() {
+  if (__rex_close_timer__) {
+    clearTimeout(__rex_close_timer__);
+    __rex_close_timer__ = null;
+  }
+}
+
 function saveChatHistory(arr) {
   try {
     localStorage.setItem(CHAT_LS_KEY, JSON.stringify(arr));
@@ -888,6 +980,7 @@ function createReviewWidget() {
       if (voicesRes.ok) {
         const voicesData = await voicesRes.json();
         const voice = voicesData.find((v) => v.voice_id === agentVoiceId);
+        console.log(voice,"voice ")
         if (voice) {
           agentVoiceName = voice.avatar_url || "https:i.pravatar.cc/100?img=68";
         }
@@ -1060,7 +1153,7 @@ function createReviewWidget() {
       // 2) open the new chat popup
       const cp = getOrCreateChatPopup();
       cp.classList.add("show");
-
+      clearCloseTimer();
       // 3) (optional) mount your chat widget inside the popup
       // If you use ChatLily and it supports mount:
       if (window.ChatLily?.mount) {
@@ -1118,7 +1211,9 @@ function createReviewWidget() {
       if (preferChat || hasHistory) {
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
+
         rexAgent.classList.add("noFloat");
+        clearCloseTimer();
       } else {
         modal.style.display = "block";
         rexAgent.classList.add("noFloat");
@@ -1407,6 +1502,7 @@ function createReviewWidget() {
           chatModalEl.classList.remove("show");
           try {
             clearInactivityTimers();
+            startCloseTimer();
           } catch {}
         };
       }
@@ -1455,6 +1551,7 @@ function createReviewWidget() {
         chatModalEl.classList.remove("show");
         try {
           clearInactivityTimers();
+          startCloseTimer();
         } catch {}
       };
 
@@ -1505,9 +1602,9 @@ function createReviewWidget() {
         typingEl = null;
       }
       // === INACTIVITY (scoped to chat popup) ===
-      const FIRST_WAIT = 3 * 60 * 1000;
-      const SECOND_WAIT = 5 * 60 * 1000;
-      const THIRD_WAIT = 6 * 60 * 1000;
+      const FIRST_WAIT = 2 * 60 * 1000;
+      const SECOND_WAIT = 3 * 60 * 1000;
+      const THIRD_WAIT = 4 * 60 * 1000;
 
       let t1 = null,
         t2 = null,
@@ -1615,7 +1712,7 @@ function createReviewWidget() {
         const t = ($input.value || "").trim();
         if (!t) return;
         resetInactivityTimers();
-
+        clearCloseTimer();
         const tsNow = Date.now();
         appendMessage("user", t, tsNow);
         saveChatMessage("user", t);
@@ -1637,6 +1734,16 @@ function createReviewWidget() {
           // appendMessage("bot", reply);
           appendMessage("bot", reply, Date.now());
           saveChatMessage("bot", reply);
+          try {
+            if (isGoodbye(reply)) {
+              setTimeout(async () => {
+                await endChatArchiveNow({ silent: true });
+              }, 2000);
+              return;
+            }
+          } catch (e) {
+            console.warn("[Rex] goodbye check failed:", e);
+          }
           resetInactivityTimers();
         } catch (e) {
           console.error(e);
