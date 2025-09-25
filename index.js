@@ -658,17 +658,7 @@ function isGoodbye(text = "") {
   const t = String(text).toLowerCase();
   // Common English + Hinglish/Hindi variants
   const patterns = [
-    /\bgood\s*bye\b/,
-    /\bgoodbye\b/,
-    /\bbye\b/,
-    /\bbye bye\b/,
-    /\bsee you\b/,
-    /\btalk to you later\b/,
-    /\btake care\b/,
-    /\balvida\b/,
-    /\bphir milenge\b/,
-    /\bHave a great day!\b/,
-    /\bchat (?:end|ended|closing)\b/,
+   /\bhave a great day!?/
   ];
   return patterns.some((re) => re.test(t));
 }
