@@ -667,6 +667,7 @@ function isGoodbye(text = "") {
     /\btake care\b/,
     /\balvida\b/,
     /\bphir milenge\b/,
+    /\Have a great day!\b/,
     /\bchat (?:end|ended|closing)\b/,
   ];
   return patterns.some((re) => re.test(t));
