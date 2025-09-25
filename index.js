@@ -667,6 +667,7 @@ function isGoodbye(text = "") {
     /\btake care\b/,
     /\balvida\b/,
     /\bphir milenge\b/,
+    /\Have a great day!\b/,
     /\bchat (?:end|ended|closing)\b/,
   ];
   return patterns.some((re) => re.test(t));
@@ -1101,7 +1102,7 @@ function createReviewWidget() {
     callLabel.textContent = `Call ${agentName}`;
     const phoneNumber = document.createElement("h2");
     phoneNumber.className = "phone-number";
-    phoneNumber.textContent = JSON.parse(agentVoipNumber) || "NA";
+    phoneNumber.textContent = JSON.parse(agentVoipNumber);
     const tag = document.createElement("span");
     tag.className = "tag-label";
     tag.textContent = `${agentRole?.split(" ")[0]} RECEPTIONIST`;
