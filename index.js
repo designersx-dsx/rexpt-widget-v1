@@ -610,6 +610,29 @@ function injectCSS() {
             }
             .msg.user .time{ color:#ffffffcc; text-align:right; }
             .msg.bot  .time { text-align:left;  opacity:.8; }
+            .chatdiv.disabled {
+              pointer-events: none;
+              opacity: 0.5;
+              filter: grayscale(0.2);
+            }
+          .prechat-topbar{
+            display:flex; align-items:center; justify-content:space-between;
+            padding:12px 16px; border-bottom:1px solid #EFEFEF;
+          }
+
+          .prechat-brand{ display:flex; align-items:center; gap:10px }
+          .prechat-logo{
+            width:28px; height:28px; border-radius:6px; overflow:hidden;
+            display:flex; align-items:center; justify-content:center;
+            background:#6c5ce7; box-shadow:0 1px 2px rgba(0,0,0,.1);
+          }
+          .prechat-logo img{ width:100%; height:100%; object-fit:cover }
+
+          .prechat-title{ line-height:1.1 }
+          .prechat-title .t{ font-weight:700; font-size:16px; color:#24252c }
+          .prechat-title .s{ font-size:12px; color:#7A7A7A; margin-top:2px }
+
+
           `;
   document.head.appendChild(style);
 }
@@ -1129,49 +1152,141 @@ function createReviewWidget() {
 
     /* --- Buttons ko stack me daalo --- */
     const buttonStack = createElement("div", { className: "button-stack" });
+
     buttonStack.appendChild(chatBtn);
 
-    // /* (optional) Chat click handler */
-    // chatBtn.onclick = () => {
-    //   if (window.ChatLily?.open) {
-    //     window.ChatLily.open({
-    //       agentId: getAgentIdFromScript(),
-    //       source: "popup_button",
-    //     });
-    //   } else {
-    //     const url = `${currentSiteURL}/chat?agentId=${encodeURIComponent(
-    //       getAgentIdFromScript() || ""
-    //     )}`;
-    //     window.open(url, "_blank");
-    //   }
-    // };
+    // ---- INTRO SENDER (once per chat session) ----
+    function composeProfileIntro() {
+      const name = localStorage.getItem("rex_user_name") || "";
+      const email = localStorage.getItem("rex_user_email") || "";
+      const phone = localStorage.getItem("rex_user_phone") || "";
+      if (!name && !email && !phone) return "";
+      return `My name is ${name}. My email is ${email} and my phone number is ${phone}.`;
+    }
 
-    chatBtn.onclick = () => {
-      // 1) close the current agent popup
+    // function hasCompleteProfile() {
+    //   const name = localStorage.getItem("rex_user_name") || "";
+    //   const email = localStorage.getItem("rex_user_email") || "";
+    //   const phone = localStorage.getItem("rex_user_phone") || "";
+    //   const okName = /^[a-zA-Z\s'.-]{2,}$/.test(String(name).trim());
+    //   const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
+    //   const digits = String(phone).replace(/[^\d]/g, "");
+    //   const okPhone = digits.length >= 10 && digits.length <= 15;
+    //   return okName && okEmail && okPhone;
+    // }
+
+    function uiAppendBotMessage(text) {
+      try {
+        const msgs = document.getElementById("rexMessages");
+        if (!msgs) return;
+        const timeStr = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const div = document.createElement("div");
+        div.className = "msg bot";
+        div.innerHTML = `${text}<span class="time">${timeStr}</span>`;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+      } catch {}
+    }
+    function showIntroTyping() {
+      try {
+        if (document.getElementById("rexTypingIntro")) return;
+        const msgs = document.getElementById("rexMessages");
+        if (!msgs) return;
+        const el = document.createElement("div");
+        el.id = "rexTypingIntro";
+        el.className = "msg bot typing";
+        el.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+        msgs.appendChild(el);
+        msgs.scrollTop = msgs.scrollHeight;
+      } catch {}
+    }
+
+    function hideIntroTyping() {
+      try {
+        const el = document.getElementById("rexTypingIntro");
+        if (el) el.remove();
+      } catch {}
+    }
+    // --- yahi par aapka maybeSendIntroOnOpen rehne do ---
+    let __rex_intro_attempted = false;
+
+    async function maybeSendIntroOnOpen() {
+      if (__rex_intro_attempted) return; // soft guard
+      __rex_intro_attempted = true;
+
+      if (!hasCompleteProfile()) return;
+
+      if (!localStorage.getItem("chat_id")) {
+        try {
+          await createChatSession(
+            localStorage.getItem("chat_agent_id") || undefined
+          );
+        } catch {}
+      }
+      const chatId = localStorage.getItem("chat_id") || "nochat";
+      const sentKey = `rex_intro_sent_${chatId}`;
+
+      if (localStorage.getItem(sentKey) === "1") return;
+
+      // optimistic lock so second concurrent call skip kare
+      localStorage.setItem(sentKey, "1");
+
+      const intro =
+        `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
+        `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
+        `and my phone number is ${
+          localStorage.getItem("rex_user_phone") || ""
+        }.`;
+
+      if (!intro.trim()) return;
+
+      showIntroTyping();
+      try {
+        const { botText } = await createChatCompletion(intro);
+        hideIntroTyping();
+        if (botText) {
+          uiAppendBotMessage(botText);
+          saveChatMessage("bot", botText);
+        }
+      } catch (e) {
+        // call fail ho to lock revert kar do (taaki next open par retry ho sake)
+        localStorage.removeItem(sentKey);
+        hideIntroTyping();
+        console.error("intro send failed:", e);
+      }
+    }
+
+    function disableChatButton() {
+      chatBtn.classList.add("disabled");
+      chatBtn.setAttribute("aria-disabled", "true");
+    }
+
+    function enableChatButton() {
+      chatBtn.classList.remove("disabled");
+      chatBtn.removeAttribute("aria-disabled");
+    }
+
+    chatBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (onCall) return;
+      localStorage.setItem("rex_last_ui", "chat");
       modal.style.display = "none";
       rexAgent.classList.remove("noFloat");
-      localStorage.setItem("rex_last_ui", "chat");
-      // 2) open the new chat popup
-      const cp = getOrCreateChatPopup();
-      cp.classList.add("show");
-      clearCloseTimer();
-      // 3) (optional) mount your chat widget inside the popup
-      // If you use ChatLily and it supports mount:
-      if (window.ChatLily?.mount) {
-        window.ChatLily.mount("#rexChatPopupMount", {
-          agentId: getAgentIdFromScript(),
-          source: "popup_button",
-        });
-      }
-      // Else, if ChatLily only has .open(), comment the mount above and use:
-      // if (window.ChatLily?.open) {
-      //   window.ChatLily.open({ agentId: getAgentIdFromScript(), source: "popup_button" });
-      // }
-      // Or fallback to external page:
-      // else {
-      //   const url = `${currentSiteURL}/chat?agentId=${encodeURIComponent(getAgentIdFromScript() || "")}`;
-      //   window.open(url, "_blank");
-      // }
+      ensureUserProfileThen(() => {
+        const cp = getOrCreateChatPopup();
+        cp.classList.add("show");
+        clearCloseTimer();
+
+        if (window.ChatLily?.mount) {
+          window.ChatLily.mount("#rexChatPopupMount", {
+            agentId: getAgentIdFromScript(),
+            source: "popup_button",
+          });
+        }
+      });
     };
 
     const closeButton = createElement("button", {
@@ -1194,7 +1309,6 @@ function createReviewWidget() {
     infoWrapper.appendChild(tag);
     imageWrapper.appendChild(agentImg);
     popupBody.appendChild(imageWrapper);
-    popupBody.appendChild(imageWrapper);
     popupBody.appendChild(infoWrapper);
 
     popupBody.appendChild(callBtn);
@@ -1204,22 +1318,24 @@ function createReviewWidget() {
     popupHeader.appendChild(poweredBy);
     modal.appendChild(popupHeader);
     modal.appendChild(popupBody);
-    document.body.appendChild(modal);
     rexAgent.addEventListener("click", () => {
       const preferChat = localStorage.getItem("rex_last_ui") === "chat";
       const hasHistory = (loadChatHistory() || []).length > 0;
 
       if (preferChat || hasHistory) {
-        const cp = getOrCreateChatPopup();
-        cp.classList.add("show");
-
-        rexAgent.classList.add("noFloat");
-        clearCloseTimer();
+        ensureUserProfileThen(() => {
+          const cp = getOrCreateChatPopup();
+          cp.classList.add("show");
+          rexAgent.classList.add("noFloat");
+          clearCloseTimer();
+          // setTimeout(maybeSendIntroOnOpen, 120);
+        });
       } else {
         modal.style.display = "block";
         rexAgent.classList.add("noFloat");
       }
     });
+
     closeButton.addEventListener("click", async () => {
       modal.style.display = "none";
       rexAgent.classList.remove("noFloat");
@@ -1313,6 +1429,7 @@ function createReviewWidget() {
           callContent = "Calling...";
           callLabel.textContent = callContent;
           callText.innerHTML = `<p>Connecting...</p>`;
+          disableChatButton();
           try {
             const res = await fetch(`${API_URL}/agent/createWidegetWebCall`, {
               method: "POST",
@@ -1362,8 +1479,10 @@ function createReviewWidget() {
           } catch (err) {
             console.error("Call failed:", err.message);
             callText.innerHTML = `<p style="color: red;">Unauthorized Access</p>`;
+            enableChatButton();
           } finally {
             callBtn.disabled = false;
+            if (!onCall) enableChatButton();
           }
         } else {
           await retellWebClient.stopCall();
@@ -1384,6 +1503,7 @@ function createReviewWidget() {
           imageWrapper
             .querySelectorAll(".pulse-ring2")
             .forEach((ring) => ring.remove());
+          enableChatButton();
           const data = {
             agentId: getAgentIdFromScript(),
             callId: callId,
@@ -1396,63 +1516,315 @@ function createReviewWidget() {
         }
       }
 
-      // --- NEW CHAT POPUP (closed by default)
-      const chatModal = createElement("div", {
-        id: "rexChatPopup",
-        className: "chat-popup",
-      });
+      //       // --- NEW CHAT POPUP (closed by default)
+      //       const chatModal = createElement("div", {
+      //         id: "rexChatPopup",
+      //         className: "chat-popup",
+      //       });
 
-      const chatHeader = createElement("div", {
-        className: "chat-popup-header",
-      });
-      const chatTitleBox = createElement("div");
-      chatTitleBox.innerHTML = `
-  <div class="chat-popup-title">${businessName || "Support"}</div>
-  <div class="chat-popup-sub">The team can also help</div>
-`;
-      const chatCloseBtn = createElement("button", {
-        className: "chat-popup-close",
-        innerHTML: "&times;",
-      });
-      chatHeader.appendChild(chatTitleBox);
-      chatHeader.appendChild(chatCloseBtn);
+      //       const chatHeader = createElement("div", {
+      //         className: "chat-popup-header",
+      //       });
+      //       const chatTitleBox = createElement("div");
+      //       chatTitleBox.innerHTML = `
+      //   <div class="chat-popup-title">${businessName || "Support"}</div>
+      //   <div class="chat-popup-sub">The team can also help</div>
+      // `;
+      //       const chatCloseBtn = createElement("button", {
+      //         className: "chat-popup-close",
+      //         innerHTML: "&times;",
+      //       });
+      //       chatHeader.appendChild(chatTitleBox);
+      //       chatHeader.appendChild(chatCloseBtn);
 
-      const chatBody = createElement("div", { className: "chat-popup-body" });
-      chatBody.innerHTML = `
-  <div class="chat-msg">
-    Hi there, welcome! Our team is offline right now, but you can:
-    <ul style="margin:8px 0 0 18px;">
-      <li>Search our Help Center, available 24/7</li>
-      <li>Leave a note and we'll get back to you</li>
-    </ul>
-  </div>
+      //       const chatBody = createElement("div", { className: "chat-popup-body" });
+      //       chatBody.innerHTML = `
+      //   <div class="chat-msg">
+      //     Hi there, welcome! Our team is offline right now, but you can:
+      //     <ul style="margin:8px 0 0 18px;">
+      //       <li>Search our Help Center, available 24/7</li>
+      //       <li>Leave a note and we'll get back to you</li>
+      //     </ul>
+      //   </div>
 
-  <div id="rexChatPopupMount"></div>
+      //   <div id="rexChatPopupMount"></div>
 
-  <div class="chat-actions">
-    <input id="rexChatEmail" type="email" placeholder="email@example.com" />
-    <button id="rexChatSend">Send</button>
-  </div>
-`;
-      chatModal.appendChild(chatHeader);
-      chatModal.appendChild(chatBody);
-      document.body.appendChild(chatModal);
+      //   <div class="chat-actions">
+      //     <input id="rexChatEmail" type="email" placeholder="email@example.com" />
+      //     <button id="rexChatSend">Send</button>
+      //   </div>
+      // `;
+      //       chatModal.appendChild(chatHeader);
+      //       chatModal.appendChild(chatBody);
+      //       document.body.appendChild(chatModal);
 
-      // handlers
-      chatCloseBtn.onclick = () => chatModal.classList.remove("show");
-      document.getElementById("rexChatSend").onclick = () => {
-        const v = (document.getElementById("rexChatEmail").value || "").trim();
-        if (!v) {
-          alert("Please enter an email");
-          return;
-        }
-        // yahan aap apna POST call kar sakte ho
-        alert("Message sent. We'll reach out soon.");
-        chatModal.classList.remove("show");
-      };
+      //       // handlers
+      //       chatCloseBtn.onclick = () => chatModal.classList.remove("show");
+      //       document.getElementById("rexChatSend").onclick = () => {
+      //         const v = (document.getElementById("rexChatEmail").value || "").trim();
+      //         if (!v) {
+      //           alert("Please enter an email");
+      //           return;
+      //         }
+      //         // yahan aap apna POST call kar sakte ho
+      //         alert("Message sent. We'll reach out soon.");
+      //         chatModal.classList.remove("show");
+      //       };
+      //     };
     };
 
     let chatModalEl = null;
+
+    // ===== PRE-CHAT DETAILS FLOW (Name -> Email -> Phone) =====
+
+    // LocalStorage keys
+    const LS_USER_NAME = "rex_user_name";
+    const LS_USER_EMAIL = "rex_user_email";
+    const LS_USER_PHONE = "rex_user_phone";
+
+    // Simple validators
+    function validateName(v = "") {
+      const s = String(v).trim();
+      return /^[a-zA-Z\s'.-]{2,}$/.test(s);
+    }
+    function validateEmail(v = "") {
+      const s = String(v).trim();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+    }
+    function validatePhone(v = "") {
+      // Accept +, digits, spaces, dashes; store digits only (with optional +country)
+      const s = String(v).trim();
+      const digits = s.replace(/[^\d]/g, "");
+      return digits.length >= 10 && digits.length <= 15;
+    }
+
+    // Helpers to get/set profile
+    function getUserProfile() {
+      return {
+        name: localStorage.getItem(LS_USER_NAME) || "",
+        email: localStorage.getItem(LS_USER_EMAIL) || "",
+        phone: localStorage.getItem(LS_USER_PHONE) || "",
+      };
+    }
+    function hasCompleteProfile() {
+      const { name, email, phone } = getUserProfile();
+      return validateName(name) && validateEmail(email) && validatePhone(phone);
+    }
+    function saveUserProfile({ name, email, phone }) {
+      if (name) localStorage.setItem(LS_USER_NAME, String(name).trim());
+      if (email)
+        localStorage.setItem(LS_USER_EMAIL, String(email).trim().toLowerCase());
+      if (phone) {
+        const digits = String(phone).replace(/[^\d+]/g, ""); // keep + and digits
+        localStorage.setItem(LS_USER_PHONE, digits);
+      }
+    }
+
+    // -------- UI: Step Modal ----------
+    let preChatModalEl = null;
+    function getOrCreatePreChatModal() {
+      if (preChatModalEl) return preChatModalEl;
+
+      preChatModalEl = document.createElement("div");
+      preChatModalEl.id = "rexPreChatModal";
+
+      preChatModalEl.style.cssText = `
+    position:fixed; bottom:155px; right:20px; max-width:420px; width:90%;
+    background:#fff; border-radius:16px; border:1px solid #ECECEC;
+    box-shadow:0 18px 40px rgba(0,0,0,.18); z-index:1003; display:none;
+    font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+  `;
+   const logoUrl = "https://rexptin.truet.net/images/favicon-final.svg";
+      preChatModalEl.innerHTML = `
+    <div class="prechat-topbar">
+      <div class="prechat-brand">
+        <div class="prechat-logo"><img src="${logoUrl}" alt="logo" /></div>
+        <div class="prechat-title">
+          <div class="t">Chat with ${agentName || "Marissa"}</div>
+          <div class="s">The team can also help</div>
+        </div>
+      </div>
+      <button id="rexPreX"
+        style="border:0;background:transparent;font-size:20px;color:#666;cursor:pointer">&times;</button>
+    </div>
+    <div style="padding:14px 16px 18px">
+      <div id="rexPreStep" style="font-size:13px;color:#666;margin-bottom:10px">Step 1 of 3</div>
+
+      <label id="rexPreLabel" style="display:block;font-size:13px;margin-bottom:6px">Your full name</label>
+      <input id="rexPreInput" type="text" placeholder="John Doe"
+             style="width:93%;padding:11px 12px;border:1px solid #E6E6E6;border-radius:10px;font-size:14px;outline:0"/>
+
+      <div id="rexPreErr" style="color:#d93025;font-size:12px;margin-top:6px;display:none"></div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button id="rexPreNext"   style="background:#6564EB;color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer">Next</button>
+      </div>
+    </div>
+  `;
+      document.body.appendChild(preChatModalEl);
+
+      // Events
+      const $x = preChatModalEl.querySelector("#rexPreX");
+      const $cancel = preChatModalEl.querySelector("#rexPreCancel"); // may not exist
+
+      [$x, $cancel].filter(Boolean).forEach((btn) => {
+        btn.onclick = () => hidePreChatModal();
+      });
+      return preChatModalEl;
+    }
+
+    function computePreStep() {
+      const { name, email, phone } = getUserProfile();
+      if (!validateName(name)) return 0; // ask name
+      if (!validateEmail(email)) return 1; // ask email
+      if (!validatePhone(phone)) return 2; // ask phone
+      return 3; // everything complete
+    }
+
+    function showPreChatModal() {
+      try {
+        const _modal = document.getElementById("agentPopup");
+        if (_modal) _modal.style.display = "none";
+      } catch {}
+
+      const el = getOrCreatePreChatModal();
+
+      // Pull saved values so input pre-fills correctly
+      const { name, email, phone } = getUserProfile();
+      _preData = { name, email, phone };
+
+      // 🔑 decide which step to show
+      _preStep = computePreStep();
+
+      // If everything is already there, skip modal and open chat
+      if (_preStep === 3) {
+        hidePreChatModal();
+        if (typeof _queuedOpenChat === "function") {
+          const fn = _queuedOpenChat;
+          _queuedOpenChat = null;
+          fn();
+        }
+        return;
+      }
+
+      applyStepUI();
+      el.style.display = "block";
+
+      const firstInput = el.querySelector("#rexPreInput");
+      if (firstInput) firstInput.focus();
+    }
+
+    function hidePreChatModal() {
+      if (preChatModalEl) preChatModalEl.style.display = "none";
+    }
+
+    // Step machine
+    let _preStep = 0; // 0=name, 1=email, 2=phone
+    let _preData = { name: "", email: "", phone: "" };
+
+    function applyStepUI() {
+      const $step = preChatModalEl.querySelector("#rexPreStep");
+      const $label = preChatModalEl.querySelector("#rexPreLabel");
+      const $input = preChatModalEl.querySelector("#rexPreInput");
+      const $err = preChatModalEl.querySelector("#rexPreErr");
+      const $next = preChatModalEl.querySelector("#rexPreNext");
+
+      $err.style.display = "none";
+
+      if (_preStep === 0) {
+        $step.textContent = "Step 1 of 3";
+        $label.textContent = "Your full name";
+        $input.type = "text";
+        $input.placeholder = "John Doe";
+        $input.value = _preData.name || "";
+        $next.textContent = "Next";
+      } else if (_preStep === 1) {
+        $step.textContent = "Step 2 of 3";
+        $label.textContent = "Your email address";
+        $input.type = "email";
+        $input.placeholder = "email@example.com";
+        $input.value = _preData.email || "";
+        $next.textContent = "Next";
+      } else {
+        $step.textContent = "Step 3 of 3";
+        $label.textContent = "Your phone number";
+        $input.type = "tel";
+        $input.placeholder = "+91 98XXXXXXXX";
+        $input.value = _preData.phone || "";
+        $next.textContent = "Start chat";
+      }
+
+      // Bind next each render (idempotent)
+      preChatModalEl.querySelector("#rexPreNext").onclick = onPreNext;
+      $input.onkeydown = (e) => {
+        if (e.key === "Enter") onPreNext();
+      };
+    }
+    function onPreNext() {
+      const $input = preChatModalEl.querySelector("#rexPreInput");
+      const $err = preChatModalEl.querySelector("#rexPreErr");
+      const raw = ($input.value || "").trim();
+
+      if (_preStep === 0) {
+        if (!validateName(raw)) {
+          $err.textContent =
+            "Please enter your full name (letters only, min 2 characters).";
+          $err.style.display = "block";
+          return;
+        }
+        _preData.name = raw;
+        saveUserProfile({ name: raw });
+        _preStep = 1;
+        applyStepUI();
+        return;
+      }
+
+      if (_preStep === 1) {
+        if (!validateEmail(raw)) {
+          $err.textContent = "Please enter a valid email address.";
+          $err.style.display = "block";
+          return;
+        }
+        _preData.email = raw;
+        saveUserProfile({ email: raw });
+        _preStep = 2;
+        applyStepUI();
+        return;
+      }
+
+      // step 2: phone
+      if (!validatePhone(raw)) {
+        $err.textContent = "Please enter a valid phone number (10–15 digits).";
+        $err.style.display = "block";
+        return;
+      }
+      _preData.phone = raw;
+      saveUserProfile({ phone: raw });
+
+      hidePreChatModal();
+      // When finished, call the queued opener (if any)
+      if (typeof _queuedOpenChat === "function") {
+        const fn = _queuedOpenChat;
+        _queuedOpenChat = null;
+        fn();
+      }
+    }
+
+    let _queuedOpenChat = null;
+    /**
+     * Gatekeeper: ensure we have name+email+phone before opening chat.
+     * If complete -> immediately run openChatFn(). Else -> show the pre-chat modal and queue it.
+     */
+    function ensureUserProfileThen(openChatFn) {
+      if (hasCompleteProfile()) {
+        openChatFn();
+      } else {
+        _queuedOpenChat = openChatFn;
+        showPreChatModal();
+      }
+    }
+
+    // ===== END PRE-CHAT FLOW =====
 
     function getOrCreateChatPopup() {
       if (chatModalEl) return chatModalEl;
@@ -1697,27 +2069,30 @@ function createReviewWidget() {
       }
 
       // --- render saved history BEFORE greeting ---
-      const hist = loadChatHistory();
-      if (hist.length) {
-        hist.forEach((m) => appendMessage(m.role, m.text));
-      }
+      // const hist = loadChatHistory();
+      // if (hist.length) {
+      //   hist.forEach((m) => appendMessage(m.role, m.text));
+      // }
 
-      // initial greeting from bot (optional)
-      if ($msgs.children.length === 0) {
-        const greet = `Hello! My name is ${
-          agentName || "I"
-        } from ${businessName} How can I assist you today?`;
-
-        appendMessage("bot", greet);
-
-        // const greet = `Hi! ${
-        //   agentName || "I"
-        // } am here to help. Send your question below.`;
-        // appendMessage("bot", greet);
-      }
       async function sendMessage() {
         const t = ($input.value || "").trim();
         if (!t) return;
+
+        const hist = loadChatHistory();
+        const introAlreadyTagged =
+          localStorage.getItem("rex_intro_inline") === "1";
+        let payload = t;
+        if (hist.length === 0 && hasCompleteProfile() && !introAlreadyTagged) {
+          const intro =
+            `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
+            `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
+            `and my phone number is ${
+              localStorage.getItem("rex_user_phone") || ""
+            }.`;
+          payload = `${intro}\n${t}`.trim();
+          localStorage.setItem("rex_intro_inline", "1");
+        }
+
         resetInactivityTimers();
         clearCloseTimer();
         const tsNow = Date.now();
@@ -1732,7 +2107,7 @@ function createReviewWidget() {
 
         try {
           // API hit
-          const { botText } = await createChatCompletion(t);
+          const { botText } = await createChatCompletion(payload);
           const reply = botText || "…";
 
           // ---- HIDE TYPING before posting reply ----
@@ -1781,7 +2156,11 @@ function createReviewWidget() {
       }
       renderHistory();
       scheduleInactivityTimers();
-
+      (async () => {
+        try {
+          await maybeSendIntroOnOpen();
+        } catch {}
+      })();
       return chatModalEl;
     }
   };
