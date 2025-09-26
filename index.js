@@ -657,9 +657,7 @@ let __rex_end_called__ = false;
 function isGoodbye(text = "") {
   const t = String(text).toLowerCase();
   // Common English + Hinglish/Hindi variants
-  const patterns = [
-   /\bhave a great day!?/
-  ];
+  const patterns = [/\bhave a great day!?/];
   return patterns.some((re) => re.test(t));
 }
 
@@ -855,9 +853,9 @@ async function primeChatAgentId() {
       window.dispatchEvent(
         new CustomEvent("chat-agent-id:ready", { detail: { chatAgentId } })
       );
-      if (!localStorage.getItem("chat_id")) {
-        await createChatSession(chatAgentId);
-      }
+      // if (!localStorage.getItem("chat_id")) {
+      //   await createChatSession(chatAgentId);
+      // }
       console.log("[Rex] chat_agent_id stored:", chatAgentId);
     } else {
       console.warn("[Rex] chat_agent_id not found in response:", data);
@@ -1280,6 +1278,18 @@ function createReviewWidget() {
       });
     };
 
+    async function ensureChatSession() {
+      let chatId = localStorage.getItem("chat_id");
+      if (chatId) return chatId;
+
+      const agentId =
+        localStorage.getItem("chat_agent_id") || getAgentIdFromScript();
+      const data = await createChatSession(agentId);
+      chatId = data?.chat_id;
+      if (!chatId) throw new Error("Failed to create chat session");
+      return chatId;
+    }
+
     const closeButton = createElement("button", {
       className: "close-button",
       innerHTML: "×",
@@ -1314,7 +1324,13 @@ function createReviewWidget() {
       const hasHistory = (loadChatHistory() || []).length > 0;
 
       if (preferChat || hasHistory) {
-        ensureUserProfileThen(() => {
+        ensureUserProfileThen(async () => {
+          try {
+            await ensureChatSession();
+          } catch (err) {
+            console.error(err);
+            return;
+          }
           const cp = getOrCreateChatPopup();
           cp.classList.add("show");
           rexAgent.classList.add("noFloat");
@@ -1625,7 +1641,7 @@ function createReviewWidget() {
     box-shadow:0 18px 40px rgba(0,0,0,.18); z-index:1003; display:none;
     font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
   `;
-   const logoUrl = "https://rexptin.truet.net/images/favicon-final.svg";
+      const logoUrl = "https://rexptin.truet.net/images/favicon-final.svg";
       preChatModalEl.innerHTML = `
     <div class="prechat-topbar">
       <div class="prechat-brand">
@@ -1648,6 +1664,10 @@ function createReviewWidget() {
       <div id="rexPreErr" style="color:#d93025;font-size:12px;margin-top:6px;display:none"></div>
 
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button id="rexPreBack"
+        style="background:#f2f2f5;color:#333;border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;display:none">
+        Back
+      </button>
         <button id="rexPreNext"   style="background:#6564EB;color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer">Next</button>
       </div>
     </div>
@@ -1670,6 +1690,26 @@ function createReviewWidget() {
       if (!validateEmail(email)) return 1; // ask email
       if (!validatePhone(phone)) return 2; // ask phone
       return 3; // everything complete
+    }
+
+    function onPreBack() {
+      // Save current field text before going back (so user ke edits na lost hon)
+      const $input = preChatModalEl.querySelector("#rexPreInput");
+      const raw = ($input.value || "").trim();
+
+      if (_preStep === 1) {
+        // we were on Email, go back to Name
+        _preData.email = raw; // preserve whatever they typed
+        _preStep = 0;
+      } else if (_preStep === 2) {
+        // we were on Phone, go back to Email
+        _preData.phone = raw; // preserve typed phone
+        _preStep = 1;
+      } else {
+        return; // already at first step
+      }
+
+      applyStepUI();
     }
 
     function showPreChatModal() {
@@ -1719,8 +1759,16 @@ function createReviewWidget() {
       const $input = preChatModalEl.querySelector("#rexPreInput");
       const $err = preChatModalEl.querySelector("#rexPreErr");
       const $next = preChatModalEl.querySelector("#rexPreNext");
+      const $back = preChatModalEl.querySelector("#rexPreBack");
 
       $err.style.display = "none";
+
+      // Show/hide Back
+      if (_preStep === 0) {
+        $back.style.display = "none";
+      } else {
+        $back.style.display = "inline-block";
+      }
 
       if (_preStep === 0) {
         $step.textContent = "Step 1 of 3";
@@ -1747,6 +1795,7 @@ function createReviewWidget() {
 
       // Bind next each render (idempotent)
       preChatModalEl.querySelector("#rexPreNext").onclick = onPreNext;
+      preChatModalEl.querySelector("#rexPreBack").onclick = onPreBack;
       $input.onkeydown = (e) => {
         if (e.key === "Enter") onPreNext();
       };
