@@ -651,8 +651,6 @@ function injectCSS() {
           .rex-btn{border:0; padding:10px 14px; border-radius:10px; font-weight:600; cursor:pointer}
           .rex-btn.secondary{background:#f2f2f5; color:#333}
           .rex-btn.danger{background:#e53935; color:#fff}
-
-
           `;
   document.head.appendChild(style);
 }
@@ -1174,7 +1172,7 @@ function createReviewWidget() {
     const chatIconWrapper = createElement("div", { className: "chatIcon" });
     const chatIcon = createElement("img", {
       id: "chatIcon",
-      src: "./chatWithRex.svg",
+      src: "https://rexpt-chat-widget.vercel.app/chatWithRex.svg",
       alt: "Chat",
     });
     chatIconWrapper.appendChild(chatIcon);
