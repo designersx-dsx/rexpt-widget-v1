@@ -632,6 +632,26 @@ function injectCSS() {
           .prechat-title .t{ font-weight:700; font-size:16px; color:#24252c }
           .prechat-title .s{ font-size:12px; color:#7A7A7A; margin-top:2px }
 
+            .rex-confirm-overlay{
+            position:absolute;     
+            inset:0;             
+            display:flex; align-items:center; justify-content:center;
+            z-index: 9999;        
+            backdrop-filter: blur(1px); 
+          }
+          .rex-confirm-box{
+            width:min(92vw,420px); background:#fff; border:1px solid #ECECEC;
+            border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.18);
+            padding:16px;
+            font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+          }
+          .rex-confirm-title{font-weight:700; font-size:16px; color:#24252c; margin-bottom:6px}
+          .rex-confirm-text{font-size:14px; color:#505050; margin:4px 0 14px}
+          .rex-confirm-actions{display:flex; gap:10px; justify-content:flex-end}
+          .rex-btn{border:0; padding:10px 14px; border-radius:10px; font-weight:600; cursor:pointer}
+          .rex-btn.secondary{background:#f2f2f5; color:#333}
+          .rex-btn.danger{background:#e53935; color:#fff}
+
 
           `;
   document.head.appendChild(style);
@@ -792,6 +812,35 @@ const getAgentIdFromScript = () => {
     return null;
   }
 };
+// helper: localStorage -> only non-empty strings
+function buildRetellDynamicVars() {
+  const take = (k) => {
+    try {
+      const v = localStorage.getItem(k);
+      return typeof v === "string" && v.trim() ? v.trim() : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const vars = {
+    // your 3 image keys (set them earlier in localStorage)
+    img_primary: take("rex_img_primary"), // e.g. agentImg.src
+    img_secondary: take("rex_img_secondary"), // e.g. some icon
+    img_logo: take("rex_img_logo"), // e.g. site logo
+
+    // optional user context
+    user_email: take("rex_user_email"),
+    user_name: take("rex_user_name"),
+    user_phone: take("rex_user_phone"),
+  };
+
+  // strip null/empty
+  const out = {};
+  for (const [k, v] of Object.entries(vars)) if (v) out[k] = v;
+  return out;
+}
+
 async function shouldLoadWidget() {
   try {
     const agentId = getAgentIdFromScript();
@@ -1164,6 +1213,68 @@ function createReviewWidget() {
     //   return okName && okEmail && okPhone;
     // }
 
+    // escape minimal HTML to avoid injection in the streaming text
+    // escape minimal HTML
+    // function escHTML(s = "") {
+    //   return s.replace(
+    //     /[&<>"']/g,
+    //     (m) =>
+    //       ({
+    //         "&": "&amp;",
+    //         "<": "&lt;",
+    //         ">": "&gt;",
+    //         '"': "&quot;",
+    //         "'": "&#39;",
+    //       }[m])
+    //   );
+    // }
+
+    // make a bot bubble with two spans: content + time
+    function createBotBubble() {
+      const $msgs = document.getElementById("rexMessages");
+      const div = document.createElement("div");
+      div.className = "msg bot";
+
+      const content = document.createElement("span");
+      content.className = "c"; // content holder
+      const time = document.createElement("span");
+      time.className = "time";
+
+      div.appendChild(content);
+      div.appendChild(time);
+
+      $msgs.appendChild(div);
+      $msgs.scrollTop = $msgs.scrollHeight;
+
+      return { el: div, contentEl: content, timeEl: time };
+    }
+
+    // stream text into the content span without re-parsing the whole HTML
+    async function streamBotTextInto(
+      bubble,
+      fullText,
+      { chunkSize = 3, delay = 18 } = {}
+    ) {
+      let i = 0;
+      while (i < fullText.length) {
+        const next = fullText.slice(i, i + chunkSize);
+        i += chunkSize;
+
+        // Safe: add as plain text so &quot; -> " render ho
+        bubble.contentEl.appendChild(document.createTextNode(next));
+
+        bubble.timeEl.textContent = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        bubble.el.appendChild(bubble.timeEl);
+
+        bubble.el.parentElement.scrollTop =
+          bubble.el.parentElement.scrollHeight;
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
+
     function uiAppendBotMessage(text) {
       try {
         const msgs = document.getElementById("rexMessages");
@@ -1237,7 +1348,9 @@ function createReviewWidget() {
         const { botText } = await createChatCompletion(intro);
         hideIntroTyping();
         if (botText) {
-          uiAppendBotMessage(botText);
+          // uiAppendBotMessage(botText);
+          const bubble = createBotBubble();
+          await streamBotTextInto(bubble, botText);
           saveChatMessage("bot", botText);
         }
       } catch (e) {
@@ -1441,7 +1554,11 @@ function createReviewWidget() {
             const res = await fetch(`${API_URL}/agent/createWidegetWebCall`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ agent_id: agentId, url: currentSiteURL }),
+              body: JSON.stringify({
+                agent_id: agentId,
+                url: currentSiteURL,
+                retell_llm_dynamic_variables: buildRetellDynamicVars(),
+              }),
             });
 
             if (res.ok) {
@@ -1864,6 +1981,70 @@ function createReviewWidget() {
       }
     }
 
+    // small inline confirm modal
+    // small inline confirm modal
+    function makeEndConfirm(parentEl) {
+      let overlay = null,
+        okCb = null,
+        cancelCb = null;
+
+      function open({ onOk, onCancel } = {}) {
+        okCb = onOk || null;
+        cancelCb = onCancel || null;
+
+        overlay = document.createElement("div");
+        overlay.className = "rex-confirm-overlay";
+        overlay.innerHTML = `
+      <div class="rex-confirm-box" role="dialog" aria-modal="true" aria-labelledby="rexConfirmTitle">
+        <div id="rexConfirmTitle" class="rex-confirm-title">End chat?</div>
+        <div class="rex-confirm-text">
+          Your current conversation will be archived. Are you sure you want to end this chat?
+        </div>
+        <div class="rex-confirm-actions">
+          <button class="rex-btn secondary" data-act="cancel">Cancel</button>
+          <button class="rex-btn danger" data-act="ok">End chat</button>
+        </div>
+      </div>
+    `;
+
+        // 👇 append INSIDE the chat popup, not on body
+        (parentEl || document.body).appendChild(overlay);
+
+        // close on outside click / Esc
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) close(false);
+        });
+        document.addEventListener("keydown", escHandler, true);
+
+        overlay.querySelector('[data-act="cancel"]').onclick = () =>
+          close(false);
+        overlay.querySelector('[data-act="ok"]').onclick = () => close(true);
+
+        // focus first button
+        setTimeout(
+          () => overlay.querySelector('[data-act="cancel"]').focus(),
+          0
+        );
+      }
+
+      function escHandler(e) {
+        if (e.key === "Escape") close(false);
+      }
+
+      function close(confirmed) {
+        if (!overlay) return;
+        document.removeEventListener("keydown", escHandler, true);
+        overlay.remove();
+        const ok = confirmed === true;
+        if (ok && typeof okCb === "function") okCb();
+        if (!ok && typeof cancelCb === "function") cancelCb();
+        overlay = null;
+        okCb = cancelCb = null;
+      }
+
+      return { open };
+    }
+
     // ===== END PRE-CHAT FLOW =====
 
     function getOrCreateChatPopup() {
@@ -1905,7 +2086,7 @@ function createReviewWidget() {
 `;
 
       document.body.appendChild(chatModalEl);
-
+      const endConfirm = makeEndConfirm(chatModalEl);
       // Safe bindings AFTER element exists
       const $endBtn = chatModalEl.querySelector(".attio-end");
       const $closeBtn = chatModalEl.querySelector(".attio-close");
@@ -1921,43 +2102,87 @@ function createReviewWidget() {
       }
 
       if ($endBtn) {
-        $endBtn.onclick = async () => {
-          const ok = window.confirm("Are you sure you want to end this chat?");
-          if (!ok) return;
-          try {
-            clearInactivityTimers();
-            const chatId = localStorage.getItem("chat_id");
-            const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+        $endBtn.onclick = () => {
+          endConfirm.open({
+            onOk: async () => {
+              try {
+                clearInactivityTimers();
+                const chatId = localStorage.getItem("chat_id");
+                const knowledgeBaseId =
+                  localStorage.getItem("knowledge_base_id");
 
-            if (chatId && knowledgeBaseId) {
-              const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  knowledge_base_id: knowledgeBaseId,
-                  chat_id: chatId,
-                }),
-              });
-
-              if (!res.ok) {
-                const txt = await res.text().catch(() => "");
-                throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+                if (chatId && knowledgeBaseId) {
+                  const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      knowledge_base_id: knowledgeBaseId,
+                      chat_id: chatId,
+                    }),
+                  });
+                  if (!res.ok) {
+                    const txt = await res.text().catch(() => "");
+                    throw new Error(
+                      `end-chat-archive HTTP ${res.status}: ${txt}`
+                    );
+                  }
+                }
+                localStorage.removeItem("rex_last_ui");
+                localStorage.removeItem(CHAT_LS_KEY);
+                localStorage.removeItem("chat_id");
+                const $msgs = chatModalEl.querySelector("#rexMessages");
+                if ($msgs) $msgs.innerHTML = "";
+                chatModalEl.classList.remove("show");
+                window.location.reload();
+              } catch (e) {
+                console.error("end-chat failed:", e);
               }
-            }
-            localStorage.removeItem("rex_last_ui");
-            // clear local state and close popup (no input disabling)
-            localStorage.removeItem(CHAT_LS_KEY);
-            localStorage.removeItem("chat_id");
-            // wipe thread so reopening shows fresh state without page refresh
-            const $msgs = chatModalEl.querySelector("#rexMessages");
-            if ($msgs) $msgs.innerHTML = "";
-            chatModalEl.classList.remove("show");
-            window.location.reload();
-          } catch (e) {
-            console.error("end-chat failed:", e);
-          }
+            },
+            onCancel: () => {
+              // kuch nahi karna; simply close
+            },
+          });
         };
       }
+
+      // if ($endBtn) {
+      //   $endBtn.onclick = async () => {
+      //     const ok = window.confirm("Are you sure you want to end this chat?");
+      //     if (!ok) return;
+      //     try {
+      //       clearInactivityTimers();
+      //       const chatId = localStorage.getItem("chat_id");
+      //       const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+
+      //       if (chatId && knowledgeBaseId) {
+      //         const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+      //           method: "POST",
+      //           headers: { "Content-Type": "application/json" },
+      //           body: JSON.stringify({
+      //             knowledge_base_id: knowledgeBaseId,
+      //             chat_id: chatId,
+      //           }),
+      //         });
+
+      //         if (!res.ok) {
+      //           const txt = await res.text().catch(() => "");
+      //           throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+      //         }
+      //       }
+      //       localStorage.removeItem("rex_last_ui");
+      //       // clear local state and close popup (no input disabling)
+      //       localStorage.removeItem(CHAT_LS_KEY);
+      //       localStorage.removeItem("chat_id");
+      //       // wipe thread so reopening shows fresh state without page refresh
+      //       const $msgs = chatModalEl.querySelector("#rexMessages");
+      //       if ($msgs) $msgs.innerHTML = "";
+      //       chatModalEl.classList.remove("show");
+      //       window.location.reload();
+      //     } catch (e) {
+      //       console.error("end-chat failed:", e);
+      //     }
+      //   };
+      // }
 
       // close handler
       chatModalEl.querySelector(".attio-close").onclick = () => {
@@ -2154,7 +2379,10 @@ function createReviewWidget() {
           hideTyping();
 
           // appendMessage("bot", reply);
-          appendMessage("bot", reply, Date.now());
+          // appendMessage("bot", reply, Date.now());
+          // create an empty bubble and stream into it
+          const bubble = createBotBubble();
+          await streamBotTextInto(bubble, reply, { chunkSize: 3, delay: 18 });
           saveChatMessage("bot", reply);
           try {
             if (isGoodbye(reply)) {
