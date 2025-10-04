@@ -2,7 +2,10 @@
 function injectCSS() {
   const style = document.createElement("style");
   style.innerHTML = `
-             @keyframes float {
+/* === REXPT Widget CSS (final) === */
+
+--------- Animations ---------- */
+           @keyframes float {
      0% { transform: translateY(0); }
      50% { transform: translateY(-8px); }
      100% { transform: translateY(0); }
@@ -651,7 +654,176 @@ function injectCSS() {
           .rex-btn{border:0; padding:10px 14px; border-radius:10px; font-weight:600; cursor:pointer}
           .rex-btn.secondary{background:#f2f2f5; color:#333}
           .rex-btn.danger{background:#e53935; color:#fff}
-          `;
+
+         /* === Pre-chat (Support) — White card + animated underline === */
+        .support-popup{
+          position: fixed;
+          bottom: 155px;
+          right: 20px;
+          max-width: 500px;
+          width: 90%;
+          background: #fff;
+          border-radius: 16px;
+          border: 1px solid #ECECEC;
+          box-shadow: 0 18px 40px rgba(0,0,0,.18);
+          z-index: 1002;
+          display: none;
+          font-family: Inter,system-ui,Segoe UI,Arial,sans-serif;
+
+        }
+        .support-popup.show{ display:block }
+        .support-popup::after{
+          content:""; position:absolute; bottom:-18px; right:24px; width:36px; height:36px;
+          background:#fff; transform:rotate(45deg); border-radius:0 0 8px 0;
+          box-shadow:14px 15px 20px rgba(0,0,0,.08);
+        }
+        .support-header{
+          display:flex; align-items:center; justify-content:space-between;
+          padding:14px 16px; border-bottom:1px solid #eff0f2; background:#fff;
+        }
+        .support-brand{ display:flex; align-items:center; gap:10px }
+        .support-logo{ width:28px; height:28px; border-radius:8px; overflow:hidden;
+          display:flex; align-items:center; justify-content:center; background:#111; }
+        .support-title .t{ font-weight:800; font-size:18px; color:#0f172a }
+        .support-title .s{ font-size:15px; color:#070a10 }
+        .support-close{ border:0; background:transparent; font-size:22px; color:#9aa4b2; cursor:pointer }
+
+          /* --- Support (pre-chat) card polish --- */
+      .support-body{ padding: 12px 16px 20px; background:#fff; }
+
+      .big-card{
+        display:flex; flex-direction:column;
+        min-height:400px;
+        /* thoda breathing room under header */
+        margin-top:10px;                      /* NEW */
+        padding:10px 10px 96px;
+        border:1px solid #eff0f2; border-radius:16px;
+        background:#fff; box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+        justify-content: flex-start;
+      }
+
+      /* arrow tail ko crisp border + subtle shadow */
+      .support-popup::after{
+        content:""; position:absolute; bottom:-12px; right:24px;
+        width:28px; height:28px;
+        background:#fff; transform:rotate(45deg);
+        border:1px solid #ececec;            /* NEW outline */
+        border-top:0; border-left:0;         /* taaki top/left double-border na lage */
+        border-radius:0 0 8px 0;
+        box-shadow:10px 10px 18px rgba(0,0,0,.08);
+        z-index:-1;
+      }ow{ margin-bottom:12px; display:flex; align-items:center; gap:8px }
+        
+
+      .status-row {
+  background: #f1f1f1;      /* halka grey background */
+  border: 1px solid #ccc;   /* halka border */
+  border-radius: 12px;      /* golai jaisa effect */
+  padding: 10px 15px;
+  display: inline-block;    /* message bubble jaisa lage */
+  max-width: 80%;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;              /* text thoda readable ho */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #4CAF50; /* green dot (active) */
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.status-text {
+  vertical-align: middle;
+}
+
+
+        .field{ margin-top:12px }
+        .label{ font-size:15px; color:#070a10; margin-bottom:6px; transition:.18s }
+        .field:focus-within .label{ color:#111827; transform:translateY(-1px) }
+
+        .input-dark{
+          position:relative; display:flex; align-items:center; gap:8px;
+          background:transparent; border:0; border-radius:0; padding:6px 2px; min-height:40px;
+        }
+        .input-dark::before{ content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:#e5e7eb }
+        .input-dark::after{
+          content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+          background:linear-gradient(90deg,#6c5ce7,#8a7bfa); transition:width .2s ease, opacity .2s; opacity:1;
+        }
+        .input-dark:hover::after{ width:100%; opacity:.5 }
+        .input-dark:focus-within::after{ width:100%; opacity:1 }
+
+        .input-dark input{
+          flex:1; border:0; outline:0; background:transparent;
+          color:#0f172a; font-size:16px; line-height:1.2; padding:0 0 2px 0;
+        }
+        .input-dark input::placeholder{ color:#9aa4b2 }
+
+        @keyframes shakeX { 0%{transform:translateX(0)}25%{transform:translateX(-4px)}
+        50%{transform:translateX(4px)}75%{transform:translateX(-2px)}100%{transform:translateX(0)} }
+        .input-dark.error::after{ width:100%; background:#ef4444 }
+        .input-dark.error input{ color:#991b1b }
+        .err{ color:#ef4444; font-size:12px; margin-top:6px; display:none }
+        .err.show{ display:block; animation:shakeX .25s }
+
+         .actions-ct {
+          position: absolute;
+          left: 26px;
+          right: 26px;
+          bottom: 37px;
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+      }
+          .attio-call{
+          background:#10b981; /* green */
+          color:#fff; border:0; border-radius:6px;
+          font-size:12px; padding:6px 10px; cursor:pointer; font-weight:600;
+          display:flex; align-items:center; gap:6px;
+        }
+        .attio-call:hover{ filter:brightness(1.05) }
+        .attio-call svg { display:block }
+
+        .btn{
+          flex:1 1 220px; border:0; border-radius:12px; padding:14px 16px;
+          font-weight:800; letter-spacing:.2px; font-size:15px; cursor:pointer; color:#fff;
+          box-shadow:0 12px 24px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.08);
+          transition:transform .12s ease, filter .12s ease;
+        }
+        .btn.primary{ background-image:linear-gradient(135deg,#6c5ce7 0%, #8a7bfa 100%) }
+        .btn.secondary{ background:#f7f7fb; color:#1f2937; border:1px solid #e6e6e6 }
+        .btn:not(:disabled):hover{ transform:translateY(-2px); filter:brightness(1.05) }
+        .btn:disabled{ opacity:.55; cursor:not-allowed }
+        .rex-spinner{
+          width:16px;height:16px;
+          border:2px solid currentColor;
+          border-top-color: transparent;
+          border-radius:50%;
+          display:inline-block; vertical-align:-3px;
+          margin-right:8px;
+          animation: rexSpin .8s linear infinite;
+        }
+        .floating-agent.is-busy{
+          pointer-events: none;   
+          opacity: .6;
+          filter: grayscale(.2);
+        }
+
+        @keyframes rexSpin{ to{ transform: rotate(360deg); } }
+
+        @media (max-width:650px){
+          .support-popup{ max-width:none !important; width:100% !important; left:0 !important; right:0 !important; border-radius:0 !important }
+          .big-card{ min-height:50dvh; padding-bottom:96px }
+        }
+          @media (max-width:370px){
+          .big-card{ min-height:48dvh; padding-bottom:96px }
+        }
+`;
   document.head.appendChild(style);
 }
 const currentSiteURL = window.location.origin;
@@ -761,6 +933,25 @@ function saveChatMessage(role, text) {
   arr.push({ role, text, ts: Date.now() });
   saveChatHistory(arr);
 }
+function extractBotText(resp) {
+  // Prefer the last "agent"/"assistant" message from raw.messages
+  const msgs = resp?.raw?.messages || [];
+  for (let i = msgs.length - 1; i >= 0; i--) {
+    const m = msgs[i];
+    const role = (m?.role || "").toLowerCase();
+    const c = (m?.content || "").trim();
+    if ((role === "agent" || role === "assistant") && c) return c;
+  }
+
+  // Fallback: try to clean resp.text by stripping any JSON/tool dump prefix
+  let t = (resp?.text || "").trim();
+  // Remove a leading JSON blob (tool output) if present
+  t = t.replace(/^\s*\{[\s\S]*?\}\s*/m, "").trim();
+  // If it still looks like tool dump, suppress it
+  if (/"transcript"|\"call_id\"|\"latest\"|^Agent:|^User:/m.test(t)) return "";
+  return t;
+}
+
 // --- API: create-chat-completion ---
 async function createChatCompletion(userText) {
   // ensure chat_id hai
@@ -789,7 +980,8 @@ async function createChatCompletion(userText) {
   const data = await res.json();
 
   // response text pick
-  const botText = data?.text ?? data?.raw?.messages?.[0]?.content ?? "";
+  // const botText = data?.text ?? data?.raw?.messages?.[0]?.content ?? "";
+  const botText = extractBotText(data) || "";
   return { data, botText };
 }
 
@@ -911,34 +1103,37 @@ async function primeChatAgentId() {
     console.error("[Rex] primeChatAgentId failed:", err);
   }
 }
+let __rex_create_session_promise = null;
 // STEP 2: reate-chat-session
 async function createChatSession(agentIdFromStep1) {
-  try {
-    const agentId = agentIdFromStep1 || localStorage.getItem("chat_agent_id");
-    if (!agentId) {
-      throw new Error("agent_id not found for createChatSession");
+  // if already creating, await the same promise
+  if (__rex_create_session_promise) return __rex_create_session_promise;
+
+  __rex_create_session_promise = (async () => {
+    try {
+      const agentId = agentIdFromStep1 || localStorage.getItem("chat_agent_id");
+      if (!agentId) throw new Error("agent_id not found for createChatSession");
+
+      const res = await fetch(`${API_URL}/Chatbot/create-chat-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent_id: agentId }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      if (data?.chat_id) {
+        localStorage.setItem("chat_id", String(data.chat_id));
+        resetInactivityTimers?.();
+        console.log("[Rex] chat_id stored:", data.chat_id);
+      }
+      return data;
+    } finally {
+      __rex_create_session_promise = null; // release lock
     }
+  })();
 
-    const res = await fetch(`${API_URL}/Chatbot/create-chat-session`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agent_id: agentId }),
-    });
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-
-    if (data?.chat_id) {
-      localStorage.setItem("chat_id", String(data.chat_id));
-      resetInactivityTimers();
-      console.log("[Rex] chat_id stored:", data.chat_id);
-    }
-
-    return data;
-  } catch (err) {
-    console.error("[Rex] createChatSession failed:", err);
-    throw err;
-  }
+  return __rex_create_session_promise;
 }
 function pingBeep() {
   try {
@@ -1135,6 +1330,25 @@ function createReviewWidget() {
     const callLabel = document.createElement("p");
     callLabel.className = "call-label";
     callLabel.textContent = `Call ${agentName}`;
+    // CLOSE the call popup and show only widget
+    try {
+      modal.style.display = "none";
+    } catch {}
+    try {
+      document.getElementById("rexSupportPopup")?.classList.remove("show");
+    } catch {}
+    try {
+      document.getElementById("rexPreChatModal")?.style &&
+        (document.getElementById("rexPreChatModal").style.display = "none");
+    } catch {}
+    try {
+      document.getElementById("rexChatPopup")?.classList.remove("show");
+    } catch {}
+
+    // ensure agent button floats normally
+    try {
+      document.getElementById("agentButton")?.classList.remove("noFloat");
+    } catch {}
     const phoneNumber = document.createElement("h2");
     phoneNumber.className = "phone-number";
     phoneNumber.textContent = JSON.parse(agentVoipNumber);
@@ -1190,7 +1404,7 @@ function createReviewWidget() {
     const buttonStack = createElement("div", { className: "button-stack" });
 
     buttonStack.appendChild(chatBtn);
-
+    buttonStack.style.display = "none";
     // ---- INTRO SENDER (once per chat session) ----
     function composeProfileIntro() {
       const name = localStorage.getItem("rex_user_name") || "";
@@ -1430,30 +1644,361 @@ function createReviewWidget() {
     popupHeader.appendChild(poweredBy);
     modal.appendChild(popupHeader);
     modal.appendChild(popupBody);
-    rexAgent.addEventListener("click", () => {
+    // ---------- Attio-style Support UI ----------
+    // ---------- Attio-style Support UI WITH prechat 3-step ----------
+    let supportEl = null;
+
+    function validateName(v = "") {
+      return /^[a-zA-Z\s'.-]{2,}$/.test(String(v).trim());
+    }
+    function validateEmail(v = "") {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim());
+    }
+    function validatePhone(v = "") {
+      const digits = String(v).replace(/[^\d]/g, "");
+      return digits.length >= 10 && digits.length <= 15;
+    }
+    function getOrCreateSupportPopup() {
+      if (supportEl) return supportEl;
+
+      const logoUrl = "https://rexptin.truet.net/images/favicon-final.svg";
+      supportEl = document.createElement("div");
+      supportEl.id = "rexSupportPopup";
+      supportEl.className = "support-popup";
+      supportEl.innerHTML = `
+    <div class="support-header">
+      <div class="support-brand">
+        <div class="support-logo"><img src="${logoUrl}" alt="" style="width:100%;height:100%"/></div>
+        <div class="support-title">
+          <div class="t">${businessName || "Support"}</div>
+          <div class="s">The team can also help</div>
+        </div>
+      </div>
+      <button class="support-close" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="support-body">
+      <div class="status-row">
+          <span class="status-dot"></span>
+          <span class="status-text">Welcome! How can I Help You Today?</span>
+        </div>
+      <div class="big-card">
+      
+
+        <div class="field">
+          <div class="label">Your full name</div>
+          <div class="input-dark"><input id="pcName" type="text" placeholder="John Doe" autocomplete="name"></div>
+          <div class="err" id="erPcName"></div>
+        </div>
+
+        <div class="field">
+          <div class="label">Email</div>
+          <div class="input-dark"><input id="pcEmail" type="email" placeholder="email@example.com" autocomplete="email"></div>
+          <div class="err" id="erPcEmail"></div>
+        </div>
+
+        <div class="field">
+          <div class="label">Phone number</div>
+          <div class="input-dark"><input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX" autocomplete="tel"></div>
+          <div class="err" id="erPcPhone"></div>
+        </div>
+
+        <div class="actions-ct">
+          <button class="btn primary" id="pcStartChat" disabled>Start Chat</button>
+          <button class="btn secondary" id="pcStartCall" disabled>Start Call</button>
+        </div>
+      </div>
+    </div>
+  `;
+      document.body.appendChild(supportEl);
+
+      // close
+      supportEl.querySelector(".support-close").onclick = () => {
+        supportEl.classList.remove("show");
+        try {
+          startCloseTimer();
+        } catch {}
+      };
+
+      // elements
+      const $name = supportEl.querySelector("#pcName");
+      const $email = supportEl.querySelector("#pcEmail");
+      const $phone = supportEl.querySelector("#pcPhone");
+      const $eN = supportEl.querySelector("#erPcName");
+      const $eE = supportEl.querySelector("#erPcEmail");
+      const $eP = supportEl.querySelector("#erPcPhone");
+      const $chat = supportEl.querySelector("#pcStartChat");
+      const $call = supportEl.querySelector("#pcStartCall");
+
+      // preload LS
+      $name.value = localStorage.getItem("rex_user_name") || "";
+      $email.value = localStorage.getItem("rex_user_email") || "";
+      $phone.value = localStorage.getItem("rex_user_phone") || "";
+
+      /* -------- validators -------- */
+      // ↓ replace your current name validator block with this pair
+      const vNameSoft = (s) => {
+        const t = String(s).trim();
+        return /^[a-zA-Z'.-]{2,}(?:\s+[a-zA-Z'.-]+)*$/.test(t); // min 2 letters, spaces allowed
+      };
+      const vNameHard = (s) => {
+        const parts = String(s).trim().split(/\s+/).filter(Boolean);
+        if (parts.length < 1) return false; // at least one word
+        return parts.every((p) => /^[a-zA-Z'.-]{2,}$/.test(p));
+      };
+      const vEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
+      const vPhone = (s) => {
+        const d = String(s).replace(/[^\d]/g, "");
+        return d.length >= 10 && d.length <= 15;
+      };
+
+      /* -------- touched flags (prevent errors on open) -------- */
+
+      /* -------- save to LS -------- */
+      function saveLS() {
+        if ($name.value)
+          localStorage.setItem("rex_user_name", String($name.value).trim());
+        if ($email.value)
+          localStorage.setItem(
+            "rex_user_email",
+            String($email.value).trim().toLowerCase()
+          );
+        if ($phone.value)
+          localStorage.setItem(
+            "rex_user_phone",
+            String($phone.value)
+              .trim()
+              .replace(/[^\d+]/g, "")
+          );
+      }
+
+      /* -------- error helpers -------- */
+      let touched = { name: false, email: false, phone: false };
+
+      function setFieldError($input, $errBox, msg) {
+        const wrap = $input.closest(".field").querySelector(".input-dark");
+        if (msg) {
+          wrap.classList.add("error");
+          $errBox.textContent = msg;
+          $errBox.classList.add("show");
+        } else {
+          wrap.classList.remove("error");
+          $errBox.textContent = "";
+          $errBox.classList.remove("show");
+        }
+      }
+
+      function clearAllErrors() {
+        setFieldError($name, $eN, "");
+        setFieldError($email, $eE, "");
+        setFieldError($phone, $eP, "");
+      }
+
+      // live-state check (no forced messages unless touched)
+      function validate(show = true) {
+        const okNsoft = vNameSoft($name.value);
+        const okE = vEmail($email.value);
+        const okP = vPhone($phone.value);
+
+        if (show) {
+          if (touched.name)
+            setFieldError(
+              $name,
+              $eN,
+              okNsoft ? "" : "Please enter your full name."
+            );
+          if (touched.email)
+            setFieldError(
+              $email,
+              $eE,
+              okE ? "" : "Please enter a valid email address."
+            );
+          if (touched.phone)
+            setFieldError(
+              $phone,
+              $eP,
+              okP ? "" : "Please enter a valid phone number (10–15 digits)."
+            );
+        }
+
+        // buttons enable only when HARD checks pass
+        const okHard = vNameHard($name.value) && okE && okP;
+        $chat.disabled = !okHard;
+        $call.disabled = !okHard;
+
+        return okHard;
+      }
+
+      // helper: first invalid for submit (uses HARD name check)
+      function firstInvalid() {
+        if (!vNameHard($name.value)) return $name;
+        if (!vEmail($email.value)) return $email;
+        if (!vPhone($phone.value)) return $phone;
+        return null;
+      }
+
+      // Skip guards (next field focus try)
+      $email.addEventListener("focus", () => {
+        if (!$name.value.trim()) {
+          $name.focus();
+        }
+      });
+
+      // Phone focus: only block if previous fields are empty
+      $phone.addEventListener("focus", () => {
+        if (!$name.value.trim()) {
+          $name.focus();
+          return;
+        }
+        if (!$email.value.trim()) {
+          $email.focus();
+          return;
+        }
+      });
+
+      // Live input + blur (only mark this field touched)
+      $name.addEventListener("input", () => {
+        validate(false);
+        saveLS();
+      });
+      $email.addEventListener("input", () => {
+        validate(false);
+        saveLS();
+      });
+      $phone.addEventListener("input", () => {
+        validate(false);
+        saveLS();
+      });
+
+      $name.addEventListener("blur", () => {
+        touched.name = true;
+        validate(true);
+      });
+      $email.addEventListener("blur", () => {
+        touched.email = true;
+        validate(true);
+      });
+      $phone.addEventListener("blur", () => {
+        touched.phone = true;
+        validate(true);
+      });
+
+      // Enter => full validation; mark all touched so messages appear
+      // [$name, $email, $phone].forEach(($el) => {
+      //   $el.addEventListener("keydown", (e) => {
+      //     if (e.key === "Enter") {
+      //       touched.name = touched.email = touched.phone = true;
+      //       const ok = validate(true); // uses hard check for buttons
+      //       if (!ok) {
+      //         (firstInvalid() || $name).focus();
+      //         return;
+      //       }
+      //       $chat.click();
+      //     }
+      //   });
+      // });
+      [$name, $email, $phone].forEach(($el) => {
+        $el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault(); // ⛔ no auto-advance, no chat/call
+            return;
+          }
+        });
+      });
+      $chat.onclick = async () => {
+        touched.name = touched.email = touched.phone = true;
+        if (!validate(true)) {
+          (firstInvalid() || $name).focus();
+          return;
+        }
+        saveLS();
+        localStorage.setItem("rex_last_ui", "chat");
+        try {
+          await ensureChatSession();
+        } catch {}
+        const cp = getOrCreateChatPopup();
+        cp.classList.add("show");
+        supportEl.classList.remove("show");
+        clearCloseTimer();
+      };
+
+      $call.onclick = () => {
+        touched.name = touched.email = touched.phone = true;
+        if (!validate(true)) {
+          (firstInvalid() || $name).focus();
+          return;
+        }
+        saveLS();
+
+        // koi auto preference na rahe
+        localStorage.removeItem("rex_last_ui");
+
+        // CLOSE all other UIs before starting call
+        try {
+          supportEl?.classList.remove("show");
+        } catch {}
+        try {
+          document.getElementById("rexPreChatModal")?.style &&
+            (document.getElementById("rexPreChatModal").style.display = "none");
+        } catch {}
+        try {
+          document.getElementById("rexChatPopup")?.classList.remove("show");
+        } catch {}
+
+        // OPEN call modal & trigger call
+        const mainModal = document.getElementById("agentPopup");
+        if (mainModal) mainModal.style.display = "block";
+        if (typeof callBtn?.click === "function") callBtn.click();
+      };
+
+      // initial state
+      setFieldError($name, $eN, "");
+      setFieldError($email, $eE, "");
+      setFieldError($phone, $eP, "");
+      clearAllErrors();
+      validate(false);
+      return supportEl;
+    }
+    // add once at top of initWidget scope
+    let __rex_widget_clicking = false;
+    // widget click → yahi UI dikhao jab tak history/pref chat na ho
+    rexAgent.addEventListener("click", async () => {
       const preferChat = localStorage.getItem("rex_last_ui") === "chat";
       const hasHistory = (loadChatHistory() || []).length > 0;
 
-      if (preferChat || hasHistory) {
-        ensureUserProfileThen(async () => {
-          try {
-            await ensureChatSession();
-          } catch (err) {
-            console.error(err);
-            return;
-          }
-          const cp = getOrCreateChatPopup();
-          cp.classList.add("show");
-          rexAgent.classList.add("noFloat");
-          clearCloseTimer();
-          // setTimeout(maybeSendIntroOnOpen, 120);
-        });
+      // agar chat kholna hai (yahin create session chalta hai) to disable button
+      if (hasCompleteProfile() || preferChat || hasHistory) {
+        if (__rex_widget_clicking) return; // hard guard
+        __rex_widget_clicking = true;
+        rexAgent.classList.add("is-busy");
+        rexAgent.setAttribute("aria-busy", "true");
+
+        try {
+          await ensureUserProfileThen(async () => {
+            // IMPORTANT: yahin session create hota hai — is dauran widget disabled rahe
+            try {
+              await ensureChatSession();
+            } catch {}
+
+            const cp = getOrCreateChatPopup();
+            cp.classList.add("show");
+            rexAgent.classList.add("noFloat");
+            clearCloseTimer();
+          });
+        } finally {
+          // session ban gaya (ya fail hua) — widget re-enable
+          rexAgent.classList.remove("is-busy");
+          rexAgent.removeAttribute("aria-busy");
+          __rex_widget_clicking = false;
+        }
       } else {
-        modal.style.display = "block";
+        // pre-chat details wale flow me session call nahi hoti — widget enabled reh sakta hai
+        const sp = getOrCreateSupportPopup();
+        sp.classList.add("show");
         rexAgent.classList.add("noFloat");
+        clearCloseTimer();
       }
     });
-
     closeButton.addEventListener("click", async () => {
       modal.style.display = "none";
       rexAgent.classList.remove("noFloat");
@@ -1630,6 +2175,9 @@ function createReviewWidget() {
             agentId: getAgentIdFromScript(),
             callId: callId,
           };
+
+          modal.style.display = "none";
+          document.getElementById("agentButton")?.classList.remove("noFloat");
           // const res = await fetch(`${API_URL}/agent/updateAgentMinutesLeft`, {
           //     method: "PATCH",
           //     headers: { "Content-Type": "application/json" },
@@ -1915,6 +2463,98 @@ function createReviewWidget() {
         if (e.key === "Enter") onPreNext();
       };
     }
+
+    // Throws on network failure so caller won't proceed to startVoiceCall().
+    async function archiveOpenChatIfAny() {
+      // hard logs to see exactly kya hua
+      const chatId = localStorage.getItem("chat_id");
+      const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+      console.log("[Rex] archiveOpenChatIfAny: start", {
+        chatId,
+        knowledgeBaseId,
+      });
+
+      try {
+        if (!chatId) {
+          console.warn(
+            "[Rex] archiveOpenChatIfAny: no chat_id; skipping end/archive."
+          );
+          return "skip";
+        }
+
+        // Read history safely
+        let hist = [];
+        try {
+          const raw =
+            localStorage.getItem(
+              typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+            ) || "[]";
+          hist = JSON.parse(raw);
+          if (!Array.isArray(hist)) hist = [];
+        } catch {
+          hist = [];
+        }
+
+        const hasUserMsg = hist.some(
+          (m) => String(m?.role).toLowerCase() === "user"
+        );
+        console.log("[Rex] archiveOpenChatIfAny: decision", {
+          histLen: hist.length,
+          hasUserMsg,
+          chatId,
+          knowledgeBaseId,
+        });
+
+        if (!hasUserMsg || !knowledgeBaseId) {
+          // → END (PATCH)
+          const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(
+            chatId
+          )}`;
+          console.log("[Rex] END chat via PATCH →", url);
+          const res = await fetch(url, { method: "PATCH" });
+          console.log(res, "response of end chat");
+          if (!res.ok) {
+            const txt = await res.text().catch(() => "");
+            throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
+          }
+          // cleanup
+          localStorage.removeItem("rex_last_ui");
+          localStorage.removeItem(
+            typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+          );
+          localStorage.removeItem("chat_id");
+          console.log("[Rex] archiveOpenChatIfAny: END done + cleaned");
+          return "end";
+        } else {
+          // → ARCHIVE (POST)
+          const url = `${API_URL}/agent/end-chat-archive`;
+          console.log("[Rex] ARCHIVE via POST →", url);
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              knowledge_base_id: knowledgeBaseId,
+              chat_id: chatId,
+            }),
+          });
+          if (!res.ok) {
+            const txt = await res.text().catch(() => "");
+            throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+          }
+          // cleanup
+          localStorage.removeItem("rex_last_ui");
+          localStorage.removeItem(
+            typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+          );
+          localStorage.removeItem("chat_id");
+          console.log("[Rex] archiveOpenChatIfAny: ARCHIVE done + cleaned");
+          return "archive";
+        }
+      } catch (e) {
+        console.warn("[Rex] archiveOpenChatIfAny failed:", e);
+        throw e; // ← important: stop the call flow
+      }
+    }
     function onPreNext() {
       const $input = preChatModalEl.querySelector("#rexPreInput");
       const $err = preChatModalEl.querySelector("#rexPreErr");
@@ -1995,36 +2635,83 @@ function createReviewWidget() {
         overlay.innerHTML = `
       <div class="rex-confirm-box" role="dialog" aria-modal="true" aria-labelledby="rexConfirmTitle">
         <div id="rexConfirmTitle" class="rex-confirm-title">End chat?</div>
-        <div class="rex-confirm-text">
+        <div class="rex-confirm-text" id="rexConfirmText">
           Your current conversation will be archived. Are you sure you want to end this chat?
         </div>
         <div class="rex-confirm-actions">
           <button class="rex-btn secondary" data-act="cancel">Cancel</button>
-          <button class="rex-btn danger" data-act="ok">End chat</button>
+          <button class="rex-btn danger" data-act="okk">End chat</button>
         </div>
       </div>
     `;
 
-        // 👇 append INSIDE the chat popup, not on body
         (parentEl || document.body).appendChild(overlay);
 
-        // close on outside click / Esc
+        const $cancel = overlay.querySelector('[data-act="cancel"]');
+        const $ok = overlay.querySelector('[data-act="okk"]');
+        const $text = overlay.querySelector("#rexConfirmText");
+
+        const setBusy = (busy, label = "Ending…") => {
+          $ok.disabled = $cancel.disabled = busy;
+          if (busy) {
+            $ok.dataset._old = $ok.textContent;
+            $ok.textContent = label;
+          } else {
+            if ($ok.dataset._old) $ok.textContent = $ok.dataset._old;
+            delete $ok.dataset._old;
+          }
+        };
+
         overlay.addEventListener("click", (e) => {
           if (e.target === overlay) close(false);
         });
         document.addEventListener("keydown", escHandler, true);
 
-        overlay.querySelector('[data-act="cancel"]').onclick = () =>
-          close(false);
-        overlay.querySelector('[data-act="ok"]').onclick = () => close(true);
+        $cancel.onclick = () => close(false);
+
+        // ✅ OK = condition-based END/ARCHIVE
+        $ok.onclick = async () => {
+          try {
+            setBusy(true, "Ending…");
+            // वही logic: "end" | "archive" | "skip"
+            const result = await archiveOpenChatIfAny();
+
+            // optional: छोटे feedback के लिए
+            // $text.textContent = result === "end" ? "Chat ended." :
+            //                     result === "archive" ? "Chat archived." : "No open chat.";
+
+            // caller को control देना हो तो okCb() call करके बंद कर दो:
+            if (typeof okCb === "function") {
+              try {
+                okCb(result);
+              } catch {}
+            }
+            close(true);
+          } catch (err) {
+            console.error("[Rex] End/Archive failed from confirm:", err);
+            $text.textContent = "Failed to end chat. Please try again.";
+            setBusy(false);
+            return; // modal खुला रहने दो ताकि user दोबारा try कर सके
+          }
+        };
 
         // focus first button
-        setTimeout(
-          () => overlay.querySelector('[data-act="cancel"]').focus(),
-          0
-        );
-      }
+        setTimeout(() => $cancel.focus(), 0);
 
+        function escHandler(e) {
+          if (e.key === "Escape") close(false);
+        }
+
+        function close(confirmed) {
+          document.removeEventListener("keydown", escHandler, true);
+          if (overlay) overlay.remove();
+          const ok = confirmed === true;
+          if (ok && okCb) okCb();
+          if (!ok && cancelCb) cancelCb();
+          overlay = null;
+          okCb = cancelCb = null;
+        }
+      }
       function escHandler(e) {
         if (e.key === "Escape") close(false);
       }
@@ -2068,10 +2755,18 @@ function createReviewWidget() {
             </div>
           </div>
 
-          <div style="display:flex;align-items:center;gap:6px">
-            <button class="attio-end">End chat</button>
-            <button class="attio-close" aria-label="Close">&times;</button>
-          </div>
+            <div style="display:flex;align-items:center;gap:6px">
+        <!-- NEW: Call icon button -->
+        <button class="attio-call" id="rexCallIconBtn" aria-label="Start call">
+          <!-- आप चाहें तो यह SVG रखिए -->
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.25 11.36 11.36 0 003.56.57 1 1 0 011 1v3.6a1 1 0 01-1 1A17.58 17.58 0 012 6a1 1 0 011-1h3.6a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.25 1.01l-2.3 2.22z" />
+          </svg>
+        </button>
+
+        <button class="attio-end">End chat</button>
+        <button class="attio-close" aria-label="Close">&times;</button>
+      </div>
         </div>
 
         <div class="attio-body">
@@ -2085,6 +2780,166 @@ function createReviewWidget() {
 
       document.body.appendChild(chatModalEl);
       const endConfirm = makeEndConfirm(chatModalEl);
+
+      // silently archive any open chat (no reload)
+      // async function archiveOpenChatIfAny() {
+      //   try {
+      //     const chatId = localStorage.getItem("chat_id");
+      //     const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+      //     if (!chatId || !knowledgeBaseId) return;
+
+      //     const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({
+      //         knowledge_base_id: knowledgeBaseId,
+      //         chat_id: chatId,
+      //       }),
+      //     });
+      //     if (!res.ok) {
+      //       const txt = await res.text().catch(() => "");
+      //       throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+      //     }
+
+      //     // local cleanup (no reload)
+      //     localStorage.removeItem("rex_last_ui");
+      //     localStorage.removeItem(CHAT_LS_KEY);
+      //     localStorage.removeItem("chat_id");
+      //   } catch (e) {
+      //     console.warn("[Rex] archiveOpenChatIfAny failed:", e);
+      //   }
+      // }
+
+      // Replace your existing function with this one
+      // ✅ Condition-based: END (no user msg) vs ARCHIVE (has user msg)
+      // Returns one of: "end" | "archive" | "skip"
+
+      // start the voice call (mic → createWidegetWebCall → connect → UI)
+      async function startVoiceCall() {
+        try {
+          callBtn.disabled = true;
+
+          // sirf text, koi loader nahi
+          callLabel.textContent = "Connecting…";
+          callText.textContent = "Connecting…";
+
+          // mic permission
+          await navigator.mediaDevices.getUserMedia({ audio: true });
+
+          // create call
+          const res = await fetch(`${API_URL}/agent/createWidegetWebCall`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              agent_id: agentId,
+              url: currentSiteURL,
+              retell_llm_dynamic_variables: buildRetellDynamicVars(),
+            }),
+          });
+          if (!res.ok) throw new Error("Failed to fetch access token");
+
+          const data = await res.json();
+          if (!data?.access_token || !data?.call_id)
+            throw new Error("Invalid response data");
+
+          callId = data.call_id;
+          await retellWebClient.startCall({ accessToken: data.access_token });
+
+          // connected UI
+          callLabel.textContent = "Connected";
+          callBtn.classList.remove("greendiv");
+          callBtn.classList.add("reddiv");
+          phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
+          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
+            agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
+          }</small>`;
+          onCall = true;
+
+          // rings
+          imageWrapper.classList.add("active");
+          imageWrapper
+            .querySelectorAll(".pulse-ring2")
+            .forEach((r) => r.remove());
+          for (let i = 0; i < 3; i++) {
+            const ring = document.createElement("span");
+            ring.className = "pulse-ring2";
+            imageWrapper.insertBefore(ring, agentImg);
+          }
+        } catch (err) {
+          console.error("startVoiceCall failed:", err);
+          callText.textContent = "Unable to connect";
+          onCall = false;
+        } finally {
+          callBtn.disabled = false;
+        }
+      }
+
+      // ---- Inline "Start call?" confirm INSIDE chat popup ----
+      function openCallConfirmInsideChat() {
+        const overlay = document.createElement("div");
+        overlay.className = "rex-confirm-overlay";
+        overlay.innerHTML = `
+    <div class="rex-confirm-box" role="dialog" aria-modal="true">
+      <div class="rex-confirm-title">Start a call?</div>
+      <div class="rex-confirm-text">Do you want to start the call?</div>
+      <div class="rex-confirm-actions">
+        <button class="rex-btn secondary" data-act="cancel">Cancel</button>
+        <button class="rex-btn danger" data-act="ok">Start call</button>
+      </div>
+    </div>
+  `;
+        chatModalEl.appendChild(overlay);
+
+        const close = () => overlay.remove();
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) close();
+        });
+        overlay.querySelector('[data-act="cancel"]').onclick = close;
+
+        overlay.querySelector('[data-act="ok"]').onclick = async () => {
+          try {
+            clearInactivityTimers?.();
+
+            callLabel.textContent = "Ending previous chat…";
+            callText.innerHTML = `<span class="rex-spinner"></span><p>Ending previous chat…</p>`;
+
+            // Only call the end/archive step if a previous chat exists.
+            const hadOpenChat = !!localStorage.getItem("chat_id");
+            let endStatus = "skip";
+
+            if (hadOpenChat) {
+              endStatus = await archiveOpenChatIfAny(); // "end" | "archive" | "skip"
+            } else {
+              console.log("[Rex] No open chat found. Skipping end/archive.");
+            }
+
+            console.log("[Rex] proceed to call? endStatus =", endStatus);
+
+            // If end/archive threw, we would be in catch-block already.
+            // Now proceed to call UI and start the call:
+            chatModalEl.classList.remove("show");
+            modal.style.display = "block";
+            document.getElementById("agentButton")?.classList.add("noFloat");
+
+            await startVoiceCall();
+          } catch (e) {
+            console.error("Start-call (inline confirm) failed:", e);
+            callText.innerHTML = `<p style="color: red;">Unable to connect</p>`;
+          } finally {
+            overlay.remove();
+          }
+        };
+      }
+
+      // call icon को naya confirm दिखाने के लिए bind करें
+      const $callIcon = chatModalEl.querySelector("#rexCallIconBtn");
+      if ($callIcon) {
+        $callIcon.onclick = (e) => {
+          e.preventDefault();
+          openCallConfirmInsideChat();
+        };
+      }
+
       // Safe bindings AFTER element exists
       const $endBtn = chatModalEl.querySelector(".attio-end");
       const $closeBtn = chatModalEl.querySelector(".attio-close");
