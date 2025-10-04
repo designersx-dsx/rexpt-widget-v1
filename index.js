@@ -808,11 +808,6 @@ function injectCSS() {
           margin-right:8px;
           animation: rexSpin .8s linear infinite;
         }
-        .floating-agent.is-busy{
-          pointer-events: none;   
-          opacity: .6;
-          filter: grayscale(.2);
-        }
 
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
@@ -849,6 +844,17 @@ function isGoodbye(text = "") {
   // Common English + Hinglish/Hindi variants
   const patterns = [/\bhave a great day!?/];
   return patterns.some((re) => re.test(t));
+}
+function lockWidgetFor(ms = 3000) {
+  const btn = document.getElementById("agentButton");
+  if (!btn) return;
+  btn.classList.add("disabled");
+  btn.style.pointerEvents = "none"; // click block karega
+
+  setTimeout(() => {
+    btn.classList.remove("disabled");
+    btn.style.pointerEvents = "auto";
+  }, ms);
 }
 
 async function endChatArchiveNow({ silent = false } = {}) {
@@ -1680,7 +1686,7 @@ function createReviewWidget() {
     <div class="support-body">
       <div class="status-row">
           <span class="status-dot"></span>
-          <span class="status-text">Welcome! How can I Help You Today?</span>
+          <span class="status-text">Hello, you've reached Neesh Perfumes customer support. I'd be happy to assist you! To help you as quickly as possible, may I please have your full name, email, and phone number?</span>
         </div>
       <div class="big-card">
       
@@ -2019,6 +2025,7 @@ function createReviewWidget() {
             : businessName
         } Agent is LIVE</small>`;
         onCall = false;
+        // lockWidgetFor(3000);
       }
     });
     modal.addEventListener("click", (e) => {
@@ -2153,6 +2160,7 @@ function createReviewWidget() {
           }
         } else {
           await retellWebClient.stopCall();
+          // lockWidgetFor(3000);
           callBtn.classList.remove("reddiv");
           callBtn.classList.add("greendiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
