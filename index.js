@@ -526,7 +526,9 @@ function injectCSS() {
              position:fixed; bottom:155px; right:20px;
              max-width:500px;
              width:90%;
-             background:#fff; border-radius:16px;
+            //  background:#fff;
+             background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%); 
+             border-radius:16px;
              border:1px solid #ECECEC;
              box-shadow:0 18px 40px rgba(0,0,0,.18);
              z-index:1002; display:none; font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
@@ -534,7 +536,7 @@ function injectCSS() {
                 .chat-popup.show{display:block}
                 .chat-popup::after{
                 content:""; position:absolute; bottom:-18px; right:24px;
-                width:36px; height:36px; background:#fff; transform:rotate(45deg);
+                width:36px; height:36px; background: #19273c; transform:rotate(45deg);
                 box-shadow:14px 15px 20px rgba(0,0,0,.10); border-radius:0 0 8px 0;
                 }
                 .attio-header{display:flex; align-items:center; justify-content:space-between;
@@ -549,17 +551,17 @@ function injectCSS() {
                 .attio-close{border:0; background:transparent; font-size:20px; color:#666; cursor:pointer}
                 .attio-body{padding:12px 16px 18px}
                 .attio-thread{
-                height:55dvh; overflow:auto; padding:10px 0; border:1px solid #EFEFEF;
-                border-radius:12px; background:#fff; margin-top:10px;
+                height:55dvh; overflow:auto; padding:10px 0; border:0px solid #EFEFEF;
+                border-radius:12px; background:transparent; margin-top:10px;
                 }
                 .msg{max-width:75%;width: max-content; padding:10px 12px; border-radius:14px; margin:8px 10px;
                 font-size:16px; line-height:1.35; word-wrap:break-word; box-shadow:0 1px 1px rgba(0,0,0,.04)}
                 .msg.bot{background:#F5F7FA; border:1px solid #E8EEF5; color:#3E4B5A; margin-left:10px}
                 .msg.user{background:#6564EB; color:#fff; margin-left:auto; margin-right:10px}
                 .composer{display:flex; gap:8px; align-items:center; margin-top:10px;
-                border:1px solid #E6E6E6; border-radius:14px; padding:6px;z-index: 1;
+                border:0px solid #E6E6E6; border-radius:14px; padding:6px;z-index: 1;
                     position: relative;}
-                .composer input{flex:1; border:0; outline:0; padding:10px 12px; font-size:14px}
+                .composer input{flex:1; border:0; outline:0; padding:10px 12px; font-size:14px;border-radius: 10px;}
                 .composer button{border:0; background:#6564EB; color:#fff; padding:10px 14px;
                 border-radius:10px; font-weight:600; cursor:pointer}
                  @media (max-width:650px) {
@@ -602,7 +604,7 @@ function injectCSS() {
                 border: 0;
                 background: transparent;
                 font-size: 20px;
-                color: #666;
+                color: #fff;
                 cursor: pointer;
               }
                 .msg .time {
@@ -618,6 +620,21 @@ function injectCSS() {
               opacity: 0.5;
               filter: grayscale(0.2);
             }
+
+            #rexMessages::-webkit-scrollbar {
+    background-color: #434c4f;
+    width: 4px;
+}
+    #rexMessages::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px #0000004d;
+}
+    #rexMessages::-webkit-scrollbar-track {
+    background-color: #434c4f;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px #0000004d;
+}
           .prechat-topbar{
             display:flex; align-items:center; justify-content:space-between;
             padding:12px 16px; border-bottom:1px solid #EFEFEF;
@@ -679,24 +696,24 @@ function injectCSS() {
         }
         .support-header{
           display:flex; align-items:center; justify-content:space-between;
-          padding:14px 16px; border-bottom:1px solid #eff0f2; background:#fff;
+          padding:14px 16px; border-bottom:1px solid #eff0f2; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 20px 20px 0px 0px;
         }
         .support-brand{ display:flex; align-items:center; gap:10px }
         .support-logo{ width:28px; height:28px; border-radius:8px; overflow:hidden;
           display:flex; align-items:center; justify-content:center; background:#111; }
-        .support-title .t{ font-weight:800; font-size:18px; color:#0f172a }
-        .support-title .s{ font-size:15px; color:#070a10 }
+        .support-title .t{ font-weight:800; font-size:18px; color:#fff }
+        .support-title .s{ font-size:15px; color:#fff }
         .support-close{ border:0; background:transparent; font-size:22px; color:#9aa4b2; cursor:pointer }
 
           /* --- Support (pre-chat) card polish --- */
-      .support-body{ padding: 12px 16px 20px; background:#fff; }
+      .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; }
 
       .big-card{
         display:flex; flex-direction:column;
         min-height:400px;
         /* thoda breathing room under header */
         margin-top:10px;                      /* NEW */
-        padding:10px 10px 96px;
+        padding: 30px 30px 96px;
         border:1px solid #eff0f2; border-radius:16px;
         background:#fff; box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
         justify-content: flex-start;
@@ -706,42 +723,38 @@ function injectCSS() {
       .support-popup::after{
         content:""; position:absolute; bottom:-12px; right:24px;
         width:28px; height:28px;
-        background:#fff; transform:rotate(45deg);
+        background:#19273c; transform:rotate(45deg);
         border:1px solid #ececec;            /* NEW outline */
         border-top:0; border-left:0;         /* taaki top/left double-border na lage */
         border-radius:0 0 8px 0;
         box-shadow:10px 10px 18px rgba(0,0,0,.08);
         z-index:-1;
       }ow{ margin-bottom:12px; display:flex; align-items:center; gap:8px }
-        
+        .status-row {
+        background: #f1f1f1;      /* halka grey background */
+        border: 1px solid #ccc;   /* halka border */
+        border-radius: 12px;      /* golai jaisa effect */
+        padding: 10px 15px;
+        display: inline-block;    /* message bubble jaisa lage */
+        max-width: 80%;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #333;              /* text thoda readable ho */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
+        }
 
-      .status-row {
-  background: #f1f1f1;      /* halka grey background */
-  border: 1px solid #ccc;   /* halka border */
-  border-radius: 12px;      /* golai jaisa effect */
-  padding: 10px 15px;
-  display: inline-block;    /* message bubble jaisa lage */
-  max-width: 80%;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #333;              /* text thoda readable ho */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
-}
+        .status-dot {
+          width: 8px;
+          height: 8px;
+          background-color: #4CAF50; /* green dot (active) */
+          border-radius: 50%;
+          display: inline-block;
+          margin-right: 8px;
+        }
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #4CAF50; /* green dot (active) */
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
-}
-
-.status-text {
-  vertical-align: middle;
-}
-
-
+        .status-text {
+          vertical-align: middle;
+        }
         .field{ margin-top:12px }
         .label{ font-size:15px; color:#070a10; margin-bottom:6px; transition:.18s }
         .field:focus-within .label{ color:#111827; transform:translateY(-1px) }
@@ -778,7 +791,8 @@ function injectCSS() {
           bottom: 37px;
           display: flex;
           gap: 12px;
-          flex-wrap: wrap;
+          padding: 0px 20px;
+          // flex-wrap: wrap;
       }
           .attio-call{
           background:#10b981; /* green */
@@ -794,9 +808,14 @@ function injectCSS() {
           font-weight:800; letter-spacing:.2px; font-size:15px; cursor:pointer; color:#fff;
           box-shadow:0 12px 24px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.08);
           transition:transform .12s ease, filter .12s ease;
+          align-items: center;
+    display: flex
+;
+    justify-content: center;
+    gap: 10px;
         }
-        .btn.primary{ background-image:linear-gradient(135deg,#6c5ce7 0%, #8a7bfa 100%) }
-        .btn.secondary{ background:#f7f7fb; color:#1f2937; border:1px solid #e6e6e6 }
+        .btn.primary{ background:#F7A600; }
+        .btn.secondary{ background:#1AA82A; color:#1f2937; border:1px solid #e6e6e6 }
         .btn:not(:disabled):hover{ transform:translateY(-2px); filter:brightness(1.05) }
         .btn:disabled{ opacity:.55; cursor:not-allowed }
         .rex-spinner{
@@ -809,15 +828,31 @@ function injectCSS() {
           animation: rexSpin .8s linear infinite;
         }
 
+#pcGreetingMsg {
+  letter-spacing: normal; 
+}
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
           .support-popup{ max-width:none !important; width:100% !important; left:0 !important; right:0 !important; border-radius:0 !important }
-          .big-card{ min-height:50dvh; padding-bottom:96px }
+          .big-card{ min-height:34dvh; padding-bottom:96px }
         }
           @media (max-width:370px){
-          .big-card{ min-height:48dvh; padding-bottom:96px }
+          .big-card{ min-height:45dvh; padding-bottom:96px }
         }
+          .typing-dots {
+          display: inline-flex; gap: 4px; margin-left: 8px; vertical-align: middle;
+        }
+        .typing-dots i {
+          width: 6px; height: 6px; border-radius: 50%;
+          background:#4CAF50; opacity:.4; animation: pcBlink 1s infinite;
+        }
+        .typing-dots i:nth-child(2){ animation-delay:.15s }
+        .typing-dots i:nth-child(3){ animation-delay:.3s }
+        @keyframes pcBlink { 0%{transform:translateY(0);opacity:.3}
+          50%{transform:translateY(-3px);opacity:1} 100%{transform:translateY(0);opacity:.3}
+        }
+
 `;
   document.head.appendChild(style);
 }
@@ -838,6 +873,64 @@ function loadChatHistory() {
 }
 
 let __rex_end_called__ = false;
+
+// --- Greeting typing sequence ---
+let __pc_greeting_played = false;
+
+function playPrechatGreeting(
+  rootEl = document.getElementById("rexSupportPopup")
+) {
+  if (!rootEl) return;
+  const $msg = rootEl.querySelector("#pcGreetingMsg");
+  const $dots = rootEl.querySelector("#pcTyping");
+  let $form =
+    rootEl.querySelector("#pcFormWrap") || rootEl.querySelector(".big-card");
+  if (!$msg || !$dots || !$form) return;
+
+  const LINES = [
+    "Hello, you've reached Neesh Perfumes customer support.",
+    "I'd be happy to assist you!",
+    "To help you as quickly as possible, may I please have your full name, email, and phone number?",
+  ];
+
+  // Typing function that adds each character one by one with a specified speed
+  const typeText = (
+    el,
+    text,
+    speed = 10 // Fast speed
+  ) =>
+    new Promise((res) => {
+      let i = 0;
+      // Add one character at a time
+      const step = () => {
+        if (i < text.length) {
+          el.appendChild(document.createTextNode(text[i])); // Append the next character
+          i++;
+          setTimeout(step, speed); // Delay between each character
+        } else {
+          res(); // Resolve when done
+        }
+      };
+      step(); // Start typing
+    });
+
+  // Display the typing dots
+  $dots.style.display = "inline-flex";
+
+  setTimeout(async () => {
+    $dots.style.display = "none"; // Hide dots once typing starts
+    $msg.textContent = ""; // Clear any pre-existing text
+
+    // Loop through each line and type it out one after the other
+    for (let i = 0; i < LINES.length; i++) {
+      await typeText($msg, LINES[i], 10); // Fast typing speed for each line
+      await new Promise((r) => setTimeout(r, 150)); // Short pause between lines
+    }
+
+    // Show the form after the message is fully typed out
+    $form.style.display = "block";
+  }, 1000); // Start the animation after 1 second
+}
 
 function isGoodbye(text = "") {
   const t = String(text).toLowerCase();
@@ -1684,10 +1777,15 @@ function createReviewWidget() {
     </div>
 
     <div class="support-body">
-      <div class="status-row">
-          <span class="status-dot"></span>
-          <span class="status-text">Hello, you've reached Neesh Perfumes customer support. I'd be happy to assist you! To help you as quickly as possible, may I please have your full name, email, and phone number?</span>
-        </div>
+ 
+
+      <div class="status-row" id="pcGreetingRow">
+  <span class="status-text" id="pcGreetingMsg"></span>
+  <span id="pcTyping" class="typing-dots" aria-hidden="true">
+    <i></i><i></i><i></i>
+  </span>
+</div>
+
       <div class="big-card">
       
 
@@ -1710,13 +1808,29 @@ function createReviewWidget() {
         </div>
 
         <div class="actions-ct">
-          <button class="btn primary" id="pcStartChat" disabled>Start Chat</button>
-          <button class="btn secondary" id="pcStartCall" disabled>Start Call</button>
+        <!-- Chat -->
+        <button class="btn primary" id="pcStartChat" aria-label="Start Chat" title="Start Chat">
+        Start
+<svg width="32" height="27" viewBox="0 0 32 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M30.931 23.4588L28.5898 19.2258C30.2598 14.5258 28.4147 9.14903 24.2316 6.62816C22.6621 5.68071 20.9143 5.21037 19.147 5.23406C16.5172 1.07207 11.2932 -0.237429 7.1198 2.27668C3.3388 4.55731 1.66557 9.41635 3.1637 13.6663L1.06566 17.4595C0.978112 17.6151 0.978112 17.8046 1.06566 17.9603C1.15322 18.1159 1.31211 18.2107 1.48397 18.2107H6.57178C7.62891 18.9551 8.84168 19.4626 10.0998 19.6893C10.9365 21.7568 12.386 23.4757 14.2829 24.6161C15.82 25.5432 17.5386 26 19.254 26C21.2191 26 23.1777 25.3977 24.8574 24.21H30.5192C30.691 24.21 30.8499 24.1153 30.9375 23.9596C31.025 23.804 31.0186 23.6145 30.931 23.4588ZM6.99333 17.3004C6.91227 17.2395 6.81499 17.2091 6.7177 17.2091H2.31411L4.11057 13.9607C4.18515 13.8287 4.19488 13.6663 4.13975 13.5242C2.67405 9.68028 4.16245 5.22053 7.60296 3.1463C11.1667 0.997632 15.593 1.97215 18.0283 5.31865C17.5775 5.37956 17.1268 5.46754 16.6793 5.59273C14.1111 6.31009 11.9644 8.02902 10.6349 10.4315C9.30538 12.8339 8.95193 15.6323 9.63938 18.3122C9.66208 18.4035 9.69127 18.4915 9.71721 18.5829C8.7444 18.3359 7.81374 17.8994 6.99333 17.3004ZM24.705 23.2084C24.6045 23.2084 24.5104 23.2389 24.4294 23.2998C21.5758 25.3909 17.7818 25.5669 14.7629 23.7498C12.6843 22.4978 11.1959 20.4744 10.5733 18.055C9.95068 15.6356 10.2717 13.108 11.4715 10.9356C12.6713 8.76667 14.6105 7.21354 16.929 6.56386C17.704 6.34731 18.4887 6.23903 19.2702 6.23903C20.8267 6.23903 22.367 6.66538 23.7516 7.50116C27.591 9.81563 29.2513 14.7931 27.6137 19.087C27.5586 19.2292 27.5716 19.3916 27.6429 19.5235L29.6826 23.2084H24.705ZM14.5456 13.6731C13.5144 13.6731 12.6746 14.5495 12.6746 15.6255C12.6746 16.7015 13.5144 17.5779 14.5456 17.5779C15.5768 17.5779 16.4166 16.7015 16.4166 15.6255C16.4166 14.5495 15.5768 13.6731 14.5456 13.6731ZM14.5456 16.5729C14.0462 16.5729 13.6376 16.1466 13.6376 15.6255C13.6376 15.1044 14.0462 14.678 14.5456 14.678C15.045 14.678 15.4536 15.1044 15.4536 15.6255C15.4536 16.1466 15.045 16.5729 14.5456 16.5729ZM19.361 13.6731C18.3298 13.6731 17.49 14.5495 17.49 15.6255C17.49 16.7015 18.3298 17.5779 19.361 17.5779C20.3922 17.5779 21.2321 16.7015 21.2321 15.6255C21.2321 14.5495 20.3922 13.6731 19.361 13.6731ZM19.361 16.5729C18.8616 16.5729 18.4531 16.1466 18.4531 15.6255C18.4531 15.1044 18.8616 14.678 19.361 14.678C19.8604 14.678 20.269 15.1044 20.269 15.6255C20.269 16.1466 19.8636 16.5729 19.361 16.5729ZM24.1797 13.6731C23.1485 13.6731 22.3086 14.5495 22.3086 15.6255C22.3086 16.7015 23.1485 17.5779 24.1797 17.5779C25.2109 17.5779 26.0507 16.7015 26.0507 15.6255C26.0507 14.5495 25.2109 13.6731 24.1797 13.6731ZM24.1797 16.5729C23.6803 16.5729 23.2717 16.1466 23.2717 15.6255C23.2717 15.1044 23.6803 14.678 24.1797 14.678C24.6791 14.678 25.0876 15.1044 25.0876 15.6255C25.0876 16.1466 24.6791 16.5729 24.1797 16.5729Z" fill="#FFF2D8" stroke="#FFF2D8" stroke-width="0.5"/>
+</svg>
+
+        </button>
+
+        <!-- Call -->
+        <button class="btn secondary" id="pcStartCall" aria-label="Start Call" title="Start Call">
+                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.5554 5.5C16.6542 5.71439 17.6641 6.25179 18.4557 7.04343C19.2473 7.83507 19.7847 8.84492 19.9991 9.94375M15.5554 1C17.8383 1.25362 19.9672 2.27595 21.5924 3.89913C23.2176 5.52232 24.2426 7.64989 24.4991 9.9325M23.3741 18.91V22.285C23.3754 22.5983 23.3112 22.9084 23.1857 23.1955C23.0602 23.4826 22.8761 23.7403 22.6452 23.9521C22.4143 24.1639 22.1418 24.3252 21.845 24.4255C21.5482 24.5259 21.2337 24.5632 20.9216 24.535C17.4598 24.1588 14.1345 22.9759 11.2129 21.0813C8.49469 19.354 6.19013 17.0494 4.46288 14.3313C2.56161 11.3964 1.3784 8.05487 1.00913 4.5775C0.981018 4.2664 1.01799 3.95286 1.11769 3.65683C1.2174 3.3608 1.37765 3.08878 1.58824 2.85807C1.79884 2.62737 2.05516 2.44305 2.3409 2.31684C2.62663 2.19063 2.93551 2.12529 3.24788 2.125H6.62288C7.16885 2.11963 7.69815 2.31296 8.11211 2.66897C8.52608 3.02499 8.79647 3.51938 8.87288 4.06C9.01533 5.14007 9.27951 6.20057 9.66038 7.22125C9.81174 7.62391 9.8445 8.06153 9.75478 8.48224C9.66505 8.90295 9.4566 9.28913 9.15413 9.595L7.72538 11.0237C9.32688 13.8402 11.6589 16.1722 14.4754 17.7737L15.9041 16.345C16.21 16.0425 16.5962 15.8341 17.0169 15.7444C17.4376 15.6546 17.8752 15.6874 18.2779 15.8387C19.2986 16.2196 20.3591 16.4838 21.4391 16.6263C21.9856 16.7033 22.4847 16.9786 22.8415 17.3997C23.1983 17.8208 23.3878 18.3583 23.3741 18.91Z" stroke="#EBFFEE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+        </button>
+
         </div>
       </div>
     </div>
   `;
       document.body.appendChild(supportEl);
+
+      // setTimeout(() => playPrechatGreeting(), 0);
 
       // close
       supportEl.querySelector(".support-close").onclick = () => {
@@ -2001,6 +2115,7 @@ function createReviewWidget() {
         // pre-chat details wale flow me session call nahi hoti — widget enabled reh sakta hai
         const sp = getOrCreateSupportPopup();
         sp.classList.add("show");
+        playPrechatGreeting();
         rexAgent.classList.add("noFloat");
         clearCloseTimer();
       }
@@ -2755,11 +2870,11 @@ function createReviewWidget() {
               <img src="${logoUrl}" alt="" style="width:100%;height:100%"/>
             </div>
             <div class="attio-title" style="line-height:1">
-              <div class="t" style="font-weight:700;font-size:20px;color:#24252c;">Chat with ${agentName.substring(
+              <div class="t" style="font-weight:700;font-size:20px;color:#fff;">Chat with ${agentName.substring(
                 0,
                 7
               )}</div>
-              <div class="s" style="font-size:12px;color:#7A7A7A">The team can also help</div>
+              <div class="s" style="font-size:12px;color:#fff">The team can also help</div>
             </div>
           </div>
 
