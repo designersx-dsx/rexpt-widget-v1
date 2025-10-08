@@ -526,17 +526,18 @@ function injectCSS() {
              position:fixed; bottom:155px; right:20px;
              max-width:500px;
              width:90%;
-            //  background:#fff;
-             background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%); 
+             background:#fff;
+            //  background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%); 
              border-radius:16px;
              border:1px solid #ECECEC;
              box-shadow:0 18px 40px rgba(0,0,0,.18);
              z-index:1002; display:none; font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+             padding:20px
             }
                 .chat-popup.show{display:block}
                 .chat-popup::after{
-                content:""; position:absolute; bottom:-18px; right:24px;
-                width:36px; height:36px; background: #19273c; transform:rotate(45deg);
+                content:""; position:absolute; bottom:-16px; right:24px;
+                width:30px; height:30px; background: #ffffffff; transform:rotate(45deg);
                 box-shadow:14px 15px 20px rgba(0,0,0,.10); border-radius:0 0 8px 0;
                 }
                 .attio-header{display:flex; align-items:center; justify-content:space-between;
@@ -549,21 +550,23 @@ function injectCSS() {
                 .attio-title .t{font-weight:700; font-size:14px}
                 .attio-title .s{font-size:12px; color:#7A7A7A}
                 .attio-close{border:0; background:transparent; font-size:20px; color:#666; cursor:pointer}
-                .attio-body{padding:12px 16px 18px}
+                .attio-body{padding:12px 16px 18px;background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px;}
                 .attio-thread{
-                height:55dvh; overflow:auto; padding:10px 0; border:0px solid #EFEFEF;
+                height:50dvh; overflow:auto; padding:10px 0; border:0px solid #EFEFEF;
                 border-radius:12px; background:transparent; margin-top:10px;
                 }
-                .msg{max-width:75%;width: max-content; padding:10px 12px; border-radius:14px; margin:8px 10px;
+                .msg{max-width:75%;width: max-content; padding:10px 12px; border-radius:14px; margin:15px 10px;
                 font-size:16px; line-height:1.35; word-wrap:break-word; box-shadow:0 1px 1px rgba(0,0,0,.04)}
-                .msg.bot{background:#F5F7FA; border:1px solid #E8EEF5; color:#3E4B5A; margin-left:10px}
-                .msg.user{background:#6564EB; color:#fff; margin-left:auto; margin-right:10px}
+                .msg.bot{background:#ffffff1a; border:0px solid #E8EEF5; color:#fff; margin-left:10px;border-left: 3px solid #6524EB;}
+                .msg.user{background:#3447617d; color:#fff; margin-left:auto; margin-right:10px; text-align:right;border-right:3px solid #F7A600}
                 .composer{display:flex; gap:8px; align-items:center; margin-top:10px;
                 border:0px solid #E6E6E6; border-radius:14px; padding:6px;z-index: 1;
-                    position: relative;}
-                .composer input{flex:1; border:0; outline:0; padding:10px 12px; font-size:14px;border-radius: 10px;}
-                .composer button{border:0; background:#6564EB; color:#fff; padding:10px 14px;
-                border-radius:10px; font-weight:600; cursor:pointer}
+                    position: relative; width:93%}
+                .composer input{flex:1; border:0; outline:0; padding:10px 12px; font-size:14px;border-radius: 10px 0 0 10px;
+    height: 32px;}
+                .composer button{border:0; background:#6564eb00; color:#fff; 
+                border-radius:10px; font-weight:600; cursor:pointer; position: absolute;
+    right: -7%;}
                  @media (max-width:650px) {
                 .chat-popup {
                     max-width: none !important;
@@ -592,7 +595,9 @@ function injectCSS() {
                 align-items: center;
                 justify-content: space-between;
                 padding: 12px 16px;
-                border-bottom: 1px solid #EFEFEF;
+                border-bottom: 1px solid #fff;
+                background: #19273c;
+                border-radius: 20px 20px 0px 0px;
               }
               .attio-end{
                 background:#e53935; color:#fff; border:0;
@@ -677,7 +682,7 @@ function injectCSS() {
           position: fixed;
           bottom: 155px;
           right: 20px;
-          max-width: 500px;
+          max-width: 290px;
           width: 90%;
           background: #fff;
           border-radius: 16px;
@@ -686,6 +691,7 @@ function injectCSS() {
           z-index: 1002;
           display: none;
           font-family: Inter,system-ui,Segoe UI,Arial,sans-serif;
+          padding: 20px;
 
         }
         .support-popup.show{ display:block }
@@ -698,32 +704,32 @@ function injectCSS() {
           display:flex; align-items:center; justify-content:space-between;
           padding:14px 16px; border-bottom:1px solid #eff0f2; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 20px 20px 0px 0px;
         }
-        .support-brand{ display:flex; align-items:center; gap:10px }
-        .support-logo{ width:28px; height:28px; border-radius:8px; overflow:hidden;
+        .support-brand{ display:flex; align-items:center; gap:5px }
+        .support-logo{ width:36px; height:36px; border-radius:100px; border:5px solid #c4c4c423; overflow:hidden;
           display:flex; align-items:center; justify-content:center; background:#111; }
-        .support-title .t{ font-weight:800; font-size:18px; color:#fff }
-        .support-title .s{ font-size:15px; color:#fff }
+        .support-title .t{ font-weight:500; font-size:18px; color:#fff;text-transform: uppercase; }
+        .support-title .s{ font-size:12px; color:#D1DCED }
         .support-close{ border:0; background:transparent; font-size:22px; color:#9aa4b2; cursor:pointer }
 
           /* --- Support (pre-chat) card polish --- */
       .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; }
 
       .big-card{
-        display:flex; flex-direction:column;
-        min-height:400px;
+        display:flex; flex-direction:column;        
         /* thoda breathing room under header */
         margin-top:10px;                      /* NEW */
-        padding: 30px 30px 96px;
-        border:1px solid #eff0f2; border-radius:16px;
-        background:#fff; box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+        padding: 2px 20px 20px 20px;
+        border-right:3px solid #F7A600; border-radius:10px;
+        background:#344761; box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
         justify-content: flex-start;
+        margin-left: 20px;
       }
 
       /* arrow tail ko crisp border + subtle shadow */
       .support-popup::after{
         content:""; position:absolute; bottom:-12px; right:24px;
         width:28px; height:28px;
-        background:#19273c; transform:rotate(45deg);
+        background:#fff; transform:rotate(45deg);
         border:1px solid #ececec;            /* NEW outline */
         border-top:0; border-left:0;         /* taaki top/left double-border na lage */
         border-radius:0 0 8px 0;
@@ -731,15 +737,15 @@ function injectCSS() {
         z-index:-1;
       }ow{ margin-bottom:12px; display:flex; align-items:center; gap:8px }
         .status-row {
-        background: #f1f1f1;      /* halka grey background */
-        border: 1px solid #ccc;   /* halka border */
-        border-radius: 12px;      /* golai jaisa effect */
+        background: #ffffff1c;      /* halka grey background */
+        border-left: 3px solid #6524EB;
+        border-radius: 10px;      /* golai jaisa effect */
         padding: 10px 15px;
         display: inline-block;    /* message bubble jaisa lage */
         max-width: 80%;
         margin-bottom: 10px;
         font-size: 14px;
-        color: #333;              /* text thoda readable ho */
+        color: #ffffffff;              /* text thoda readable ho */
         box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
         }
 
@@ -755,15 +761,15 @@ function injectCSS() {
         .status-text {
           vertical-align: middle;
         }
-        .field{ margin-top:12px }
+        .field{ margin-top:5px }
         .label{ font-size:15px; color:#070a10; margin-bottom:6px; transition:.18s }
         .field:focus-within .label{ color:#111827; transform:translateY(-1px) }
 
         .input-dark{
           position:relative; display:flex; align-items:center; gap:8px;
-          background:transparent; border:0; border-radius:0; padding:6px 2px; min-height:40px;
+          background:transparent; border:0; border-radius:0; padding:6px 2px; 
         }
-        .input-dark::before{ content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:#e5e7eb }
+        .input-dark::before{ content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:#fff }
         .input-dark::after{
           content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
           background:linear-gradient(90deg,#6c5ce7,#8a7bfa); transition:width .2s ease, opacity .2s; opacity:1;
@@ -785,13 +791,13 @@ function injectCSS() {
         .err.show{ display:block; animation:shakeX .25s }
 
          .actions-ct {
-          position: absolute;
+          // position: absolute;
           left: 26px;
           right: 26px;
           bottom: 37px;
           display: flex;
           gap: 12px;
-          padding: 0px 20px;
+          // padding: 0px 20px;
           // flex-wrap: wrap;
       }
           .attio-call{
@@ -804,8 +810,8 @@ function injectCSS() {
         .attio-call svg { display:block }
 
         .btn{
-          flex:1 1 220px; border:0; border-radius:12px; padding:14px 16px;
-          font-weight:800; letter-spacing:.2px; font-size:15px; cursor:pointer; color:#fff;
+           border:0; border-radius:25px; padding:10px 16px;
+          font-weight:500; letter-spacing:.2px; font-size:15px; cursor:pointer; color:#fff;
           box-shadow:0 12px 24px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.08);
           transition:transform .12s ease, filter .12s ease;
           align-items: center;
@@ -815,9 +821,9 @@ function injectCSS() {
     gap: 10px;
         }
         .btn.primary{ background:#F7A600; }
-        .btn.secondary{ background:#1AA82A; color:#1f2937; border:1px solid #e6e6e6 }
+        .btn.secondary{ background:#1AA82A; color:#1f2937;  }
         .btn:not(:disabled):hover{ transform:translateY(-2px); filter:brightness(1.05) }
-        .btn:disabled{ opacity:.55; cursor:not-allowed }
+        .btn:disabled{ opacity:1; cursor:not-allowed }
         .rex-spinner{
           width:16px;height:16px;
           border:2px solid currentColor;
@@ -827,6 +833,19 @@ function injectCSS() {
           margin-right:8px;
           animation: rexSpin .8s linear infinite;
         }
+          .PoweredBy{
+          position: absolute;
+          right:7%;
+          top:0;
+          color:#7D7D7D;
+          font-size:12px;
+          
+          }
+
+          .ChatCallBtn{
+          margin-left:20px;
+          margin-top:1rem;
+          }
 
 #pcGreetingMsg {
   letter-spacing: normal; 
@@ -888,9 +907,9 @@ function playPrechatGreeting(
   if (!$msg || !$dots || !$form) return;
 
   const LINES = [
-    "Hello, you've reached Neesh Perfumes customer support.",
-    "I'd be happy to assist you!",
-    "To help you as quickly as possible, may I please have your full name, email, and phone number?",
+    "Hello! Welcome to Neesh Perfumes, ",
+    "Could you please share a few details before we continue?",
+
   ];
 
   // Typing function that adds each character one by one with a specified speed
@@ -988,12 +1007,12 @@ async function endChatArchiveNow({ silent = false } = {}) {
     localStorage.removeItem("chat_id");
     try {
       clearInactivityTimers?.();
-    } catch {}
+    } catch { }
     try {
       const cp = document.getElementById("rexChatPopup");
       if (cp) cp.classList.remove("show");
       window.location.reload();
-    } catch {}
+    } catch { }
   }
 }
 let __rex_close_timer__ = null;
@@ -1025,7 +1044,7 @@ function clearCloseTimer() {
 function saveChatHistory(arr) {
   try {
     localStorage.setItem(CHAT_LS_KEY, JSON.stringify(arr));
-  } catch {}
+  } catch { }
 }
 function saveChatMessage(role, text) {
   const arr = loadChatHistory();
@@ -1248,7 +1267,7 @@ function pingBeep() {
     g.connect(ctx.destination);
     o.start();
     o.stop(ctx.currentTime + 0.16);
-  } catch {}
+  } catch { }
 }
 function createReviewWidget() {
   if (window.__REX_WIDGET_INITIALIZED__) {
@@ -1432,22 +1451,22 @@ function createReviewWidget() {
     // CLOSE the call popup and show only widget
     try {
       modal.style.display = "none";
-    } catch {}
+    } catch { }
     try {
       document.getElementById("rexSupportPopup")?.classList.remove("show");
-    } catch {}
+    } catch { }
     try {
       document.getElementById("rexPreChatModal")?.style &&
         (document.getElementById("rexPreChatModal").style.display = "none");
-    } catch {}
+    } catch { }
     try {
       document.getElementById("rexChatPopup")?.classList.remove("show");
-    } catch {}
+    } catch { }
 
     // ensure agent button floats normally
     try {
       document.getElementById("agentButton")?.classList.remove("noFloat");
-    } catch {}
+    } catch { }
     const phoneNumber = document.createElement("h2");
     phoneNumber.className = "phone-number";
     phoneNumber.textContent = JSON.parse(agentVoipNumber);
@@ -1466,13 +1485,11 @@ function createReviewWidget() {
       className: "callText",
     });
 
-    callText.innerHTML = `<p>Call <span class="agentTag">${
-      agentName.length > 10 ? `${agentName.substring(0, 7)}..` : agentName
-    }</span></p><small>${
-      businessName?.length > 10
+    callText.innerHTML = `<p>Call <span class="agentTag">${agentName.length > 10 ? `${agentName.substring(0, 7)}..` : agentName
+      }</span></p><small>${businessName?.length > 10
         ? `${businessName.substring(0, 8)}..`
         : businessName
-    } Agent is LIVE</small>`;
+      } Agent is LIVE</small>`;
 
     callBtn.appendChild(phoneIconWrapper);
     callBtn.appendChild(callText);
@@ -1494,7 +1511,7 @@ function createReviewWidget() {
       id: "chatText",
       className: "chatText",
     });
-    chatText.innerHTML = `<p>Chat With ${agentName.substring(0, 7)}</p>`;
+    chatText.innerHTML = `<p>John ${agentName.substring(0, 7)}</p>`;
 
     chatBtn.appendChild(chatIconWrapper);
     chatBtn.appendChild(chatText);
@@ -1599,7 +1616,7 @@ function createReviewWidget() {
         div.innerHTML = `${text}<span class="time">${timeStr}</span>`;
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
-      } catch {}
+      } catch { }
     }
     function showIntroTyping() {
       try {
@@ -1612,14 +1629,14 @@ function createReviewWidget() {
         el.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
         msgs.appendChild(el);
         msgs.scrollTop = msgs.scrollHeight;
-      } catch {}
+      } catch { }
     }
 
     function hideIntroTyping() {
       try {
         const el = document.getElementById("rexTypingIntro");
         if (el) el.remove();
-      } catch {}
+      } catch { }
     }
     // --- yahi par aapka maybeSendIntroOnOpen rehne do ---
     let __rex_intro_attempted = false;
@@ -1635,7 +1652,7 @@ function createReviewWidget() {
           await createChatSession(
             localStorage.getItem("chat_agent_id") || undefined
           );
-        } catch {}
+        } catch { }
       }
       const chatId = localStorage.getItem("chat_id") || "nochat";
       const sentKey = `rex_intro_sent_${chatId}`;
@@ -1648,8 +1665,7 @@ function createReviewWidget() {
       const intro =
         `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
         `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
-        `and my phone number is ${
-          localStorage.getItem("rex_user_phone") || ""
+        `and my phone number is ${localStorage.getItem("rex_user_phone") || ""
         }.`;
 
       if (!intro.trim()) return;
@@ -1765,16 +1781,20 @@ function createReviewWidget() {
       supportEl.id = "rexSupportPopup";
       supportEl.className = "support-popup";
       supportEl.innerHTML = `
+      <div class="PoweredBy">
+      <spna>Powered by rxpt.us</spna>
+      </div>
     <div class="support-header">
       <div class="support-brand">
         <div class="support-logo"><img src="${logoUrl}" alt="" style="width:100%;height:100%"/></div>
         <div class="support-title">
           <div class="t">${businessName || "Support"}</div>
-          <div class="s">The team can also help</div>
+          <div class="s">Customer Success Agent</div>
         </div>
       </div>
       <button class="support-close" aria-label="Close">&times;</button>
     </div>
+
 
     <div class="support-body">
  
@@ -1790,38 +1810,47 @@ function createReviewWidget() {
       
 
         <div class="field">
-          <div class="label">Your full name</div>
+         
           <div class="input-dark"><input id="pcName" type="text" placeholder="John Doe" autocomplete="name"></div>
           <div class="err" id="erPcName"></div>
         </div>
 
         <div class="field">
-          <div class="label">Email</div>
+         
           <div class="input-dark"><input id="pcEmail" type="email" placeholder="email@example.com" autocomplete="email"></div>
           <div class="err" id="erPcEmail"></div>
         </div>
 
         <div class="field">
-          <div class="label">Phone number</div>
+          
           <div class="input-dark"><input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX" autocomplete="tel"></div>
           <div class="err" id="erPcPhone"></div>
         </div>
 
-        <div class="actions-ct">
+       
+      </div>
+
+      <div class="ChatCallBtn">
+       <div class="actions-ct">
         <!-- Chat -->
         <button class="btn primary" id="pcStartChat" aria-label="Start Chat" title="Start Chat">
-        Start
-<svg width="32" height="27" viewBox="0 0 32 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M30.931 23.4588L28.5898 19.2258C30.2598 14.5258 28.4147 9.14903 24.2316 6.62816C22.6621 5.68071 20.9143 5.21037 19.147 5.23406C16.5172 1.07207 11.2932 -0.237429 7.1198 2.27668C3.3388 4.55731 1.66557 9.41635 3.1637 13.6663L1.06566 17.4595C0.978112 17.6151 0.978112 17.8046 1.06566 17.9603C1.15322 18.1159 1.31211 18.2107 1.48397 18.2107H6.57178C7.62891 18.9551 8.84168 19.4626 10.0998 19.6893C10.9365 21.7568 12.386 23.4757 14.2829 24.6161C15.82 25.5432 17.5386 26 19.254 26C21.2191 26 23.1777 25.3977 24.8574 24.21H30.5192C30.691 24.21 30.8499 24.1153 30.9375 23.9596C31.025 23.804 31.0186 23.6145 30.931 23.4588ZM6.99333 17.3004C6.91227 17.2395 6.81499 17.2091 6.7177 17.2091H2.31411L4.11057 13.9607C4.18515 13.8287 4.19488 13.6663 4.13975 13.5242C2.67405 9.68028 4.16245 5.22053 7.60296 3.1463C11.1667 0.997632 15.593 1.97215 18.0283 5.31865C17.5775 5.37956 17.1268 5.46754 16.6793 5.59273C14.1111 6.31009 11.9644 8.02902 10.6349 10.4315C9.30538 12.8339 8.95193 15.6323 9.63938 18.3122C9.66208 18.4035 9.69127 18.4915 9.71721 18.5829C8.7444 18.3359 7.81374 17.8994 6.99333 17.3004ZM24.705 23.2084C24.6045 23.2084 24.5104 23.2389 24.4294 23.2998C21.5758 25.3909 17.7818 25.5669 14.7629 23.7498C12.6843 22.4978 11.1959 20.4744 10.5733 18.055C9.95068 15.6356 10.2717 13.108 11.4715 10.9356C12.6713 8.76667 14.6105 7.21354 16.929 6.56386C17.704 6.34731 18.4887 6.23903 19.2702 6.23903C20.8267 6.23903 22.367 6.66538 23.7516 7.50116C27.591 9.81563 29.2513 14.7931 27.6137 19.087C27.5586 19.2292 27.5716 19.3916 27.6429 19.5235L29.6826 23.2084H24.705ZM14.5456 13.6731C13.5144 13.6731 12.6746 14.5495 12.6746 15.6255C12.6746 16.7015 13.5144 17.5779 14.5456 17.5779C15.5768 17.5779 16.4166 16.7015 16.4166 15.6255C16.4166 14.5495 15.5768 13.6731 14.5456 13.6731ZM14.5456 16.5729C14.0462 16.5729 13.6376 16.1466 13.6376 15.6255C13.6376 15.1044 14.0462 14.678 14.5456 14.678C15.045 14.678 15.4536 15.1044 15.4536 15.6255C15.4536 16.1466 15.045 16.5729 14.5456 16.5729ZM19.361 13.6731C18.3298 13.6731 17.49 14.5495 17.49 15.6255C17.49 16.7015 18.3298 17.5779 19.361 17.5779C20.3922 17.5779 21.2321 16.7015 21.2321 15.6255C21.2321 14.5495 20.3922 13.6731 19.361 13.6731ZM19.361 16.5729C18.8616 16.5729 18.4531 16.1466 18.4531 15.6255C18.4531 15.1044 18.8616 14.678 19.361 14.678C19.8604 14.678 20.269 15.1044 20.269 15.6255C20.269 16.1466 19.8636 16.5729 19.361 16.5729ZM24.1797 13.6731C23.1485 13.6731 22.3086 14.5495 22.3086 15.6255C22.3086 16.7015 23.1485 17.5779 24.1797 17.5779C25.2109 17.5779 26.0507 16.7015 26.0507 15.6255C26.0507 14.5495 25.2109 13.6731 24.1797 13.6731ZM24.1797 16.5729C23.6803 16.5729 23.2717 16.1466 23.2717 15.6255C23.2717 15.1044 23.6803 14.678 24.1797 14.678C24.6791 14.678 25.0876 15.1044 25.0876 15.6255C25.0876 16.1466 24.6791 16.5729 24.1797 16.5729Z" fill="#FFF2D8" stroke="#FFF2D8" stroke-width="0.5"/>
+        <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8217 0.982666C4.86227 0.982666 0 5.84493 0 11.8043C0 13.1757 0.249347 14.4973 0.748041 15.744C1.12206 16.7165 1.64569 17.6141 2.29399 18.437L0.772975 21.9777C0.673237 22.227 0.698171 22.5262 0.872714 22.7257C1.02232 22.9003 1.2218 23 1.47115 23C1.52102 23 1.54595 23 1.59582 23L7.256 22.0026C8.40299 22.4016 9.59986 22.601 10.8217 22.601C16.781 22.601 21.6433 17.7388 21.6433 11.7794C21.6433 5.84493 16.781 0.982666 10.8217 0.982666ZM10.8217 21.1299C9.72453 21.1299 8.6274 20.9304 7.58015 20.5564C7.45547 20.5065 7.3308 20.5065 7.18119 20.5315L2.69295 21.3294L3.83994 18.6364C3.93968 18.3621 3.91475 18.0879 3.71527 17.8635C3.04203 17.0655 2.49347 16.1679 2.11945 15.2204C1.69556 14.1482 1.47115 13.0012 1.47115 11.8293C1.49608 6.66778 5.68511 2.47875 10.8217 2.47875C15.9582 2.47875 20.1472 6.66778 20.1472 11.8043C20.1472 16.9409 15.9582 21.1299 10.8217 21.1299Z" fill="#FFF2D8"/>
+<path d="M7.03111 13.4004C7.80229 13.4004 8.42745 12.7752 8.42745 12.004C8.42745 11.2328 7.80229 10.6077 7.03111 10.6077C6.25993 10.6077 5.63477 11.2328 5.63477 12.004C5.63477 12.7752 6.25993 13.4004 7.03111 13.4004Z" fill="#FFF2D8"/>
+<path d="M10.8211 13.4004C11.5923 13.4004 12.2175 12.7752 12.2175 12.004C12.2175 11.2328 11.5923 10.6077 10.8211 10.6077C10.05 10.6077 9.4248 11.2328 9.4248 12.004C9.4248 12.7752 10.05 13.4004 10.8211 13.4004Z" fill="#FFF2D8"/>
+<path d="M14.6112 13.4004C15.3824 13.4004 16.0075 12.7752 16.0075 12.004C16.0075 11.2328 15.3824 10.6077 14.6112 10.6077C13.84 10.6077 13.2148 11.2328 13.2148 12.004C13.2148 12.7752 13.84 13.4004 14.6112 13.4004Z" fill="#FFF2D8"/>
 </svg>
+
+        Start Chat
+                  
 
         </button>
 
         <!-- Call -->
         <button class="btn secondary" id="pcStartCall" aria-label="Start Call" title="Start Call">
                   <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15.5554 5.5C16.6542 5.71439 17.6641 6.25179 18.4557 7.04343C19.2473 7.83507 19.7847 8.84492 19.9991 9.94375M15.5554 1C17.8383 1.25362 19.9672 2.27595 21.5924 3.89913C23.2176 5.52232 24.2426 7.64989 24.4991 9.9325M23.3741 18.91V22.285C23.3754 22.5983 23.3112 22.9084 23.1857 23.1955C23.0602 23.4826 22.8761 23.7403 22.6452 23.9521C22.4143 24.1639 22.1418 24.3252 21.845 24.4255C21.5482 24.5259 21.2337 24.5632 20.9216 24.535C17.4598 24.1588 14.1345 22.9759 11.2129 21.0813C8.49469 19.354 6.19013 17.0494 4.46288 14.3313C2.56161 11.3964 1.3784 8.05487 1.00913 4.5775C0.981018 4.2664 1.01799 3.95286 1.11769 3.65683C1.2174 3.3608 1.37765 3.08878 1.58824 2.85807C1.79884 2.62737 2.05516 2.44305 2.3409 2.31684C2.62663 2.19063 2.93551 2.12529 3.24788 2.125H6.62288C7.16885 2.11963 7.69815 2.31296 8.11211 2.66897C8.52608 3.02499 8.79647 3.51938 8.87288 4.06C9.01533 5.14007 9.27951 6.20057 9.66038 7.22125C9.81174 7.62391 9.8445 8.06153 9.75478 8.48224C9.66505 8.90295 9.4566 9.28913 9.15413 9.595L7.72538 11.0237C9.32688 13.8402 11.6589 16.1722 14.4754 17.7737L15.9041 16.345C16.21 16.0425 16.5962 15.8341 17.0169 15.7444C17.4376 15.6546 17.8752 15.6874 18.2779 15.8387C19.2986 16.2196 20.3591 16.4838 21.4391 16.6263C21.9856 16.7033 22.4847 16.9786 22.8415 17.3997C23.1983 17.8208 23.3878 18.3583 23.3741 18.91Z" stroke="#EBFFEE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+                  <path d="M15.5554 5.5C16.6542 5.71439 17.6641 6.25179 18.4557 7.04343C19.2473 7.83507 19.7847 8.84492 19.9991 9.94375M15.5554 1C17.8383 1.25362 19.9672 2.27595 21.5924 3.89913C23.2176 5.52232 24.2426 7.64989 24.4991 9.9325M23.3741 18.91V22.285C23.3754 22.5983 23.3112 22.9084 23.1857 23.1955C23.0602 23.4826 22.8761 23.7403 22.6452 23.9521C22.4143 24.1639 22.1418 24.3252 21.845 24.4255C21.5482 24.5259 21.2337 24.5632 20.9216 24.535C17.4598 24.1588 14.1345 22.9759 11.2129 21.0813C8.49469 19.354 6.19013 17.0494 4.46288 14.3313C2.56161 11.3964 1.3784 8.05487 1.00913 4.5775C0.981018 4.2664 1.01799 3.95286 1.11769 3.65683C1.2174 3.3608 1.37765 3.08878 1.58824 2.85807C1.79884 2.62737 2.05516 2.44305 2.3409 2.31684C2.62663 2.19063 2.93551 2.12529 3.24788 2.125H6.62288C7.16885 2.11963 7.69815 2.31296 8.11211 2.66897C8.52608 3.02499 8.79647 3.51938 8.87288 4.06C9.01533 5.14007 9.27951 6.20057 9.66038 7.22125C9.81174 7.62391 9.8445 8.06153 9.75478 8.48224C9.66505 8.90295 9.4566 9.28913 9.15413 9.595L7.72538 11.0237C9.32688 13.8402 11.6589 16.1722 14.4754 17.7737L15.9041 16.345C16.21 16.0425 16.5962 15.8341 17.0169 15.7444C17.4376 15.6546 17.8752 15.6874 18.2779 15.8387C19.2986 16.2196 20.3591 16.4838 21.4391 16.6263C21.9856 16.7033 22.4847 16.9786 22.8415 17.3997C23.1983 17.8208 23.3878 18.3583 23.3741 18.91Z" stroke="#EBFFEE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
         </button>
 
         </div>
@@ -1837,7 +1866,7 @@ function createReviewWidget() {
         supportEl.classList.remove("show");
         try {
           startCloseTimer();
-        } catch {}
+        } catch { }
       };
 
       // elements
@@ -2035,7 +2064,7 @@ function createReviewWidget() {
         localStorage.setItem("rex_last_ui", "chat");
         try {
           await ensureChatSession();
-        } catch {}
+        } catch { }
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
         supportEl.classList.remove("show");
@@ -2056,14 +2085,14 @@ function createReviewWidget() {
         // CLOSE all other UIs before starting call
         try {
           supportEl?.classList.remove("show");
-        } catch {}
+        } catch { }
         try {
           document.getElementById("rexPreChatModal")?.style &&
             (document.getElementById("rexPreChatModal").style.display = "none");
-        } catch {}
+        } catch { }
         try {
           document.getElementById("rexChatPopup")?.classList.remove("show");
-        } catch {}
+        } catch { }
 
         // OPEN call modal & trigger call
         const mainModal = document.getElementById("agentPopup");
@@ -2098,7 +2127,7 @@ function createReviewWidget() {
             // IMPORTANT: yahin session create hota hai — is dauran widget disabled rahe
             try {
               await ensureChatSession();
-            } catch {}
+            } catch { }
 
             const cp = getOrCreateChatPopup();
             cp.classList.add("show");
@@ -2132,13 +2161,11 @@ function createReviewWidget() {
         callBtn.classList.remove("reddiv");
         callBtn.classList.add("greendiv");
         phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
-        callText.innerHTML = `<p>Call <span class="agentTag">${
-          agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
-        }</span></p><small>${
-          businessName.length > 10
+        callText.innerHTML = `<p>Call <span class="agentTag">${agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
+          }</span></p><small>${businessName.length > 10
             ? `${businessName.substring(0, 8)}..`
             : businessName
-        } Agent is LIVE</small>`;
+          } Agent is LIVE</small>`;
         onCall = false;
         // lockWidgetFor(3000);
       }
@@ -2170,15 +2197,13 @@ function createReviewWidget() {
     </span>
     <h2>Terms of Use
     </h2>
-    <p> By clicking the Call button to talk to Rexpt AI agent on ${
-      businessName?.length > 15
+    <p> By clicking the Call button to talk to Rexpt AI agent on ${businessName?.length > 15
         ? `${businessName.substring(0, 20)}..`
         : businessName
-    } named ${agentName}, You Agree to Terms of Use for Rexpt AI Agents published on <a href="https://www.rexpt.in/Terms-Condition" target="_blank" style="color: #007bff; text-decoration: underline;">TERMS & CONDITIONS</a>. Each time You interact with this Al agent, You consent to the recording, storage, and sharing of my communications with ${
-      businessName?.length > 15
+      } named ${agentName}, You Agree to Terms of Use for Rexpt AI Agents published on <a href="https://www.rexpt.in/Terms-Condition" target="_blank" style="color: #007bff; text-decoration: underline;">TERMS & CONDITIONS</a>. Each time You interact with this Al agent, You consent to the recording, storage, and sharing of my communications with ${businessName?.length > 15
         ? `${businessName.substring(0, 20)}..`
         : businessName
-    }, Rexpt & Other third-party service providers, and as described in the <a href="https://www.rexpt.in/Privacy-Policy" target="_blank" style="color: #007bff; text-decoration: underline;">
+      }, Rexpt & Other third-party service providers, and as described in the <a href="https://www.rexpt.in/Privacy-Policy" target="_blank" style="color: #007bff; text-decoration: underline;">
     Privacy Policy</a>. If you do not wish to have your conversations recorded, please refrain from using this service & DO NOT MAKE THE CALL.
     </p>
   </div>
@@ -2240,11 +2265,10 @@ function createReviewWidget() {
                 callBtn.classList.remove("greendiv");
                 callBtn.classList.add("reddiv");
                 phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
-                callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
-                  agentName.length > 10
-                    ? `${agentName.substring(0, 8)}..`
-                    : agentName
-                }</small>`;
+                callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${agentName.length > 10
+                  ? `${agentName.substring(0, 8)}..`
+                  : agentName
+                  }</small>`;
                 onCall = true;
                 // Add pulse rings when call starts
                 imageWrapper.classList.add("active");
@@ -2279,14 +2303,12 @@ function createReviewWidget() {
           callBtn.classList.remove("reddiv");
           callBtn.classList.add("greendiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
-          callText.innerHTML = `<p style="color:white">Call <span class="agentTag">${
-            agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
-          }</span></p>
-                <small>${
-                  businessName.length > 10
-                    ? `${businessName.substring(0, 8)}..`
-                    : businessName
-                } Agent is LIVE</small>`;
+          callText.innerHTML = `<p style="color:white">Call <span class="agentTag">${agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
+            }</span></p>
+                <small>${businessName.length > 10
+              ? `${businessName.substring(0, 8)}..`
+              : businessName
+            } Agent is LIVE</small>`;
           onCall = false;
           callLabel.textContent = `Call ${agentName}`;
           imageWrapper.classList.remove("active");
@@ -2502,7 +2524,7 @@ function createReviewWidget() {
       try {
         const _modal = document.getElementById("agentPopup");
         if (_modal) _modal.style.display = "none";
-      } catch {}
+      } catch { }
 
       const el = getOrCreatePreChatModal();
 
@@ -2807,7 +2829,7 @@ function createReviewWidget() {
             if (typeof okCb === "function") {
               try {
                 okCb(result);
-              } catch {}
+              } catch { }
             }
             close(true);
           } catch (err) {
@@ -2864,28 +2886,34 @@ function createReviewWidget() {
       chatModalEl.id = "rexChatPopup";
       chatModalEl.className = "chat-popup";
       chatModalEl.innerHTML = `
+
+      <div class="PoweredBy">
+      <spna>Powered by rxpt.us</spna>
+      </div>
         <div class="attio-header">
           <div class="attio-brand" style="display:flex;align-items:center;gap:10px">
-            <div class="attio-logo" style="width:28px;height:28px;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#111">
+            <div class="attio-logo" style="width:36px;height:36px;border-radius:100px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#111">
               <img src="${logoUrl}" alt="" style="width:100%;height:100%"/>
             </div>
             <div class="attio-title" style="line-height:1">
-              <div class="t" style="font-weight:700;font-size:20px;color:#fff;">Chat with ${agentName.substring(
-                0,
-                7
-              )}</div>
-              <div class="s" style="font-size:12px;color:#fff">The team can also help</div>
+              <div class="t" style="font-weight:700;font-size:20px;color:#fff; text-transform:uppercase"> ${agentName.substring(
+        0,
+        7
+      )}</div>
+              <div class="s" style="font-size:12px;color:#D1DCED">Customer Success Agent</div>
             </div>
           </div>
 
             <div style="display:flex;align-items:center;gap:6px">
         <!-- NEW: Call icon button -->
-        <button class="attio-call" id="rexCallIconBtn" aria-label="Start call">
-          <!-- आप चाहें तो यह SVG रखिए -->
-          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-            <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.25 11.36 11.36 0 003.56.57 1 1 0 011 1v3.6a1 1 0 01-1 1A17.58 17.58 0 012 6a1 1 0 011-1h3.6a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.25 1.01l-2.3 2.22z" />
-          </svg>
+        <button class="attio-call btn secondary" id="rexCallIconBtn" aria-label="Start call">
+          
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15.5554 5.5C16.6542 5.71439 17.6641 6.25179 18.4557 7.04343C19.2473 7.83507 19.7847 8.84492 19.9991 9.94375M15.5554 1C17.8383 1.25362 19.9672 2.27595 21.5924 3.89913C23.2176 5.52232 24.2426 7.64989 24.4991 9.9325M23.3741 18.91V22.285C23.3754 22.5983 23.3112 22.9084 23.1857 23.1955C23.0602 23.4826 22.8761 23.7403 22.6452 23.9521C22.4143 24.1639 22.1418 24.3252 21.845 24.4255C21.5482 24.5259 21.2337 24.5632 20.9216 24.535C17.4598 24.1588 14.1345 22.9759 11.2129 21.0813C8.49469 19.354 6.19013 17.0494 4.46288 14.3313C2.56161 11.3964 1.3784 8.05487 1.00913 4.5775C0.981018 4.2664 1.01799 3.95286 1.11769 3.65683C1.2174 3.3608 1.37765 3.08878 1.58824 2.85807C1.79884 2.62737 2.05516 2.44305 2.3409 2.31684C2.62663 2.19063 2.93551 2.12529 3.24788 2.125H6.62288C7.16885 2.11963 7.69815 2.31296 8.11211 2.66897C8.52608 3.02499 8.79647 3.51938 8.87288 4.06C9.01533 5.14007 9.27951 6.20057 9.66038 7.22125C9.81174 7.62391 9.8445 8.06153 9.75478 8.48224C9.66505 8.90295 9.4566 9.28913 9.15413 9.595L7.72538 11.0237C9.32688 13.8402 11.6589 16.1722 14.4754 17.7737L15.9041 16.345C16.21 16.0425 16.5962 15.8341 17.0169 15.7444C17.4376 15.6546 17.8752 15.6874 18.2779 15.8387C19.2986 16.2196 20.3591 16.4838 21.4391 16.6263C21.9856 16.7033 22.4847 16.9786 22.8415 17.3997C23.1983 17.8208 23.3878 18.3583 23.3741 18.91Z" stroke="#EBFFEE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
         </button>
+
+        
 
         <button class="attio-end">End chat</button>
         <button class="attio-close" aria-label="Close">&times;</button>
@@ -2896,7 +2924,14 @@ function createReviewWidget() {
           <div id="rexMessages" class="attio-thread"></div>
           <div class="composer">
             <input id="rexInput" type="text" placeholder="Type a message…" />
-            <button id="rexSend"  type="button">Send</button>
+            <button id="rexSend" type="button">
+  <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="33" cy="33" r="33" fill="#C4C4C4" fill-opacity="0.1"/>
+<circle cx="33" cy="32.9998" r="27" fill="#6524EB"/>
+<path d="M18.0045 29.3431C17.9665 30.1118 18.1686 30.8732 18.5829 31.5218C18.9971 32.1704 19.603 32.6738 20.3163 32.9624L28.3068 36.2539L32.2735 32.2864C32.4668 32.1062 32.7225 32.0081 32.9867 32.0128C33.251 32.0174 33.5031 32.1245 33.6899 32.3114C33.8768 32.4983 33.9838 32.7505 33.9885 33.0147C33.9931 33.279 33.8951 33.5348 33.7149 33.7281L29.7496 37.6956L33.0404 45.6877C33.3181 46.3742 33.7953 46.9616 34.4103 47.3738C35.0254 47.786 35.75 48.0042 36.4904 47.9999H36.659C37.428 47.9717 38.1692 47.7047 38.7796 47.236C39.3901 46.7674 39.8394 46.1202 40.0654 45.3844L46.828 23.8618C47.0329 23.2096 47.0552 22.5136 46.8924 21.8496C46.7296 21.1856 46.388 20.579 45.9047 20.0955C45.4214 19.6121 44.8148 19.2704 44.1509 19.1076C43.4871 18.9448 42.7913 18.9671 42.1392 19.1721L20.6209 25.936C19.885 26.1618 19.2377 26.6111 18.7688 27.2217C18.3 27.8323 18.0328 28.5737 18.0045 29.3431Z" fill="white"/>
+</svg>
+
+</button>
           </div>
         </div>
 `;
@@ -2973,9 +3008,8 @@ function createReviewWidget() {
           callBtn.classList.remove("greendiv");
           callBtn.classList.add("reddiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
-          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
-            agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
-          }</small>`;
+          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
+            }</small>`;
           onCall = true;
 
           // rings
@@ -3073,7 +3107,7 @@ function createReviewWidget() {
           try {
             clearInactivityTimers();
             startCloseTimer();
-          } catch {}
+          } catch { }
         };
       }
 
@@ -3166,7 +3200,7 @@ function createReviewWidget() {
         try {
           clearInactivityTimers();
           startCloseTimer();
-        } catch {}
+        } catch { }
       };
 
       // helpers
@@ -3178,13 +3212,13 @@ function createReviewWidget() {
         s.replace(
           /[&<>"']/g,
           (m) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            }[m])
+          ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          }[m])
         );
       function appendMessage(role, text, ts) {
         const when = ts || Date.now();
@@ -3327,8 +3361,7 @@ function createReviewWidget() {
           const intro =
             `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
             `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
-            `and my phone number is ${
-              localStorage.getItem("rex_user_phone") || ""
+            `and my phone number is ${localStorage.getItem("rex_user_phone") || ""
             }.`;
           payload = `${intro}\n${t}`.trim();
           localStorage.setItem("rex_intro_inline", "1");
@@ -3403,7 +3436,7 @@ function createReviewWidget() {
       (async () => {
         try {
           await maybeSendIntroOnOpen();
-        } catch {}
+        } catch { }
       })();
       return chatModalEl;
     }
