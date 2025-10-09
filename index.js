@@ -710,20 +710,28 @@ function injectCSS() {
         .support-title .t{ font-weight:500; font-size:18px; color:#fff;text-transform: uppercase; }
         .support-title .s{ font-size:12px; color:#D1DCED }
         .support-close{ border:0; background:transparent; font-size:22px; color:#9aa4b2; cursor:pointer }
-
-          /* --- Support (pre-chat) card polish --- */
-      .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; }
+        .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; min-height:324px }
 
       .big-card{
-        display:flex; flex-direction:column;        
-        /* thoda breathing room under header */
-        margin-top:10px;                      /* NEW */
+        display:none;        
+        margin-top:10px;                    
         padding: 2px 20px 20px 20px;
         border-right:3px solid #F7A600; border-radius:10px;
         background:#344761; box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
         justify-content: flex-start;
         margin-left: 20px;
       }
+        @keyframes rexFadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .fade-in { 
+        opacity: 0; 
+        animation: rexFadeIn .35s ease forwards;
+      }
+
+        .big-card.show { display: block; }
 
       /* arrow tail ko crisp border + subtle shadow */
       .support-popup::after{
@@ -779,14 +787,14 @@ function injectCSS() {
 
         .input-dark input{
           flex:1; border:0; outline:0; background:transparent;
-          color:#0f172a; font-size:16px; line-height:1.2; padding:0 0 2px 0;
+          color:#fff; font-size:16px; line-height:1.2; padding:0 0 2px 0;
         }
         .input-dark input::placeholder{ color:#9aa4b2 }
 
         @keyframes shakeX { 0%{transform:translateX(0)}25%{transform:translateX(-4px)}
         50%{transform:translateX(4px)}75%{transform:translateX(-2px)}100%{transform:translateX(0)} }
         .input-dark.error::after{ width:100%; background:#ef4444 }
-        .input-dark.error input{ color:#991b1b }
+        .input-dark.error input{ color:#fff }
         .err{ color:#ef4444; font-size:12px; margin-top:6px; display:none }
         .err.show{ display:block; animation:shakeX .25s }
 
@@ -797,9 +805,7 @@ function injectCSS() {
           bottom: 37px;
           display: flex;
           gap: 12px;
-          // padding: 0px 20px;
-          // flex-wrap: wrap;
-      }
+         }
           .attio-call{
           background:#10b981; /* green */
           color:#fff; border:0; border-radius:6px;
@@ -835,21 +841,36 @@ function injectCSS() {
         }
           .PoweredBy{
           position: absolute;
-          right:7%;
-          top:0;
+          
           color:#7D7D7D;
           font-size:12px;
           
+          }
+          .PoweredBy a{
+          color:#7D7D7D;
+          text-decoration:none;
           }
 
           .ChatCallBtn{
           margin-left:20px;
           margin-top:1rem;
+          display:none
           }
-
-#pcGreetingMsg {
-  letter-spacing: normal; 
-}
+          .ChatCallBtn.show{
+          display:block;            
+          opacity:1;
+          transform: translateY(0);
+          pointer-events:auto;
+        }
+        .support-popup .actions-ct.single {
+          display: block;        
+        }
+        .support-popup .actions-ct.single .btn {
+          width: 100%;
+        }
+        #pcGreetingMsg {
+          letter-spacing: normal; 
+        }
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
@@ -895,61 +916,6 @@ let __rex_end_called__ = false;
 
 // --- Greeting typing sequence ---
 let __pc_greeting_played = false;
-
-function playPrechatGreeting(
-  rootEl = document.getElementById("rexSupportPopup")
-) {
-  if (!rootEl) return;
-  const $msg = rootEl.querySelector("#pcGreetingMsg");
-  const $dots = rootEl.querySelector("#pcTyping");
-  let $form =
-    rootEl.querySelector("#pcFormWrap") || rootEl.querySelector(".big-card");
-  if (!$msg || !$dots || !$form) return;
-
-  const LINES = [
-    "Hello! Welcome to Neesh Perfumes, ",
-    "Could you please share a few details before we continue?",
-
-  ];
-
-  // Typing function that adds each character one by one with a specified speed
-  const typeText = (
-    el,
-    text,
-    speed = 10 // Fast speed
-  ) =>
-    new Promise((res) => {
-      let i = 0;
-      // Add one character at a time
-      const step = () => {
-        if (i < text.length) {
-          el.appendChild(document.createTextNode(text[i])); // Append the next character
-          i++;
-          setTimeout(step, speed); // Delay between each character
-        } else {
-          res(); // Resolve when done
-        }
-      };
-      step(); // Start typing
-    });
-
-  // Display the typing dots
-  $dots.style.display = "inline-flex";
-
-  setTimeout(async () => {
-    $dots.style.display = "none"; // Hide dots once typing starts
-    $msg.textContent = ""; // Clear any pre-existing text
-
-    // Loop through each line and type it out one after the other
-    for (let i = 0; i < LINES.length; i++) {
-      await typeText($msg, LINES[i], 10); // Fast typing speed for each line
-      await new Promise((r) => setTimeout(r, 150)); // Short pause between lines
-    }
-
-    // Show the form after the message is fully typed out
-    $form.style.display = "block";
-  }, 1000); // Start the animation after 1 second
-}
 
 function isGoodbye(text = "") {
   const t = String(text).toLowerCase();
@@ -1007,12 +973,12 @@ async function endChatArchiveNow({ silent = false } = {}) {
     localStorage.removeItem("chat_id");
     try {
       clearInactivityTimers?.();
-    } catch { }
+    } catch {}
     try {
       const cp = document.getElementById("rexChatPopup");
       if (cp) cp.classList.remove("show");
       window.location.reload();
-    } catch { }
+    } catch {}
   }
 }
 let __rex_close_timer__ = null;
@@ -1044,7 +1010,7 @@ function clearCloseTimer() {
 function saveChatHistory(arr) {
   try {
     localStorage.setItem(CHAT_LS_KEY, JSON.stringify(arr));
-  } catch { }
+  } catch {}
 }
 function saveChatMessage(role, text) {
   const arr = loadChatHistory();
@@ -1267,7 +1233,7 @@ function pingBeep() {
     g.connect(ctx.destination);
     o.start();
     o.stop(ctx.currentTime + 0.16);
-  } catch { }
+  } catch {}
 }
 function createReviewWidget() {
   if (window.__REX_WIDGET_INITIALIZED__) {
@@ -1338,7 +1304,9 @@ function createReviewWidget() {
         userId = json.userId;
         avatar = json.avatar;
         agentVoipNumber = json.voip_numbers;
-
+        // isChatEnabled = Boolean(json.chatWidgetEnabled);
+        isChatEnabled = true;
+        localStorage.setItem("isChatEnabled", String(isChatEnabled));
         const kbId = json.knowledgeBaseId || json.knowledgeBaseId;
         if (kbId) localStorage.setItem("knowledge_base_id", String(kbId));
       } catch (e) {
@@ -1415,6 +1383,50 @@ function createReviewWidget() {
     agentWrapper.appendChild(badge2);
     rexAgent.appendChild(agentWrapper);
 
+    function playPrechatGreeting(
+      rootEl = document.getElementById("rexSupportPopup")
+    ) {
+      if (!rootEl) return;
+      const $msg = rootEl.querySelector("#pcGreetingMsg");
+      const $dots = rootEl.querySelector("#pcTyping");
+      let $form =
+        rootEl.querySelector("#pcFormWrap") ||
+        rootEl.querySelector(".big-card");
+      let $action = rootEl.querySelector(".ChatCallBtn");
+      if (!$msg || !$dots || !$form) return;
+
+      const LINES = [
+        `Hello! Welcome to ${businessName} `,
+        `Could you please share a few details before we continue?`,
+      ];
+      const typeText = (el, text, speed = 10) =>
+        new Promise((res) => {
+          let i = 0;
+          const step = () => {
+            if (i < text.length) {
+              el.appendChild(document.createTextNode(text[i]));
+              i++;
+              setTimeout(step, speed);
+            } else {
+              res();
+            }
+          };
+          step();
+        });
+      $dots.style.display = "inline-flex";
+      setTimeout(async () => {
+        $dots.style.display = "none";
+        $msg.textContent = "";
+        for (let i = 0; i < LINES.length; i++) {
+          await typeText($msg, LINES[i], 10);
+          await new Promise((r) => setTimeout(r, 150));
+        }
+        await new Promise((r) => setTimeout(r, 1000));
+        $form.classList.add("show", "fade-in");
+        $action.classList.add("show", "fade-in");
+      }, 1000);
+    }
+
     // POPUP
     const modal = createElement("div", {
       id: "agentPopup",
@@ -1451,22 +1463,22 @@ function createReviewWidget() {
     // CLOSE the call popup and show only widget
     try {
       modal.style.display = "none";
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexSupportPopup")?.classList.remove("show");
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexPreChatModal")?.style &&
         (document.getElementById("rexPreChatModal").style.display = "none");
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexChatPopup")?.classList.remove("show");
-    } catch { }
+    } catch {}
 
     // ensure agent button floats normally
     try {
       document.getElementById("agentButton")?.classList.remove("noFloat");
-    } catch { }
+    } catch {}
     const phoneNumber = document.createElement("h2");
     phoneNumber.className = "phone-number";
     phoneNumber.textContent = JSON.parse(agentVoipNumber);
@@ -1485,11 +1497,13 @@ function createReviewWidget() {
       className: "callText",
     });
 
-    callText.innerHTML = `<p>Call <span class="agentTag">${agentName.length > 10 ? `${agentName.substring(0, 7)}..` : agentName
-      }</span></p><small>${businessName?.length > 10
+    callText.innerHTML = `<p>Call <span class="agentTag">${
+      agentName.length > 10 ? `${agentName.substring(0, 7)}..` : agentName
+    }</span></p><small>${
+      businessName?.length > 10
         ? `${businessName.substring(0, 8)}..`
         : businessName
-      } Agent is LIVE</small>`;
+    } Agent is LIVE</small>`;
 
     callBtn.appendChild(phoneIconWrapper);
     callBtn.appendChild(callText);
@@ -1518,6 +1532,13 @@ function createReviewWidget() {
 
     /* --- Buttons ko stack me daalo --- */
     const buttonStack = createElement("div", { className: "button-stack" });
+
+    if (isChatEnabled) {
+      buttonStack.appendChild(chatBtn);
+      buttonStack.style.display = "flex";
+    } else {
+      buttonStack.style.display = "none";
+    }
 
     buttonStack.appendChild(chatBtn);
     buttonStack.style.display = "none";
@@ -1616,7 +1637,7 @@ function createReviewWidget() {
         div.innerHTML = `${text}<span class="time">${timeStr}</span>`;
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
-      } catch { }
+      } catch {}
     }
     function showIntroTyping() {
       try {
@@ -1629,14 +1650,14 @@ function createReviewWidget() {
         el.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
         msgs.appendChild(el);
         msgs.scrollTop = msgs.scrollHeight;
-      } catch { }
+      } catch {}
     }
 
     function hideIntroTyping() {
       try {
         const el = document.getElementById("rexTypingIntro");
         if (el) el.remove();
-      } catch { }
+      } catch {}
     }
     // --- yahi par aapka maybeSendIntroOnOpen rehne do ---
     let __rex_intro_attempted = false;
@@ -1652,7 +1673,7 @@ function createReviewWidget() {
           await createChatSession(
             localStorage.getItem("chat_agent_id") || undefined
           );
-        } catch { }
+        } catch {}
       }
       const chatId = localStorage.getItem("chat_id") || "nochat";
       const sentKey = `rex_intro_sent_${chatId}`;
@@ -1665,7 +1686,8 @@ function createReviewWidget() {
       const intro =
         `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
         `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
-        `and my phone number is ${localStorage.getItem("rex_user_phone") || ""
+        `and my phone number is ${
+          localStorage.getItem("rex_user_phone") || ""
         }.`;
 
       if (!intro.trim()) return;
@@ -1717,6 +1739,14 @@ function createReviewWidget() {
         }
       });
     };
+
+    function setDefaultUIAfterProfile() {
+      const v = localStorage.getItem("isChatEnabled");
+      const chatEnabled = v === "true" || v === "1";
+      if (chatEnabled && hasCompleteProfile()) {
+        localStorage.setItem("rex_last_ui", "chat");
+      }
+    }
 
     async function ensureChatSession() {
       let chatId = localStorage.getItem("chat_id");
@@ -1781,14 +1811,12 @@ function createReviewWidget() {
       supportEl.id = "rexSupportPopup";
       supportEl.className = "support-popup";
       supportEl.innerHTML = `
-      <div class="PoweredBy">
-      <spna>Powered by rxpt.us</spna>
-      </div>
+      
     <div class="support-header">
       <div class="support-brand">
         <div class="support-logo"><img src="${logoUrl}" alt="" style="width:100%;height:100%"/></div>
         <div class="support-title">
-          <div class="t">${businessName || "Support"}</div>
+          <div class="t">${agentName || "Support"}</div>
           <div class="s">Customer Success Agent</div>
         </div>
       </div>
@@ -1800,11 +1828,11 @@ function createReviewWidget() {
  
 
       <div class="status-row" id="pcGreetingRow">
-  <span class="status-text" id="pcGreetingMsg"></span>
-  <span id="pcTyping" class="typing-dots" aria-hidden="true">
-    <i></i><i></i><i></i>
-  </span>
-</div>
+        <span class="status-text" id="pcGreetingMsg"></span>
+        <span id="pcTyping" class="typing-dots" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+      </div>
 
       <div class="big-card">
       
@@ -1835,11 +1863,11 @@ function createReviewWidget() {
         <!-- Chat -->
         <button class="btn primary" id="pcStartChat" aria-label="Start Chat" title="Start Chat">
         <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.8217 0.982666C4.86227 0.982666 0 5.84493 0 11.8043C0 13.1757 0.249347 14.4973 0.748041 15.744C1.12206 16.7165 1.64569 17.6141 2.29399 18.437L0.772975 21.9777C0.673237 22.227 0.698171 22.5262 0.872714 22.7257C1.02232 22.9003 1.2218 23 1.47115 23C1.52102 23 1.54595 23 1.59582 23L7.256 22.0026C8.40299 22.4016 9.59986 22.601 10.8217 22.601C16.781 22.601 21.6433 17.7388 21.6433 11.7794C21.6433 5.84493 16.781 0.982666 10.8217 0.982666ZM10.8217 21.1299C9.72453 21.1299 8.6274 20.9304 7.58015 20.5564C7.45547 20.5065 7.3308 20.5065 7.18119 20.5315L2.69295 21.3294L3.83994 18.6364C3.93968 18.3621 3.91475 18.0879 3.71527 17.8635C3.04203 17.0655 2.49347 16.1679 2.11945 15.2204C1.69556 14.1482 1.47115 13.0012 1.47115 11.8293C1.49608 6.66778 5.68511 2.47875 10.8217 2.47875C15.9582 2.47875 20.1472 6.66778 20.1472 11.8043C20.1472 16.9409 15.9582 21.1299 10.8217 21.1299Z" fill="#FFF2D8"/>
-<path d="M7.03111 13.4004C7.80229 13.4004 8.42745 12.7752 8.42745 12.004C8.42745 11.2328 7.80229 10.6077 7.03111 10.6077C6.25993 10.6077 5.63477 11.2328 5.63477 12.004C5.63477 12.7752 6.25993 13.4004 7.03111 13.4004Z" fill="#FFF2D8"/>
-<path d="M10.8211 13.4004C11.5923 13.4004 12.2175 12.7752 12.2175 12.004C12.2175 11.2328 11.5923 10.6077 10.8211 10.6077C10.05 10.6077 9.4248 11.2328 9.4248 12.004C9.4248 12.7752 10.05 13.4004 10.8211 13.4004Z" fill="#FFF2D8"/>
-<path d="M14.6112 13.4004C15.3824 13.4004 16.0075 12.7752 16.0075 12.004C16.0075 11.2328 15.3824 10.6077 14.6112 10.6077C13.84 10.6077 13.2148 11.2328 13.2148 12.004C13.2148 12.7752 13.84 13.4004 14.6112 13.4004Z" fill="#FFF2D8"/>
-</svg>
+        <path d="M10.8217 0.982666C4.86227 0.982666 0 5.84493 0 11.8043C0 13.1757 0.249347 14.4973 0.748041 15.744C1.12206 16.7165 1.64569 17.6141 2.29399 18.437L0.772975 21.9777C0.673237 22.227 0.698171 22.5262 0.872714 22.7257C1.02232 22.9003 1.2218 23 1.47115 23C1.52102 23 1.54595 23 1.59582 23L7.256 22.0026C8.40299 22.4016 9.59986 22.601 10.8217 22.601C16.781 22.601 21.6433 17.7388 21.6433 11.7794C21.6433 5.84493 16.781 0.982666 10.8217 0.982666ZM10.8217 21.1299C9.72453 21.1299 8.6274 20.9304 7.58015 20.5564C7.45547 20.5065 7.3308 20.5065 7.18119 20.5315L2.69295 21.3294L3.83994 18.6364C3.93968 18.3621 3.91475 18.0879 3.71527 17.8635C3.04203 17.0655 2.49347 16.1679 2.11945 15.2204C1.69556 14.1482 1.47115 13.0012 1.47115 11.8293C1.49608 6.66778 5.68511 2.47875 10.8217 2.47875C15.9582 2.47875 20.1472 6.66778 20.1472 11.8043C20.1472 16.9409 15.9582 21.1299 10.8217 21.1299Z" fill="#FFF2D8"/>
+        <path d="M7.03111 13.4004C7.80229 13.4004 8.42745 12.7752 8.42745 12.004C8.42745 11.2328 7.80229 10.6077 7.03111 10.6077C6.25993 10.6077 5.63477 11.2328 5.63477 12.004C5.63477 12.7752 6.25993 13.4004 7.03111 13.4004Z" fill="#FFF2D8"/>
+        <path d="M10.8211 13.4004C11.5923 13.4004 12.2175 12.7752 12.2175 12.004C12.2175 11.2328 11.5923 10.6077 10.8211 10.6077C10.05 10.6077 9.4248 11.2328 9.4248 12.004C9.4248 12.7752 10.05 13.4004 10.8211 13.4004Z" fill="#FFF2D8"/>
+        <path d="M14.6112 13.4004C15.3824 13.4004 16.0075 12.7752 16.0075 12.004C16.0075 11.2328 15.3824 10.6077 14.6112 10.6077C13.84 10.6077 13.2148 11.2328 13.2148 12.004C13.2148 12.7752 13.84 13.4004 14.6112 13.4004Z" fill="#FFF2D8"/>
+        </svg>
 
         Start Chat
                   
@@ -1855,7 +1883,11 @@ function createReviewWidget() {
 
         </div>
       </div>
+      
     </div>
+    <div class="PoweredBy">
+      <spna><a href="https://www.rxpt.us/">Powered by rxpt.us</a></spna>
+      </div>
   `;
       document.body.appendChild(supportEl);
 
@@ -1863,10 +1895,11 @@ function createReviewWidget() {
 
       // close
       supportEl.querySelector(".support-close").onclick = () => {
+        setDefaultUIAfterProfile();
         supportEl.classList.remove("show");
         try {
           startCloseTimer();
-        } catch { }
+        } catch {}
       };
 
       // elements
@@ -1878,6 +1911,16 @@ function createReviewWidget() {
       const $eP = supportEl.querySelector("#erPcPhone");
       const $chat = supportEl.querySelector("#pcStartChat");
       const $call = supportEl.querySelector("#pcStartCall");
+      const $actions = supportEl.querySelector(".actions-ct");
+      if (!isChatEnabled && $chat) {
+        $chat.style.display = "none";
+        if ($chat) $chat.remove();
+        if ($actions) $actions.classList.add("single");
+        if ($call) {
+          $call.style.width = "100%";
+          $call.style.flex = "1 1 100%";
+        }
+      }
 
       // preload LS
       $name.value = localStorage.getItem("rex_user_name") || "";
@@ -1919,6 +1962,7 @@ function createReviewWidget() {
               .trim()
               .replace(/[^\d+]/g, "")
           );
+        setDefaultUIAfterProfile();
       }
 
       /* -------- error helpers -------- */
@@ -1944,38 +1988,48 @@ function createReviewWidget() {
       }
 
       // live-state check (no forced messages unless touched)
+      // ✅ Replace your current validate(show = true) with this:
+
       function validate(show = true) {
         const okNsoft = vNameSoft($name.value);
         const okE = vEmail($email.value);
         const okP = vPhone($phone.value);
 
-        if (show) {
-          if (touched.name)
-            setFieldError(
-              $name,
-              $eN,
-              okNsoft ? "" : "Please enter your full name."
-            );
-          if (touched.email)
-            setFieldError(
-              $email,
-              $eE,
-              okE ? "" : "Please enter a valid email address."
-            );
-          if (touched.phone)
-            setFieldError(
-              $phone,
-              $eP,
-              okP ? "" : "Please enter a valid phone number (10–15 digits)."
-            );
-        }
+        // if (show) {
+        //   if (touched.name)
+        //     setFieldError(
+        //       $name,
+        //       $eN,
+        //       okNsoft ? "" : "Please enter your full name."
+        //     );
+        //   if (touched.email)
+        //     setFieldError(
+        //       $email,
+        //       $eE,
+        //       okE ? "" : "Please enter a valid email address."
+        //     );
+        //   if (touched.phone)
+        //     setFieldError(
+        //       $phone,
+        //       $eP,
+        //       okP ? "" : "Please enter a valid phone number (10–15 digits)."
+        //     );
+        // }
 
-        // buttons enable only when HARD checks pass
-        const okHard = vNameHard($name.value) && okE && okP;
-        $chat.disabled = !okHard;
-        $call.disabled = !okHard;
+        // ❌ pehle yahan buttons disable/enable ho rahe the — ab remove:
+        // const okHard = vNameHard($name.value) && okE && okP;
+        // $chat.disabled = !okHard;
+        // $call.disabled = !okHard;
 
-        return okHard;
+        // Hard validity ab caller par check hoga:
+        return vNameHard($name.value) && okE && okP;
+      }
+
+      function showAllErrorsNow() {
+        touched.name = true;
+        touched.email = true;
+        touched.phone = true;
+        validate(true); // inline errors show
       }
 
       // helper: first invalid for submit (uses HARD name check)
@@ -1987,34 +2041,37 @@ function createReviewWidget() {
       }
 
       // Skip guards (next field focus try)
-      $email.addEventListener("focus", () => {
-        if (!$name.value.trim()) {
-          $name.focus();
-        }
-      });
+      // $email.addEventListener("focus", () => {
+      //   if (!$name.value.trim()) {
+      //     $name.focus();
+      //   }
+      // });
 
-      // Phone focus: only block if previous fields are empty
-      $phone.addEventListener("focus", () => {
-        if (!$name.value.trim()) {
-          $name.focus();
-          return;
-        }
-        if (!$email.value.trim()) {
-          $email.focus();
-          return;
-        }
-      });
+      // // Phone focus: only block if previous fields are empty
+      // $phone.addEventListener("focus", () => {
+      //   if (!$name.value.trim()) {
+      //     $name.focus();
+      //     return;
+      //   }
+      //   if (!$email.value.trim()) {
+      //     $email.focus();
+      //     return;
+      //   }
+      // });
 
       // Live input + blur (only mark this field touched)
       $name.addEventListener("input", () => {
+        setFieldError($name, $eN, "");
         validate(false);
         saveLS();
       });
       $email.addEventListener("input", () => {
+        setFieldError($email, $eE, "");
         validate(false);
         saveLS();
       });
       $phone.addEventListener("input", () => {
+        setFieldError($phone, $eP, "");
         validate(false);
         saveLS();
       });
@@ -2054,17 +2111,85 @@ function createReviewWidget() {
           }
         });
       });
+      // $chat.onclick = async () => {
+      //   touched.name = touched.email = touched.phone = true;
+      //   if (!validate(true)) {
+      //     (firstInvalid() || $name).focus();
+      //     return;
+      //   }
+      //   saveLS();
+      //   localStorage.setItem("rex_last_ui", "chat");
+      //   try {
+      //     await ensureChatSession();
+      //   } catch {}
+      //   const cp = getOrCreateChatPopup();
+      //   cp.classList.add("show");
+      //   supportEl.classList.remove("show");
+      //   clearCloseTimer();
+      // };
+
+      // ...getOrCreateSupportPopup() ke andar, elements bind hone ke baad:
+
       $chat.onclick = async () => {
+        // 🔒 force validation only on click (user typing me free hai)
         touched.name = touched.email = touched.phone = true;
-        if (!validate(true)) {
-          (firstInvalid() || $name).focus();
+
+        // current values
+        const nameVal = $name.value.trim();
+        const emailVal = $email.value.trim();
+        const phoneVal = $phone.value.trim();
+
+        // helper: required + format error messaging
+        const reqOr = (ok, $input, $errBox, reqMsg, fmtMsg) => {
+          const v = $input.value.trim();
+          if (!v) {
+            setFieldError($input, $errBox, reqMsg);
+            return false;
+          }
+          if (!ok) {
+            setFieldError($input, $errBox, fmtMsg);
+            return false;
+          }
+          setFieldError($input, $errBox, "");
+          return true;
+        };
+
+        // ✅ hard checks (name/email/phone — tino zaroori)
+        const okName = reqOr(
+          vNameHard(nameVal),
+          $name,
+          $eN,
+          "Name is required.",
+          "Please enter your full name."
+        );
+        const okEmail = reqOr(
+          vEmail(emailVal),
+          $email,
+          $eE,
+          "Email is required.",
+          "Please enter a valid email address."
+        );
+        const okPhone = reqOr(
+          vPhone(phoneVal),
+          $phone,
+          $eP,
+          "Phone is required.",
+          "Please enter a valid phone number (10–15 digits)."
+        );
+
+        // ❌ agar koi fail hai to pehle invalid field par focus karke return
+        if (!okName || !okEmail || !okPhone) {
+          (!okName ? $name : !okEmail ? $email : $phone).focus();
           return;
         }
-        saveLS();
+
+        // ✅ sab sahi — values save karo aur chat kholo
+        saveLS(); // (aapki existing save function)
         localStorage.setItem("rex_last_ui", "chat");
+
         try {
           await ensureChatSession();
-        } catch { }
+        } catch {}
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
         supportEl.classList.remove("show");
@@ -2073,26 +2198,78 @@ function createReviewWidget() {
 
       $call.onclick = () => {
         touched.name = touched.email = touched.phone = true;
-        if (!validate(true)) {
-          (firstInvalid() || $name).focus();
+
+        // current values
+        const nameVal = $name.value.trim();
+        const emailVal = $email.value.trim();
+        const phoneVal = $phone.value.trim();
+
+        // helper: required + format error messaging (same as chat)
+        const reqOr = (ok, $input, $errBox, reqMsg, fmtMsg) => {
+          const v = $input.value.trim();
+          if (!v) {
+            setFieldError($input, $errBox, reqMsg);
+            return false;
+          }
+          if (!ok) {
+            setFieldError($input, $errBox, fmtMsg);
+            return false;
+          }
+          setFieldError($input, $errBox, "");
+          return true;
+        };
+
+        // ✅ hard checks (name/email/phone — tino zaroori)
+        const okName = reqOr(
+          vNameHard(nameVal),
+          $name,
+          $eN,
+          "Name is required.",
+          "Please enter your full name."
+        );
+        const okEmail = reqOr(
+          vEmail(emailVal),
+          $email,
+          $eE,
+          "Email is required.",
+          "Please enter a valid email address."
+        );
+        const okPhone = reqOr(
+          vPhone(phoneVal),
+          $phone,
+          $eP,
+          "Phone is required.",
+          "Please enter a valid phone number (10–15 digits)."
+        );
+
+        // ❌ fail → pehle invalid field par focus + stop
+        if (!okName || !okEmail || !okPhone) {
+          (!okName ? $name : !okEmail ? $email : $phone).focus();
           return;
         }
+
+        // ✅ sab sahi — values save karo aur call flow chalao
         saveLS();
 
         // koi auto preference na rahe
-        localStorage.removeItem("rex_last_ui");
+        // ❗️Chat disabled case: अगली बार widget click पर call popup खुले
+        if (!isChatEnabled) {
+          localStorage.setItem("rex_last_ui", "call"); // 👈 preference save
+        } else {
+          localStorage.setItem("rex_last_ui", "chat");
+        }
 
         // CLOSE all other UIs before starting call
         try {
           supportEl?.classList.remove("show");
-        } catch { }
+        } catch {}
         try {
           document.getElementById("rexPreChatModal")?.style &&
             (document.getElementById("rexPreChatModal").style.display = "none");
-        } catch { }
+        } catch {}
         try {
           document.getElementById("rexChatPopup")?.classList.remove("show");
-        } catch { }
+        } catch {}
 
         // OPEN call modal & trigger call
         const mainModal = document.getElementById("agentPopup");
@@ -2113,10 +2290,34 @@ function createReviewWidget() {
     // widget click → yahi UI dikhao jab tak history/pref chat na ho
     rexAgent.addEventListener("click", async () => {
       const preferChat = localStorage.getItem("rex_last_ui") === "chat";
+      const preferCall = localStorage.getItem("rex_last_ui") === "call"; // 👈 NEW
       const hasHistory = (loadChatHistory() || []).length > 0;
+      const prefer = localStorage.getItem("rex_last_ui");
 
+      const chatEnabled = (() => {
+        const v = localStorage.getItem("isChatEnabled");
+        return v === "true" || v === "1";
+      })();
+      if (!hasCompleteProfile()) {
+        const sp = getOrCreateSupportPopup();
+        sp.classList.add("show");
+        playPrechatGreeting();
+        rexAgent.classList.add("noFloat");
+        clearCloseTimer?.();
+        return; // yahin ruk jao — call/chat mat kholna
+      }
+      // 1) hard prefer CALL when chat is off or user asked for call
+      if (!chatEnabled || prefer === "call") {
+        const modal = document.getElementById("agentPopup");
+        if (modal) {
+          modal.style.display = "block";
+          rexAgent.classList.add("noFloat");
+          clearCloseTimer?.();
+          return;
+        }
+      }
       // agar chat kholna hai (yahin create session chalta hai) to disable button
-      if (hasCompleteProfile() || preferChat || hasHistory) {
+      if (prefer === "chat" || (chatEnabled && hasCompleteProfile())) {
         if (__rex_widget_clicking) return; // hard guard
         __rex_widget_clicking = true;
         rexAgent.classList.add("is-busy");
@@ -2127,7 +2328,7 @@ function createReviewWidget() {
             // IMPORTANT: yahin session create hota hai — is dauran widget disabled rahe
             try {
               await ensureChatSession();
-            } catch { }
+            } catch {}
 
             const cp = getOrCreateChatPopup();
             cp.classList.add("show");
@@ -2161,15 +2362,18 @@ function createReviewWidget() {
         callBtn.classList.remove("reddiv");
         callBtn.classList.add("greendiv");
         phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
-        callText.innerHTML = `<p>Call <span class="agentTag">${agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
-          }</span></p><small>${businessName.length > 10
+        callText.innerHTML = `<p>Call <span class="agentTag">${
+          agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
+        }</span></p><small>${
+          businessName.length > 10
             ? `${businessName.substring(0, 8)}..`
             : businessName
-          } Agent is LIVE</small>`;
+        } Agent is LIVE</small>`;
         onCall = false;
         // lockWidgetFor(3000);
       }
     });
+
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
         modal.style.display = "none";
@@ -2197,13 +2401,15 @@ function createReviewWidget() {
     </span>
     <h2>Terms of Use
     </h2>
-    <p> By clicking the Call button to talk to Rexpt AI agent on ${businessName?.length > 15
+    <p> By clicking the Call button to talk to Rexpt AI agent on ${
+      businessName?.length > 15
         ? `${businessName.substring(0, 20)}..`
         : businessName
-      } named ${agentName}, You Agree to Terms of Use for Rexpt AI Agents published on <a href="https://www.rexpt.in/Terms-Condition" target="_blank" style="color: #007bff; text-decoration: underline;">TERMS & CONDITIONS</a>. Each time You interact with this Al agent, You consent to the recording, storage, and sharing of my communications with ${businessName?.length > 15
+    } named ${agentName}, You Agree to Terms of Use for Rexpt AI Agents published on <a href="https://www.rexpt.in/Terms-Condition" target="_blank" style="color: #007bff; text-decoration: underline;">TERMS & CONDITIONS</a>. Each time You interact with this Al agent, You consent to the recording, storage, and sharing of my communications with ${
+      businessName?.length > 15
         ? `${businessName.substring(0, 20)}..`
         : businessName
-      }, Rexpt & Other third-party service providers, and as described in the <a href="https://www.rexpt.in/Privacy-Policy" target="_blank" style="color: #007bff; text-decoration: underline;">
+    }, Rexpt & Other third-party service providers, and as described in the <a href="https://www.rexpt.in/Privacy-Policy" target="_blank" style="color: #007bff; text-decoration: underline;">
     Privacy Policy</a>. If you do not wish to have your conversations recorded, please refrain from using this service & DO NOT MAKE THE CALL.
     </p>
   </div>
@@ -2220,6 +2426,7 @@ function createReviewWidget() {
     });
 
     callBtn.onclick = async () => {
+      localStorage.setItem("rex_last_ui", "call");
       if (navigator?.mediaDevices) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
@@ -2265,10 +2472,11 @@ function createReviewWidget() {
                 callBtn.classList.remove("greendiv");
                 callBtn.classList.add("reddiv");
                 phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
-                callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${agentName.length > 10
-                  ? `${agentName.substring(0, 8)}..`
-                  : agentName
-                  }</small>`;
+                callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
+                  agentName.length > 10
+                    ? `${agentName.substring(0, 8)}..`
+                    : agentName
+                }</small>`;
                 onCall = true;
                 // Add pulse rings when call starts
                 imageWrapper.classList.add("active");
@@ -2303,12 +2511,14 @@ function createReviewWidget() {
           callBtn.classList.remove("reddiv");
           callBtn.classList.add("greendiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
-          callText.innerHTML = `<p style="color:white">Call <span class="agentTag">${agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
-            }</span></p>
-                <small>${businessName.length > 10
-              ? `${businessName.substring(0, 8)}..`
-              : businessName
-            } Agent is LIVE</small>`;
+          callText.innerHTML = `<p style="color:white">Call <span class="agentTag">${
+            agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
+          }</span></p>
+                <small>${
+                  businessName.length > 10
+                    ? `${businessName.substring(0, 8)}..`
+                    : businessName
+                } Agent is LIVE</small>`;
           onCall = false;
           callLabel.textContent = `Call ${agentName}`;
           imageWrapper.classList.remove("active");
@@ -2426,6 +2636,7 @@ function createReviewWidget() {
       return validateName(name) && validateEmail(email) && validatePhone(phone);
     }
     function saveUserProfile({ name, email, phone }) {
+      setDefaultUIAfterProfile();
       if (name) localStorage.setItem(LS_USER_NAME, String(name).trim());
       if (email)
         localStorage.setItem(LS_USER_EMAIL, String(email).trim().toLowerCase());
@@ -2524,7 +2735,7 @@ function createReviewWidget() {
       try {
         const _modal = document.getElementById("agentPopup");
         if (_modal) _modal.style.display = "none";
-      } catch { }
+      } catch {}
 
       const el = getOrCreatePreChatModal();
 
@@ -2705,39 +2916,39 @@ function createReviewWidget() {
       const $err = preChatModalEl.querySelector("#rexPreErr");
       const raw = ($input.value || "").trim();
 
-      if (_preStep === 0) {
-        if (!validateName(raw)) {
-          $err.textContent =
-            "Please enter your full name (letters only, min 2 characters).";
-          $err.style.display = "block";
-          return;
-        }
-        _preData.name = raw;
-        saveUserProfile({ name: raw });
-        _preStep = 1;
-        applyStepUI();
-        return;
-      }
+      // if (_preStep === 0) {
+      //   if (!validateName(raw)) {
+      //     $err.textContent =
+      //       "Please enter your full name (letters only, min 2 characters).";
+      //     $err.style.display = "block";
+      //     return;
+      //   }
+      //   _preData.name = raw;
+      //   saveUserProfile({ name: raw });
+      //   _preStep = 1;
+      //   applyStepUI();
+      //   return;
+      // }
 
-      if (_preStep === 1) {
-        if (!validateEmail(raw)) {
-          $err.textContent = "Please enter a valid email address.";
-          $err.style.display = "block";
-          return;
-        }
-        _preData.email = raw;
-        saveUserProfile({ email: raw });
-        _preStep = 2;
-        applyStepUI();
-        return;
-      }
+      // if (_preStep === 1) {
+      //   if (!validateEmail(raw)) {
+      //     $err.textContent = "Please enter a valid email address.";
+      //     $err.style.display = "block";
+      //     return;
+      //   }
+      //   _preData.email = raw;
+      //   saveUserProfile({ email: raw });
+      //   _preStep = 2;
+      //   applyStepUI();
+      //   return;
+      // }
 
       // step 2: phone
-      if (!validatePhone(raw)) {
-        $err.textContent = "Please enter a valid phone number (10–15 digits).";
-        $err.style.display = "block";
-        return;
-      }
+      // if (!validatePhone(raw)) {
+      //   $err.textContent = "Please enter a valid phone number (10–15 digits).";
+      //   $err.style.display = "block";
+      //   return;
+      // }
       _preData.phone = raw;
       saveUserProfile({ phone: raw });
 
@@ -2829,7 +3040,7 @@ function createReviewWidget() {
             if (typeof okCb === "function") {
               try {
                 okCb(result);
-              } catch { }
+              } catch {}
             }
             close(true);
           } catch (err) {
@@ -2887,9 +3098,7 @@ function createReviewWidget() {
       chatModalEl.className = "chat-popup";
       chatModalEl.innerHTML = `
 
-      <div class="PoweredBy">
-      <spna>Powered by rxpt.us</spna>
-      </div>
+      
         <div class="attio-header">
           <div class="attio-brand" style="display:flex;align-items:center;gap:10px">
             <div class="attio-logo" style="width:36px;height:36px;border-radius:100px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#111">
@@ -2897,9 +3106,9 @@ function createReviewWidget() {
             </div>
             <div class="attio-title" style="line-height:1">
               <div class="t" style="font-weight:700;font-size:20px;color:#fff; text-transform:uppercase"> ${agentName.substring(
-        0,
-        7
-      )}</div>
+                0,
+                7
+              )}</div>
               <div class="s" style="font-size:12px;color:#D1DCED">Customer Success Agent</div>
             </div>
           </div>
@@ -2934,6 +3143,9 @@ function createReviewWidget() {
 </button>
           </div>
         </div>
+        <div class="PoweredBy">
+      <spna>Powered by rxpt.us</spna>
+      </div>
 `;
 
       document.body.appendChild(chatModalEl);
@@ -3008,8 +3220,9 @@ function createReviewWidget() {
           callBtn.classList.remove("greendiv");
           callBtn.classList.add("reddiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
-          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
-            }</small>`;
+          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
+            agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
+          }</small>`;
           onCall = true;
 
           // rings
@@ -3107,7 +3320,7 @@ function createReviewWidget() {
           try {
             clearInactivityTimers();
             startCloseTimer();
-          } catch { }
+          } catch {}
         };
       }
 
@@ -3200,7 +3413,7 @@ function createReviewWidget() {
         try {
           clearInactivityTimers();
           startCloseTimer();
-        } catch { }
+        } catch {}
       };
 
       // helpers
@@ -3212,13 +3425,13 @@ function createReviewWidget() {
         s.replace(
           /[&<>"']/g,
           (m) =>
-          ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-          }[m])
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[m])
         );
       function appendMessage(role, text, ts) {
         const when = ts || Date.now();
@@ -3361,7 +3574,8 @@ function createReviewWidget() {
           const intro =
             `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
             `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
-            `and my phone number is ${localStorage.getItem("rex_user_phone") || ""
+            `and my phone number is ${
+              localStorage.getItem("rex_user_phone") || ""
             }.`;
           payload = `${intro}\n${t}`.trim();
           localStorage.setItem("rex_intro_inline", "1");
@@ -3436,13 +3650,18 @@ function createReviewWidget() {
       (async () => {
         try {
           await maybeSendIntroOnOpen();
-        } catch { }
+        } catch {}
       })();
       return chatModalEl;
     }
+
+    setDefaultUIAfterProfile();
   };
 
   injectCSS();
+
+  
+
   (async () => {
     await initWidget();
   })();
