@@ -524,10 +524,15 @@ function injectCSS() {
              }
             .chat-popup{
              position:fixed; bottom:155px; right:20px;
-             max-width:500px;
+           max-width: 290px !important;
+  transition: 
+    max-width .35s ease,
+    transform .35s ease,
+    box-shadow .35s ease;
+  transform-origin: bottom right;
              width:90%;
              background:#fff;
-            //  background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%); 
+          
              border-radius:16px;
              border:1px solid #ECECEC;
              box-shadow:0 18px 40px rgba(0,0,0,.18);
@@ -536,10 +541,45 @@ function injectCSS() {
             }
                 .chat-popup.show{display:block}
                 .chat-popup::after{
-                content:""; position:absolute; bottom:-16px; right:24px;
-                width:30px; height:30px; background: #ffffffff; transform:rotate(45deg);
-                box-shadow:14px 15px 20px rgba(0,0,0,.10); border-radius:0 0 8px 0;
+  content: "";
+    position: absolute;
+    bottom: -12px;
+    right: 24px;
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    transform: rotate(45deg);
+    border: 1px solid #ececec;
+    border-top: 0;
+    border-left: 0;
+    border-radius: 0 0 8px 0;
+    box-shadow: 10px 10px 18px rgba(0,0,0,.08);
+    z-index: -1;
                 }
+                  .chat-popup.expanded{
+  max-width: 500px !important;
+  transform: scale(1);
+}
+
+/* Motion sensitivity */
+@media (prefers-reduced-motion: reduce){
+  .chat-popup{
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Mobile: full width, no expand play (aapke existing rule ke saath compatible) */
+@media (max-width:650px){
+  .chat-popup{
+    max-width: none !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+  }
+}
                 .attio-header{display:flex; align-items:center; justify-content:space-between;
                 padding:12px 16px; border-bottom:1px solid #EFEFEF}
                 .attio-brand{display:flex; align-items:center; gap:10px}
@@ -551,10 +591,24 @@ function injectCSS() {
                 .attio-title .s{font-size:12px; color:#7A7A7A}
                 .attio-close{border:0; background:transparent; font-size:20px; color:#666; cursor:pointer}
                 .attio-body{padding:12px 16px 18px;background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px;}
-                .attio-thread{
-                height:50dvh; overflow:auto; padding:10px 0; border:0px solid #EFEFEF;
-                border-radius:12px; background:transparent; margin-top:10px;
-                }
+               .attio-thread{
+  height: 26dvh;
+  overflow: auto;
+  padding: 10px 0;
+  border: 0px solid #EFEFEF;
+  border-radius: 12px;
+  background: transparent;
+  margin-top: 10px;
+  transition: height .35s ease; /* smooth expand */
+}
+                  .chat-popup.expanded .attio-thread{
+  height: 50dvh;
+}
+
+/* Motion sensitivity */
+@media (prefers-reduced-motion: reduce){
+  .attio-thread{ transition: none !important; }
+}
                 .msg{max-width:75%;width: max-content; padding:10px 12px; border-radius:14px; margin:15px 10px;
                 font-size:16px; line-height:1.35; word-wrap:break-word; box-shadow:0 1px 1px rgba(0,0,0,.04)}
                 .msg.bot{background:#ffffff1a; border:0px solid #E8EEF5; color:#fff; margin-left:10px;border-left: 3px solid #6524EB;}
@@ -570,7 +624,7 @@ function injectCSS() {
                  @media (max-width:650px) {
                 .chat-popup {
                     max-width: none !important;
-                    width: 100% !important;
+                    width: 88% !important;
                     left: 0 !important;
                     right: 0 !important;
                     border-radius: 0 !important;
@@ -691,7 +745,7 @@ function injectCSS() {
           z-index: 1002;
           display: none;
           font-family: Inter,system-ui,Segoe UI,Arial,sans-serif;
-          padding: 20px;
+          padding: 20px 20px 2px 20px;
 
         }
         .support-popup.show{ display:block }
@@ -840,11 +894,19 @@ function injectCSS() {
           animation: rexSpin .8s linear infinite;
         }
           .PoweredBy{
-          position: absolute;
-          
+          // position: absolute;
+          display:flex;
+          justify-content: space-between;          
           color:#7D7D7D;
           font-size:12px;
+          line-height: 18px;
           
+          }
+          .CloseX{
+        position: relative;
+        left: -12px;
+        top: 5px;
+        font-size: 22px;
           }
           .PoweredBy a{
           color:#7D7D7D;
@@ -892,6 +954,8 @@ function injectCSS() {
         @keyframes pcBlink { 0%{transform:translateY(0);opacity:.3}
           50%{transform:translateY(-3px);opacity:1} 100%{transform:translateY(0);opacity:.3}
         }
+
+        
 
 `;
   document.head.appendChild(style);
@@ -1729,6 +1793,9 @@ function createReviewWidget() {
       ensureUserProfileThen(() => {
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
+        cp.classList.remove("expanded"); // reset
+        void cp.offsetWidth; // reflow to start transition cleanly
+        cp.classList.add("expanded");
         clearCloseTimer();
 
         if (window.ChatLily?.mount) {
@@ -1886,15 +1953,16 @@ function createReviewWidget() {
       
     </div>
     <div class="PoweredBy">
-      <spna><a href="https://www.rxpt.us/">Powered by rxpt.us</a></spna>
-      </div>
+      <span><a href="https://www.rxpt.us/" target="_blank" rel="noopener noreferrer">Powered by rxpt.us</a></span>
+
+    </div>
   `;
       document.body.appendChild(supportEl);
 
       // setTimeout(() => playPrechatGreeting(), 0);
 
       // close
-      supportEl.querySelector(".support-close").onclick = () => {
+      supportEl.querySelector(".support-close", ".CloseX").onclick = () => {
         setDefaultUIAfterProfile();
         supportEl.classList.remove("show");
         try {
@@ -1939,9 +2007,38 @@ function createReviewWidget() {
         return parts.every((p) => /^[a-zA-Z'.-]{2,}$/.test(p));
       };
       const vEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
-      const vPhone = (s) => {
-        const d = String(s).replace(/[^\d]/g, "");
-        return d.length >= 10 && d.length <= 15;
+      // const vPhone = (s) => {
+      //   const d = String(s).replace(/[^\d]/g, "");
+      //   return d.length >= 10 && d.length <= 15;
+      // };
+
+      // REPLACE your old vPhone with this:
+      const vPhone = (s, el) => {
+        const raw = String(s || "").trim();
+
+        // must start with +
+        if (!/^\+/.test(raw)) return false;
+
+        // If intl-tel-input is available on this input, use its validator
+        if (el && el.__iti && window.intlTelInputUtils) {
+          try {
+            // validate the number currently in the input
+            if (!el.__iti.isValidNumber()) return false;
+
+            // extra sanity: E.164 length 8–15 digits (ITU E.164)
+            const e164 = el.__iti.getNumber(
+              intlTelInputUtils.numberFormat.E164
+            ); // "+9198…"
+            const digits = e164.replace(/[^\d]/g, "");
+            return digits.length >= 8 && digits <= 15;
+          } catch {
+            // fall through to regex
+          }
+        }
+
+        // Fallback (no iti): +CC (1–3) + subscriber (6–14) => total 8–17 incl. '+'
+        const compact = raw.replace(/\s|-/g, "");
+        return /^\+\d{1,3}\d{6,14}$/.test(compact);
       };
 
       /* -------- touched flags (prevent errors on open) -------- */
@@ -2012,7 +2109,7 @@ function createReviewWidget() {
         //     setFieldError(
         //       $phone,
         //       $eP,
-        //       okP ? "" : "Please enter a valid phone number (10–15 digits)."
+        //       okP ? "" : "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits)."
         //     );
         // }
 
@@ -2174,7 +2271,7 @@ function createReviewWidget() {
           $phone,
           $eP,
           "Phone is required.",
-          "Please enter a valid phone number (10–15 digits)."
+          "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits)."
         );
 
         // ❌ agar koi fail hai to pehle invalid field par focus karke return
@@ -2192,6 +2289,9 @@ function createReviewWidget() {
         } catch {}
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
+        cp.classList.remove("expanded"); // reset
+        void cp.offsetWidth; // reflow to start transition cleanly
+        cp.classList.add("expanded");
         supportEl.classList.remove("show");
         clearCloseTimer();
       };
@@ -2239,7 +2339,7 @@ function createReviewWidget() {
           $phone,
           $eP,
           "Phone is required.",
-          "Please enter a valid phone number (10–15 digits)."
+          "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits)."
         );
 
         // ❌ fail → pehle invalid field par focus + stop
@@ -2332,6 +2432,9 @@ function createReviewWidget() {
 
             const cp = getOrCreateChatPopup();
             cp.classList.add("show");
+            cp.classList.remove("expanded"); // reset
+            void cp.offsetWidth; // reflow to start transition cleanly
+            cp.classList.add("expanded");
             rexAgent.classList.add("noFloat");
             clearCloseTimer();
           });
@@ -2945,7 +3048,7 @@ function createReviewWidget() {
 
       // step 2: phone
       // if (!validatePhone(raw)) {
-      //   $err.textContent = "Please enter a valid phone number (10–15 digits).";
+      //   $err.textContent = "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits).";
       //   $err.style.display = "block";
       //   return;
       // }
@@ -3143,9 +3246,11 @@ function createReviewWidget() {
 </button>
           </div>
         </div>
-        <div class="PoweredBy">
-      <spna>Powered by rxpt.us</spna>
+ 
+    <div class="PoweredBy">
+      <span><a href="https://www.rxpt.us/" target="_blank" rel="noopener noreferrer">Powered by rxpt.us</a></span>
       </div>
+
 `;
 
       document.body.appendChild(chatModalEl);
@@ -3409,6 +3514,7 @@ function createReviewWidget() {
 
       // close handler
       chatModalEl.querySelector(".attio-close").onclick = () => {
+        chatModalEl.classList.remove("expanded");
         chatModalEl.classList.remove("show");
         try {
           clearInactivityTimers();
@@ -3660,7 +3766,35 @@ function createReviewWidget() {
 
   injectCSS();
 
-  
+  async function loadIntlTelInputAssets() {
+    const cssHref =
+      "https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.12/build/css/intlTelInput.css";
+    const jsSrc =
+      "https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.12/build/js/intlTelInput.min.js";
+    const utils =
+      "https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.12/build/js/utils.js";
+
+    // inject CSS (idempotent)
+    if (!document.querySelector(`link[href="${cssHref}"]`)) {
+      const l = document.createElement("link");
+      l.rel = "stylesheet";
+      l.href = cssHref;
+      document.head.appendChild(l);
+    }
+
+    // load script if not present
+    if (!window.intlTelInput) {
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = jsSrc;
+        s.onload = res;
+        s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    }
+
+    return { utilsUrl: utils };
+  }
 
   (async () => {
     await initWidget();
