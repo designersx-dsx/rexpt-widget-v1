@@ -2251,7 +2251,7 @@ function createReviewWidget() {
           return true;
         };
 
-        // ✅ hard checks (name/email/phone — tino zaroori)
+     
         const okName = reqOr(
           vNameHard(nameVal),
           $name,
