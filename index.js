@@ -475,7 +475,7 @@ function injectCSS() {
              border:1px solid #ECECEC;
              box-shadow:0 18px 40px rgba(0,0,0,.18);
              z-index:1002; display:none; font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
-             padding:20px
+             padding: 20px 20px 5px 20px;
             }
                 .chat-popup.show{display:block}
                 .chat-popup::after{
@@ -539,8 +539,8 @@ function injectCSS() {
               margin-top: 10px;
               transition: height .35s ease; /* smooth expand */
             }
-                              .chat-popup.expanded .attio-thread{
-              height: 50dvh;
+           .chat-popup.expanded .attio-thread{
+              height: 32dvh;
             }
 
             /* Motion sensitivity */
@@ -669,7 +669,7 @@ function injectCSS() {
             backdrop-filter: blur(1px); 
           }
           .rex-confirm-box{
-            width:min(92vw,420px); background:#fff; border:1px solid #ECECEC;
+            width:min(75vw,420px); background:#fff; border:1px solid #ECECEC;
             border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.18);
             padding:16px;
             font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
@@ -929,6 +929,7 @@ function injectCSS() {
 
         
 
+
 `;
   document.head.appendChild(style);
 }
@@ -983,35 +984,100 @@ function clearOnlyUserAutoEndTimer() {
     __rex_only_user_end_timer = null;
   }
 }
-
 async function hardEndChatNow() {
-  if (__rex_only_user_end_fired) return;
-  __rex_only_user_end_fired = true;
+  console.log("hard end chat");
+  if (window.__rex_only_user_end_fired) return;
+  window.__rex_only_user_end_fired = true;
 
   const chatId = localStorage.getItem("chat_id");
   if (!chatId) return;
 
   try {
-    const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(chatId)}`;
-    const res = await fetch(url, { method: "PATCH" });
-    if (!res.ok) {
-      const txt = await res.text().catch(() => "");
-      throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
+    const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+
+    // --- safe history read ---
+    let hist = [];
+    try {
+      const raw =
+        localStorage.getItem(
+          typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+        ) || "[]";
+      hist = JSON.parse(raw);
+      if (!Array.isArray(hist)) hist = [];
+    } catch {
+      hist = [];
+    }
+
+    const onlyUser =
+      typeof hasOnlyUserMessages === "function"
+        ? !!hasOnlyUserMessages(hist)
+        : false;
+
+    if (onlyUser || !knowledgeBaseId) {
+      // end (no archive)
+      const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(chatId)}`;
+      const res = await fetch(url, { method: "PATCH" });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
+      }
+    } else {
+      // archive
+      const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          knowledge_base_id: knowledgeBaseId,
+          chat_id: chatId,
+        }),
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+      }
     }
   } catch (e) {
     console.warn("[Rex] only-user auto end failed:", e);
   } finally {
-    localStorage.removeItem("rex_last_ui");
-    localStorage.removeItem(
-      typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
-    );
-    localStorage.removeItem("chat_id");
-    clearOnlyUserAutoEndTimer();
+    // --- LS cleanup ---
+    try {
+      localStorage.removeItem("rex_last_ui");
+    } catch {}
+    try {
+      localStorage.removeItem(
+        typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+      );
+    } catch {}
+    try {
+      localStorage.removeItem("chat_id");
+    } catch {}
+    try {
+      localStorage.removeItem("rex_intro_inline");
+    } catch {}
+
+    // stop any timers
+    try {
+      clearOnlyUserAutoEndTimer?.();
+    } catch {}
+
+    // close UI if open
     try {
       document.getElementById("rexChatPopup")?.classList.remove("show");
     } catch {}
+
+    // --- HARD RELOAD (no soft widget re-init) ---
+    // Simple reload:
+    window.location.reload();
+    return;
+
+    // If you ever need a cache-busting variant instead:
+    // const u = new URL(window.location.href);
+    // u.searchParams.set("_ts", String(Date.now()));
+    // window.location.replace(u.toString());
+    // return;
   }
 }
+
 function scheduleOnlyUserAutoEnd(idleMs = 1 * 60 * 1000) {
   clearOnlyUserAutoEndTimer();
 
@@ -1048,26 +1114,56 @@ function lockWidgetFor(ms = 3000) {
   }, ms);
 }
 
+// Soft-refresh + conditional archive/end
 async function endChatArchiveNow({ silent = false } = {}) {
-  if (__rex_end_called__) return;
-  __rex_end_called__ = true;
+  if (window.__rex_end_called__) return;
+  window.__rex_end_called__ = true;
+
+  const CHAT_KEY =
+    typeof CHAT_LS_KEY === "string" && CHAT_LS_KEY
+      ? CHAT_LS_KEY
+      : "rex_chat_history";
+
+  // ---- read history safely ----
+  let hist = [];
+  try {
+    const raw = localStorage.getItem(CHAT_KEY) || "[]";
+    const parsed = JSON.parse(raw);
+    hist = Array.isArray(parsed) ? parsed : [];
+  } catch {
+    hist = [];
+  }
+
+  const chatId = localStorage.getItem("chat_id");
+  const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
 
   try {
-    const chatId = localStorage.getItem("chat_id");
-    const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
-    if (chatId && knowledgeBaseId) {
-      const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          knowledge_base_id: knowledgeBaseId,
-          chat_id: chatId,
-        }),
-      });
-      console.log("end chat", res);
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+    // choose API based on history presence
+    if (chatId) {
+      if (hist.length > 0 && knowledgeBaseId) {
+        // archive (history present)
+        const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            knowledge_base_id: knowledgeBaseId,
+            chat_id: chatId,
+          }),
+        });
+        console.log("end chat (archive)", res);
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+        }
+      } else {
+        // simple end (no history or no KB)
+        const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(chatId)}`;
+        const res = await fetch(url, { method: "PATCH" });
+        console.log("end chat (simple)", res);
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
+        }
       }
     }
   } catch (e) {
@@ -1075,24 +1171,226 @@ async function endChatArchiveNow({ silent = false } = {}) {
     if (!silent) {
       appendMessage?.(
         "bot",
-        "⚠️ Unable to auto-end the chat. You can close the window.",
+        "⚠️ Auto end nahi ho paaya. Aap window band kar sakte ho.",
         Date.now()
       );
     }
   } finally {
-    localStorage.removeItem("rex_last_ui");
-    localStorage.removeItem(CHAT_LS_KEY);
-    localStorage.removeItem("chat_id");
+    // ---- LS cleanup / reset ----
+    try {
+      localStorage.removeItem("rex_last_ui");
+    } catch {}
+    try {
+      localStorage.removeItem("chat_id");
+    } catch {}
+    try {
+      localStorage.removeItem("rex_intro_inline");
+    } catch {}
+    // persist empty history so reopen par kuch append na ho
+    try {
+      localStorage.setItem(CHAT_KEY, "[]");
+    } catch {}
+
+    // ---- stop timers ----
     try {
       clearInactivityTimers?.();
     } catch {}
     try {
+      clearOnlyUserAutoEndTimer?.();
+    } catch {}
+    try {
+      clearCloseTimer?.();
+    } catch {}
+
+    // ---- HARD UI TEARDOWN (no page reload) ----
+    try {
+      // close & wipe existing chat popup content
       const cp = document.getElementById("rexChatPopup");
-      if (cp) cp.classList.remove("show");
-      window.location.reload();
+      if (cp) {
+        cp.classList.remove("show", "expanded");
+        const msgs = cp.querySelector("#rexMessages");
+        if (msgs) msgs.innerHTML = "";
+        try {
+          if (window.typingEl) {
+            window.typingEl.remove?.();
+            window.typingEl = null;
+          }
+        } catch {}
+        cp.remove();
+      }
+
+      // support/prechat modals off
+      try {
+        document.getElementById("rexSupportPopup")?.classList.remove("show");
+      } catch {}
+      try {
+        const pcm = document.getElementById("rexPreChatModal");
+        if (pcm) pcm.style.display = "none";
+      } catch {}
+
+      // launcher back to normal
+      try {
+        document.getElementById("agentButton")?.classList.remove("noFloat");
+      } catch {}
+
+      // drop outer refs if any
+      try {
+        window.chatModalEl = null;
+      } catch {}
+    } catch (e) {
+      console.warn("[Rex] UI teardown failed:", e);
+    }
+
+    // ---- SOFT RELOAD WIDGET (no page refresh) ----
+    try {
+      // 1) remove any existing popups to avoid duplicate IDs
+      ["agentPopup", "rexChatPopup", "rexSupportPopup"].forEach((id) => {
+        document.getElementById(id)?.remove();
+      });
+
+      // 2) drop the init flag so we can re-init cleanly
+      window.__REX_WIDGET_INITIALIZED__ = false;
+
+      // 3) ensure host exists (create if removed)
+      if (!document.getElementById("review-widget")) {
+        const host = document.createElement("div");
+        host.id = "review-widget";
+        document.body.appendChild(host);
+      }
+
+      // 4) re-init on next frames so DOM/LS writes settle
+      const reinit = () => {
+        try {
+          // your existing bootstrapper
+          createReviewWidget();
+        } catch (e) {
+          console.warn("reinit failed", e);
+        }
+      };
+      if (typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(() => requestAnimationFrame(reinit));
+      } else {
+        setTimeout(reinit, 0);
+      }
+    } catch (e) {
+      console.warn("[Rex] widget soft reload failed:", e);
+    }
+
+    // optional: refresh in-widget state (no network)
+    try {
+      loadChatHistory?.();
     } catch {}
   }
 }
+
+// async function endChatArchiveNow({ silent = false } = {}) {
+//   if (__rex_end_called__) return;
+//   __rex_end_called__ = true;
+
+//   try {
+//     const chatId = localStorage.getItem("chat_id");
+//     const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
+//     if (chatId && knowledgeBaseId) {
+//       const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           knowledge_base_id: knowledgeBaseId,
+//           chat_id: chatId,
+//         }),
+//       });
+//       console.log("end chat", res);
+//       if (!res.ok) {
+//         const txt = await res.text().catch(() => "");
+//         throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+//       }
+//     }
+//   } catch (e) {
+//     console.error("[Rex] auto end-chat failed:", e);
+//     if (!silent) {
+//       appendMessage?.(
+//         "bot",
+//         "⚠️ Unable to auto-end the chat. You can close the window.",
+//         Date.now()
+//       );
+//     }
+//   } finally {
+//     try {
+//       localStorage.removeItem("rex_last_ui");
+//     } catch {}
+//     try {
+//       localStorage.removeItem(CHAT_LS_KEY);
+//     } catch {}
+//     try {
+//       localStorage.removeItem("chat_id");
+//     } catch {}
+//     try {
+//       localStorage.removeItem("rex_intro_inline");
+//     } catch {}
+
+//     // persist an empty history so reopen pe kuch append na ho
+//     try {
+//       localStorage.setItem(CHAT_LS_KEY, "[]");
+//     } catch {}
+
+//     // stop all timers that may re-open or re-append
+//     try {
+//       clearInactivityTimers?.();
+//     } catch {}
+//     try {
+//       clearOnlyUserAutoEndTimer?.();
+//     } catch {}
+//     try {
+//       clearCloseTimer?.();
+//     } catch {}
+//     try {
+//       loadChatHistory?.();
+//     } catch {}
+//     // ---- HARD UI TEARDOWN (no page reload) ----
+//     try {
+//       // 1) close & wipe the existing chat popup content
+//       const cp = document.getElementById("rexChatPopup");
+//       if (cp) {
+//         cp.classList.remove("show", "expanded");
+//         const msgs = cp.querySelector("#rexMessages");
+//         if (msgs) msgs.innerHTML = "";
+//         // typing bubble ref ko drop karo (agar global var use ho raha)
+//         try {
+//           if (window.typingEl) {
+//             window.typingEl.remove?.();
+//             window.typingEl = null;
+//           }
+//         } catch {}
+//         // 2) force fresh mount next time
+//         cp.remove();
+//       }
+
+//       // 3) agar aapke code me chatModalEl ek outer var hai, usko null kar do
+//       try {
+//         window.chatModalEl = null;
+//       } catch {}
+
+//       // 4) support/prechat modals bhi band
+//       try {
+//         document.getElementById("rexSupportPopup")?.classList.remove("show");
+//       } catch {}
+//       try {
+//         const pcm = document.getElementById("rexPreChatModal");
+//         if (pcm) pcm.style.display = "none";
+//       } catch {}
+
+//       // 5) launcher ko normal state me lao (float back)
+//       try {
+//         document.getElementById("agentButton")?.classList.remove("noFloat");
+//       } catch {}
+//     } catch (e) {
+//       console.warn("[Rex] UI teardown failed:", e);
+//     }
+
+//     // IMPORTANT: **no reload**
+//     window.location.reload();
+//   }
+// }
 let __rex_close_timer__ = null;
 function startCloseTimer() {
   clearCloseTimer();
@@ -1379,6 +1677,30 @@ function createReviewWidget() {
     const retellWebClient = new RetellWebClient();
     const agentId = getAgentIdFromScript();
 
+    // put this near your helpers
+    const toNum = (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    };
+    const SPECIAL_REX_AGENT = "agent_0498e1599d6ea9e13d09657f79";
+
+    function enforceRexIfNoMinutes() {
+      const callLeft = toNum(localStorage.getItem("call_mins_left"));
+      const chatLeft = toNum(localStorage.getItem("chat_mins_left"));
+      const addOnsLeft = toNum(localStorage.getItem("addOnsMins"));
+
+      const allZero = callLeft === 0 && chatLeft === 0 && addOnsLeft === 0;
+      if (allZero) {
+        // lock to REX agent
+        localStorage.setItem("agent_id", SPECIAL_REX_AGENT);
+
+        // optionally remember last UI choice as "call"
+        localStorage.setItem("rex_last_ui", "call");
+        return true;
+      }
+      return false;
+    }
+
     let agentName = "REX";
     let agentVoiceId = "";
     let agentVoiceName = "";
@@ -1400,21 +1722,29 @@ function createReviewWidget() {
       const text = await agentRes.text();
       try {
         const json = JSON.parse(text);
+
+        // ---- Write to localStorage as string ----
+        const isChatEnabled = Boolean(json.chatWidgetEnabled);
+        localStorage.setItem("isChatEnabled", isChatEnabled ? "true" : "false");
+        localStorage.setItem("call_mins_left", String(json.mins_left ?? ""));
+        localStorage.setItem("chat_mins_left", String(json.messageLeft ?? ""));
+        localStorage.setItem("addOnsMins", String(json.addOnsMins ?? ""));
+
+        enforceRexIfNoMinutes();
+
+        console.log(json, "json of wfwe");
         agentName = json.agentName || agentName;
         agentVoiceId = json.agentVoice || "";
         agentRole = json.agentRole;
         userId = json.userId;
         avatar = json.avatar;
         agentVoipNumber = json.voip_numbers;
-        // isChatEnabled = Boolean(json.chatWidgetEnabled);
-        isChatEnabled = true;
-        localStorage.setItem("isChatEnabled", String(isChatEnabled));
-        // mins_left = json.mins_left;
-        mins_left = 90;
-        // messageLeft = json.messageLeft;
-        messageLeft = 90;
-        localStorage.setItem("call_mins_left", mins_left);
-        localStorage.setItem("chat_mins_left", messageLeft);
+        isChatEnabled = json.chatWidgetEnabled;
+        // isChatEnabled = true;
+        mins_left = json.mins_left;
+        // mins_left = 90;
+        messageLeft = json.messageLeft;
+        // messageLeft = 90;
         const kbId = json.knowledgeBaseId || json.knowledgeBaseId;
         if (kbId) localStorage.setItem("knowledge_base_id", String(kbId));
       } catch (e) {
@@ -1635,6 +1965,7 @@ function createReviewWidget() {
 
     const buttonStack = createElement("div", { className: "button-stack" });
     const chat_mins_left = localStorage.getItem("chat_mins_left");
+    const isChatEnabled = localStorage.getItem("isChatEnabled");
 
     if (isChatEnabled && chat_mins_left > 0) {
       buttonStack.appendChild(chatBtn);
@@ -1993,6 +2324,13 @@ function createReviewWidget() {
         } catch {}
       };
 
+      // put this near your helpers
+      const toNum = (v) => {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+      };
+      const SPECIAL_REX_AGENT = "agent_0498e1599d6ea9e13d09657f79";
+
       const $name = supportEl.querySelector("#pcName");
       const $email = supportEl.querySelector("#pcEmail");
       const $phone = supportEl.querySelector("#pcPhone");
@@ -2007,9 +2345,12 @@ function createReviewWidget() {
       ).toLowerCase();
       const chatEnabled = chatEnabledFlag === "true" || chatEnabledFlag === "1";
       const chatMinsLeft = Number(localStorage.getItem("chat_mins_left"));
-      const callMinsLeft = Number(localStorage.getItem("call_mins_left") || 0);
+      const callMinsLeft = Number(localStorage.getItem("call_mins_left"));
+      const addOnsLeft = toNum(localStorage.getItem("addOnsMins"));
+      const allZero =
+        chatMinsLeft === 0 && callMinsLeft === 0 && addOnsLeft === 0;
       const canShowChat = chatEnabled && chatMinsLeft > 0;
-      const canShowCall = callMinsLeft > 0;
+      const canShowCall = callMinsLeft > 0 || addOnsLeft > 0;
       if ($actions) $actions.classList.remove("single");
       if ($chat) {
         $chat.style.display = "none";
@@ -2022,7 +2363,57 @@ function createReviewWidget() {
         $call.style.width = "";
         $call.setAttribute("aria-disabled", "true");
       }
-      if (canShowChat && canShowCall) {
+      // if (canShowChat && canShowCall) {
+      //   if ($chat) $chat.style.display = "inline-flex";
+      //   if ($call) {
+      //     $call.style.display = "inline-flex";
+      //     $call.removeAttribute("aria-disabled");
+      //   }
+      //   if ($actions) $actions.classList.remove("single");
+      // } else if (canShowChat && !canShowCall) {
+      //   if ($chat) {
+      //     $chat.style.display = "inline-flex";
+      //     $chat.style.flex = "1 1 100%";
+      //   }
+      //   if ($actions) $actions.classList.add("single");
+      // } else if (!canShowChat && canShowCall) {
+      //   if ($call) {
+      //     $call.style.display = "inline-flex";
+      //     $call.style.flex = "1 1 100%";
+      //     $call.style.width = "100%";
+      //     $call.removeAttribute("aria-disabled");
+      //   }
+      //   if ($actions) $actions.classList.add("single");
+      // } else {
+      //   localStorage.setItem("agent_id", "agent_0498e1599d6ea9e13d09657f79");
+      //   if ($chat) {
+      //     $chat.style.display = "none";
+      //     $chat.style.flex = "";
+      //     $chat.style.width = "";
+      //   }
+      //   if ($call) {
+      //     $call.style.display = "inline-flex";
+      //     $call.style.flex = "1 1 100%";
+      //     $call.style.width = "100%";
+      //     $call.setAttribute("aria-disabled", "true");
+      //   }
+      //   if ($actions) $actions.classList.add("single");
+      if (allZero) {
+        // 🔒 Force REX
+        localStorage.setItem("agent_id", SPECIAL_REX_AGENT);
+
+        // chat bilkul hide
+        if ($chat) $chat.style.display = "none";
+
+        // call button single layout me (disabled)
+        if ($call) {
+          $call.style.display = "inline-flex";
+          $call.style.flex = "1 1 100%";
+          $call.style.width = "100%";
+          $call.setAttribute("aria-disabled", "true");
+        }
+        if ($actions) $actions.classList.add("single");
+      } else if (canShowChat && canShowCall) {
         if ($chat) $chat.style.display = "inline-flex";
         if ($call) {
           $call.style.display = "inline-flex";
@@ -2044,12 +2435,9 @@ function createReviewWidget() {
         }
         if ($actions) $actions.classList.add("single");
       } else {
-        localStorage.setItem("agent_id", "agent_0498e1599d6ea9e13d09657f79");
-        if ($chat) {
-          $chat.style.display = "none";
-          $chat.style.flex = "";
-          $chat.style.width = "";
-        }
+        // default fallback (usually unreachable now)
+        localStorage.setItem("agent_id", SPECIAL_REX_AGENT);
+        if ($chat) $chat.style.display = "none";
         if ($call) {
           $call.style.display = "inline-flex";
           $call.style.flex = "1 1 100%";
@@ -2615,6 +3003,40 @@ function createReviewWidget() {
 
           modal.style.display = "none";
           document.getElementById("agentButton")?.classList.remove("noFloat");
+
+          // ---- SOFT RELOAD WIDGET (no page refresh) ----
+          try {
+            // 1) remove any existing popups to avoid duplicate IDs
+            ["agentPopup", "rexChatPopup", "rexSupportPopup"].forEach((id) => {
+              document.getElementById(id)?.remove();
+            });
+
+            // 2) drop the init flag so we can re-init cleanly
+            window.__REX_WIDGET_INITIALIZED__ = false;
+
+            // 3) ensure host exists (create if removed)
+            if (!document.getElementById("review-widget")) {
+              const host = document.createElement("div");
+              host.id = "review-widget";
+              document.body.appendChild(host);
+            }
+
+            // 4) re-init on next frames so DOM/LS writes settle
+            const reinit = () => {
+              try {
+                createReviewWidget();
+              } catch (e) {
+                console.warn("reinit failed", e);
+              }
+            };
+            if (typeof requestAnimationFrame === "function") {
+              requestAnimationFrame(() => requestAnimationFrame(reinit));
+            } else {
+              setTimeout(reinit, 0);
+            }
+          } catch (e) {
+            console.warn("[Rex] widget soft reload failed:", e);
+          }
           // const res = await fetch(`${API_URL}/agent/updateAgentMinutesLeft`, {
           //     method: "PATCH",
           //     headers: { "Content-Type": "application/json" },
@@ -2979,7 +3401,7 @@ function createReviewWidget() {
 
       const chatLeft = toNum(localStorage.getItem("chat_mins_left"));
       const callLeft = toNum(localStorage.getItem("call_mins_left"));
-
+      const addOnsLeft = toNum(localStorage.getItem("addOnsLeft"));
       const openCallAfterWrites = (setAgentId) => {
         localStorage.setItem("rex_last_ui", "call");
         if (setAgentId) {
@@ -2999,7 +3421,7 @@ function createReviewWidget() {
         openCallAfterWrites(true);
         return;
       }
-      if (callLeft > 0 && chatLeft === 0) {
+      if (callLeft > 0 && addOnsLeft > 0 && chatLeft === 0) {
         openCallAfterWrites(false);
         return;
       }
@@ -3149,7 +3571,7 @@ function createReviewWidget() {
 
         
 
-        <button class="attio-end">End chat</button>
+      <!--  <button class="attio-end">End chat</button> -->
         <button class="attio-close" aria-label="Close">&times;</button>
       </div>
         </div>
@@ -3286,7 +3708,33 @@ function createReviewWidget() {
         };
       }
 
+      // helper: minutes ko safely number banao
+      const toNum = (v) => {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+      };
+
+      function refreshCallIconVisibility() {
+        const $callIcon = chatModalEl?.querySelector("#rexCallIconBtn");
+        if (!$callIcon) return;
+
+        const callMinsLeft = toNum(localStorage.getItem("call_mins_left"));
+        if (callMinsLeft <= 0) {
+          // Option A: poora button hata do
+          $callIcon.remove();
+
+          // Option B (agar remove nahi karna): bas chhupa do
+          // $callIcon.style.display = "none";
+          // $callIcon.setAttribute("aria-hidden", "true");
+        } else {
+          // visible + clickable
+          $callIcon.style.display = "";
+          $callIcon.removeAttribute("aria-hidden");
+        }
+      }
+
       const $callIcon = chatModalEl.querySelector("#rexCallIconBtn");
+      refreshCallIconVisibility();
       if ($callIcon) {
         $callIcon.onclick = (e) => {
           e.preventDefault();
@@ -3403,9 +3851,9 @@ function createReviewWidget() {
         typingEl.remove();
         typingEl = null;
       }
-      const FIRST_WAIT = 2 * 60 * 1000;
-      const SECOND_WAIT = 3 * 60 * 1000;
-      const THIRD_WAIT = 4 * 60 * 1000;
+      const FIRST_WAIT = 1 * 60 * 1000;
+      const SECOND_WAIT = 1 * 60 * 1000;
+      const THIRD_WAIT = 1 * 60 * 1000;
 
       let t1 = null,
         t2 = null,
@@ -3457,36 +3905,122 @@ function createReviewWidget() {
         t3 = setTimeout(async () => {
           if (inactivityLocked) return;
           inactivityLocked = true;
+
           try {
             const chatId = localStorage.getItem("chat_id");
             const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
 
-            if (chatId && knowledgeBaseId) {
-              const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  knowledge_base_id: knowledgeBaseId,
-                  chat_id: chatId,
-                }),
-              });
+            // local history safely parse karo
+            let hist = [];
+            try {
+              const raw =
+                localStorage.getItem(
+                  typeof CHAT_LS_KEY === "string"
+                    ? CHAT_LS_KEY
+                    : "rex_chat_history"
+                ) || "[]";
+              hist = JSON.parse(raw);
+              if (!Array.isArray(hist)) hist = [];
+            } catch {
+              hist = [];
+            }
 
-              if (!res.ok) {
-                const txt = await res.text().catch(() => "");
-                throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
+            const hasUserMsg = hist.some(
+              (m) => String(m?.role).toLowerCase() === "user"
+            );
+
+            if (chatId) {
+              // == EXACT LOGIC ==
+              // if (!hasUserMsg || !knowledgeBaseId)  -> PATCH end-chat
+              // else                                   -> POST end-chat-archive
+              if (!hasUserMsg || !knowledgeBaseId) {
+                const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(
+                  chatId
+                )}`;
+                const res = await fetch(url, { method: "PATCH" });
+                if (!res.ok) {
+                  const txt = await res.text().catch(() => "");
+                  throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
+                }
+              } else {
+                const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    knowledge_base_id: knowledgeBaseId,
+                    chat_id: chatId,
+                  }),
+                });
+                if (!res.ok) {
+                  const txt = await res.text().catch(() => "");
+                  throw new Error(
+                    `end-chat-archive HTTP ${res.status}: ${txt}`
+                  );
+                }
               }
             }
           } catch (e) {
-            console.error("end-chat API failed:", e);
+            console.error("end-chat (inactivity) failed:", e);
           } finally {
-            localStorage.removeItem(CHAT_LS_KEY);
-            localStorage.removeItem("chat_id");
+            // LS cleanup
+            try {
+              localStorage.removeItem("rex_last_ui");
+            } catch {}
+            try {
+              localStorage.removeItem(CHAT_LS_KEY);
+            } catch {}
+            try {
+              localStorage.removeItem("chat_id");
+            } catch {}
+            try {
+              localStorage.removeItem("rex_intro_inline");
+            } catch {}
 
-            if (chatModalEl) {
-              chatModalEl.classList.remove("show");
-            }
+            // UI close
+            try {
+              if (chatModalEl) {
+                chatModalEl.classList.remove("show");
+              }
+            } catch {}
+
             clearInactivityTimers();
-            // window.location.reload();
+
+            // ---- SOFT RELOAD WIDGET (NO PAGE REFRESH) ----
+            try {
+              // 1) remove any existing popups to avoid duplicate IDs
+              ["agentPopup", "rexChatPopup", "rexSupportPopup"].forEach(
+                (id) => {
+                  document.getElementById(id)?.remove();
+                }
+              );
+
+              // 2) drop the init flag so we can re-init cleanly
+              window.__REX_WIDGET_INITIALIZED__ = false;
+
+              // 3) ensure host exists
+              if (!document.getElementById("review-widget")) {
+                const host = document.createElement("div");
+                host.id = "review-widget";
+                document.body.appendChild(host);
+              }
+
+              // 4) re-init on next frame
+              const reinit = () => {
+                try {
+                  createReviewWidget();
+                } catch (e) {
+                  console.warn("reinit failed", e);
+                }
+              };
+              if (typeof requestAnimationFrame === "function") {
+                requestAnimationFrame(() => requestAnimationFrame(reinit));
+              } else {
+                setTimeout(reinit, 0);
+              }
+            } catch (e) {
+              console.warn("[Rex] widget soft reload failed:", e);
+            }
+            // NOTE: NO window.location.reload()
           }
         }, FIRST_WAIT + SECOND_WAIT + THIRD_WAIT);
       }
