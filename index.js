@@ -1,16 +1,12 @@
-//USER SCRIPT
+// User Script
 function injectCSS() {
   const style = document.createElement("style");
   style.innerHTML = `
-/* === REXPT Widget CSS (final) === */
-
---------- Animations ---------- */
-           @keyframes float {
+    @keyframes float {
      0% { transform: translateY(0); }
      50% { transform: translateY(-8px); }
      100% { transform: translateY(0); }
    }
-
    @keyframes pulse-ring {
      0% {
        transform: scale(0.9);
@@ -25,48 +21,43 @@ function injectCSS() {
        opacity: 0;
      }
    }
-
-   body {
-     margin: 0;
-     font-family: sans-serif;
-   }
-
-   .floating-agent {
-     position: fixed;
-     bottom: 24px;
-     right: 24px;
-     width: 96px;
-     height: 96px;
-     z-index: 1000;
-     cursor: pointer;
-   }
-
-   .floating-agent.animate {
-     animation: float 3s ease-in-out infinite;
-   }
-
-   .agent-wrapper {
-     position: relative;
-     width: 100%;
-     height: 100%;      
-     border-radius: 50%;
-     overflow: visible; 
-     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-   }
-
-     .pulse-ring {
-   position: absolute;
-    right: -5px;
-    bottom: -6px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    animation: pulse-ring 1.8s infinite;
-    z-index: 0;
-    background: #0CDD24;
-    z-index: 11;
-}
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+    .floating-agent {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 96px;
+      height: 96px;
+      z-index: 1000;
+      cursor: pointer;
+    }
+    .floating-agent.animate {
+      animation: float 3s ease-in-out infinite;
+    }
+    .agent-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;      
+      border-radius: 50%;
+      overflow: visible; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+      .pulse-ring {
+      position: absolute;
+      right: -5px;
+      bottom: -6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-ring 1.8s infinite;
+      z-index: 0;
+      background: #0CDD24;
+      z-index: 11;
+    }
 
    .agent-wrapper img {
      width: 100%;
@@ -76,24 +67,18 @@ function injectCSS() {
      z-index: 2;
      border-radius: 100px;
      border: 4px solid #7F709F;
-       background: #ffffff;
+     background: #ffffff;
    }
-
    .badge2 {
      position: absolute;
      bottom: -6px;
      width: 32px;
      height: 32px;
-    
    }
-
    .badge2 img {
-    
-     object-fit: contain;
-     border:unset;
+    object-fit: contain;
+    border:unset;
    }
-
-  
    .popup {
      position: fixed;
      bottom: 155px;
@@ -106,44 +91,34 @@ function injectCSS() {
      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
      z-index: 1001;
      display: none;
-     /*overflow: hidden;*/
      font-family: sans-serif;
    }
-
    .popup.show {
      display: block;
    }
    .popup::after {
-     content: "";
+   content: "";
    position: absolute;
    bottom: -18px;
    right: 24px;
    width: 36px;
    height: 36px;
    background-color: #fff;
-   /* border: 2px solid #eee; */
    transform: rotate(45deg);
    box-shadow: 14px 15px 20px rgba(0, 0, 0, 0.1);
    z-index: -1;
    border-radius: 0px 0px 8px 0px;
-   /* font-size: 35px; */
-   /* color: #BCBCBC; */
    }
-
    .popup-header {
      padding: 5px 40px;
      font-size: 12px;
      color: #888;
      text-align: right;
-    
    }
-
    .popup-body {
     position: relative;
     text-align: center;
     padding: 15px 15px 10px 15px;
-    // height: 325px;
-    // background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #263B5A 50%, #19273C 100%);
     background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);
     margin-inline: 22px;
     margin-bottom: 22px;
@@ -154,106 +129,80 @@ function injectCSS() {
     flex-direction: column;
     gap:1rem
    }
-
-
-.pulse-ring-wrapper {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  margin-top:2rem;
-
-}
-
-.agent-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  top:6px;
-  position: relative;
-  z-index: 1;
-
-}
-
-/* Blinking Rings */
-.pulse-ring2 {
-  position: absolute;
-  top: 56%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  border: 4px solid rgba(255, 255, 255, 0.5); /* Default fallback */
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  z-index: 1;
-  animation: pulseAnim 1.5s ease-out infinite;
-}
-
-/* Ring 1 - Red */
-.pulse-ring2:nth-child(1) {
-  border-color: #ffffffff;
-  animation-delay: 0s;
-}
-
-/* Ring 2 - Green */
-.pulse-ring2:nth-child(2) {
-  border-color: #3B4859;
-  animation-delay: 0.4s;
-}
-
-/* Ring 3 - Blue */
-.pulse-ring2:nth-child(3) {
-  border-color: 28364A;
-  animation-delay: 0.8s;
-}
-
-@keyframes pulseAnim {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.4);
-    opacity: 0;
-  }
-}
-
-
-/* Text content styles */
-.agent-info {
-  text-align: center;
-  // line-height:20px;
-}
-
-.call-label {
-  font-size: 14px;
-  color: #D1DCED;
-  margin-bottom: 0px;
-  font-family: "Inter", sans-serif;
-
-}
-
-.phone-number {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 4px 0 0px;
-  color: #ffffffff;
-  font-family: "Inter", sans-serif;
-
-}
-
-.tag-label {
-  font-size: 12px;
-  font-weight:600;
-  color: #D1DCED;
-  letter-spacing: 1px;
-  font-family: "Inter", sans-serif;
-  text-transform: capitalize;
-
-}
-
-
-   .call-banner {
+    .pulse-ring-wrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin-top:2rem;
+    }
+    .agent-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      top:6px;
+      position: relative;
+      z-index: 1;
+    }
+    .pulse-ring2 {
+      position: absolute;
+      top: 56%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      border: 4px solid rgba(255, 255, 255, 0.5); /* Default fallback */
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      z-index: 1;
+      animation: pulseAnim 1.5s ease-out infinite;
+    }
+    .pulse-ring2:nth-child(1) {
+      border-color: #ffffffff;
+      animation-delay: 0s;
+    }
+    .pulse-ring2:nth-child(2) {
+      border-color: #3B4859;
+      animation-delay: 0.4s;
+    }
+    .pulse-ring2:nth-child(3) {
+      border-color: 28364A;
+      animation-delay: 0.8s;
+    }
+    @keyframes pulseAnim {
+      0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.4);
+        opacity: 0;
+      }
+    }
+    .agent-info {
+      text-align: center;
+    }
+    .call-label {
+      font-size: 14px;
+      color: #D1DCED;
+      margin-bottom: 0px;
+      font-family: "Inter", sans-serif;
+    }
+    .phone-number {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 4px 0 0px;
+      color: #ffffffff;
+      font-family: "Inter", sans-serif;
+    }
+    .tag-label {
+      font-size: 12px;
+      font-weight:600;
+      color: #D1DCED;
+      letter-spacing: 1px;
+      font-family: "Inter", sans-serif;
+      text-transform: capitalize;
+    }
+    .call-banner {
      position: absolute;
      bottom: 22px;
      left: 50%;
@@ -271,128 +220,117 @@ function injectCSS() {
      width: 100%;
      cursor: pointer;
    }
-
    .call-banner .call-icon {
      width: 24px;
      height: 24px;
      animation: vibe 1s linear 1s infinite;
    }
+    @keyframes vibe {
+      0% {}
 
-@keyframes vibe {
-   0% {}
+      2% {
+          transform: translateX(5px) rotateZ(1deg);
+      }
 
-   2% {
-       transform: translateX(5px) rotateZ(1deg);
-   }
+      4% {
+          transform: translateX(-5px) rotateZ(-1deg);
+      }
 
-   4% {
-       transform: translateX(-5px) rotateZ(-1deg);
-   }
+      6% {
+          transform: translateX(3px) rotateZ(2deg);
+      }
 
-   6% {
-       transform: translateX(3px) rotateZ(2deg);
-   }
+      8% {
+          transform: translateX(-2px) rotateZ(-2deg);
+      }
 
-   8% {
-       transform: translateX(-2px) rotateZ(-2deg);
-   }
+      10% {
+          transform: translateX(1px) rotateZ(2deg);
+      }
 
-   10% {
-       transform: translateX(1px) rotateZ(2deg);
-   }
+      12% {
+          transform: translateX(-5px) rotateZ(-2deg);
+      }
 
-   12% {
-       transform: translateX(-5px) rotateZ(-2deg);
-   }
+      14% {
+          transform: translateX(3px) rotateZ(-1deg);
+      }
 
-   14% {
-       transform: translateX(3px) rotateZ(-1deg);
-   }
+      16% {
+          transform: translateX(-5px) rotateZ(-2deg);
+      }
 
-   16% {
-       transform: translateX(-5px) rotateZ(-2deg);
-   }
+      18% {
+          transform: translateX(5px) rotateZ(2deg);
+      }
 
-   18% {
-       transform: translateX(5px) rotateZ(2deg);
-   }
+      20% {
+          transform: translateX(-5px) rotateZ(-2deg);
+      }
 
-   20% {
-       transform: translateX(-5px) rotateZ(-2deg);
-   }
+      22% {
+          transform: translateX(5px) rotateZ(2deg);
+      }
 
-   22% {
-       transform: translateX(5px) rotateZ(2deg);
-   }
+      24% {
+          transform: translateX(-3px) rotateZ(-2deg);
+      }
 
-   24% {
-       transform: translateX(-3px) rotateZ(-2deg);
-   }
+      26% {
+          transform: translateX(0px) rotateZ(0deg);
+      }
 
-   26% {
-       transform: translateX(0px) rotateZ(0deg);
-   }
+      100% {}
+    }
+      .greendiv, .reddiv {
+      position: relative;
+          border-radius: 30px;
+          padding: 10px 16px;
+          color: white;
+          display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      width: 80%;
 
-   100% {}
-}
+      transition: background-color 0.4s ease, transform 0.4s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      align-text:left;
 
-.greendiv, .reddiv {
- position: relative;
-    // bottom: 1rem;
-    /* left: 50%; */
-    /* transform: translateX(-50%); */
-    border-radius: 30px;
-    padding: 10px 16px;
-    color: white;
-    display: flex
-;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    width: 80%;
+      }
 
- transition: background-color 0.4s ease, transform 0.4s ease;
- box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
- align-text:left;
+      .greendiv {
+      background-color: #0caa4f;
+      }
 
-}
+      .reddiv {
+      background-color: #DA1B14;
+      }
 
-.greendiv {
- background-color: #0caa4f;
-}
+      .callText p {
+      font-weight: 600;
+      font-size: 15px;
+      margin: 0;
+      color :#ffff
+      transition: color 0.3s ease;
+      }
 
-.reddiv {
- background-color: #DA1B14;
-}
+      .callText small {
+      font-size: 9px;
+      font-weight: 400;
+      margin-top: 3px;
+      display: block;
+      color :#ffff
+      transition: opacity 0.3s ease;
+      }
+      .phoneIcon {
+      align-items: self-end;
+          display: flex
+      ;}
 
-// .greendiv:hover, .reddiv:hover {
-//  transform: translateX(-50%) scale(1.03);
-// }
-
-.callText p {
- font-weight: 600;
- font-size: 15px;
- margin: 0;
- color :#ffff
- transition: color 0.3s ease;
-}
-
-.callText small {
- font-size: 9px;
- font-weight: 400;
- margin-top: 3px;
- display: block;
- color :#ffff
- transition: opacity 0.3s ease;
-}
- .phoneIcon {
- align-items: self-end;
-    display: flex
-;}
-
-.phoneIcon img {
- animation: vibe 1s linear 1s infinite;
-}
+      .phoneIcon img {
+      animation: vibe 1s linear 1s infinite;
+      }
 
    .call-banner .call-text {
      display: flex;
@@ -414,7 +352,7 @@ function injectCSS() {
    }
 
    .close-button {
-     position: absolute;
+    position: absolute;
    top: 100%;
    right: 10.8px;
    font-size: 34px;
@@ -441,25 +379,25 @@ function injectCSS() {
    .noFloat {
      animation: none !important;
    }
-.WraperBlink {
-  position: absolute;
-    right: 22%;
-    bottom: 18px;
-    width: 10px;
-    height: 10px;
-    transform: translate(-50%, -50%);
-    z-index: 11;
-}
-    .pulse-dot {
-  position: absolute;
-    top: 9px;
-    left: 8px;
-    width: 4px;
-    height: 4px;
-    background-color: #0CDD24;
-    border-radius: 50%;
-    z-index: 12;
-}
+    .WraperBlink {
+      position: absolute;
+        right: 22%;
+        bottom: 18px;
+        width: 10px;
+        height: 10px;
+        transform: translate(-50%, -50%);
+        z-index: 11;
+    }
+        .pulse-dot {
+      position: absolute;
+        top: 9px;
+        left: 8px;
+        width: 4px;
+        height: 4px;
+        background-color: #0CDD24;
+        border-radius: 50%;
+        z-index: 12;
+    }
     .callText{
         text-align: start;line-height:normal}
         .agent-intro{   text-align: center;
@@ -525,11 +463,11 @@ function injectCSS() {
             .chat-popup{
              position:fixed; bottom:155px; right:20px;
            max-width: 290px !important;
-  transition: 
-    max-width .35s ease,
-    transform .35s ease,
-    box-shadow .35s ease;
-  transform-origin: bottom right;
+          transition: 
+            max-width .35s ease,
+            transform .35s ease,
+            box-shadow .35s ease;
+          transform-origin: bottom right;
              width:90%;
              background:#fff;
           
@@ -541,74 +479,74 @@ function injectCSS() {
             }
                 .chat-popup.show{display:block}
                 .chat-popup::after{
-  content: "";
-    position: absolute;
-    bottom: -12px;
-    right: 24px;
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    transform: rotate(45deg);
-    border: 1px solid #ececec;
-    border-top: 0;
-    border-left: 0;
-    border-radius: 0 0 8px 0;
-    box-shadow: 10px 10px 18px rgba(0,0,0,.08);
-    z-index: -1;
-                }
-                  .chat-popup.expanded{
-  max-width: 500px !important;
-  transform: scale(1);
-}
+          content: "";
+            position: absolute;
+            bottom: -12px;
+            right: 24px;
+            width: 28px;
+            height: 28px;
+            background: #fff;
+            transform: rotate(45deg);
+            border: 1px solid #ececec;
+            border-top: 0;
+            border-left: 0;
+            border-radius: 0 0 8px 0;
+            box-shadow: 10px 10px 18px rgba(0,0,0,.08);
+            z-index: -1;
+                        }
+                          .chat-popup.expanded{
+          max-width: 500px !important;
+          transform: scale(1);
+        }
 
-/* Motion sensitivity */
-@media (prefers-reduced-motion: reduce){
-  .chat-popup{
-    transition: none !important;
-    transform: none !important;
-  }
-}
+        /* Motion sensitivity */
+        @media (prefers-reduced-motion: reduce){
+          .chat-popup{
+            transition: none !important;
+            transform: none !important;
+          }
+            }
 
-/* Mobile: full width, no expand play (aapke existing rule ke saath compatible) */
-@media (max-width:650px){
-  .chat-popup{
-    max-width: none !important;
-    width: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
-    border-radius: 0 !important;
-    transform: none !important;
-  }
-}
-                .attio-header{display:flex; align-items:center; justify-content:space-between;
-                padding:12px 16px; border-bottom:1px solid #EFEFEF}
-                .attio-brand{display:flex; align-items:center; gap:10px}
-                .attio-logo{width:28px; height:28px; border-radius:6px; overflow:hidden;
-                display:flex; align-items:center; justify-content:center;
-                background:#111; color:#fff; font-weight:700; font-size:12px}
-                .attio-title{line-height:1}
-                .attio-title .t{font-weight:700; font-size:14px}
-                .attio-title .s{font-size:12px; color:#7A7A7A}
-                .attio-close{border:0; background:transparent; font-size:20px; color:#666; cursor:pointer}
-                .attio-body{padding:12px 16px 18px;background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px;}
-               .attio-thread{
-  height: 26dvh;
-  overflow: auto;
-  padding: 10px 0;
-  border: 0px solid #EFEFEF;
-  border-radius: 12px;
-  background: transparent;
-  margin-top: 10px;
-  transition: height .35s ease; /* smooth expand */
-}
-                  .chat-popup.expanded .attio-thread{
-  height: 50dvh;
-}
+            /* Mobile: full width, no expand play (aapke existing rule ke saath compatible) */
+            @media (max-width:650px){
+              .chat-popup{
+                max-width: none !important;
+                width: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+                border-radius: 0 !important;
+                transform: none !important;
+              }
+            }
+                            .attio-header{display:flex; align-items:center; justify-content:space-between;
+                            padding:12px 16px; border-bottom:1px solid #EFEFEF}
+                            .attio-brand{display:flex; align-items:center; gap:10px}
+                            .attio-logo{width:28px; height:28px; border-radius:6px; overflow:hidden;
+                            display:flex; align-items:center; justify-content:center;
+                            background:#111; color:#fff; font-weight:700; font-size:12px}
+                            .attio-title{line-height:1}
+                            .attio-title .t{font-weight:700; font-size:14px}
+                            .attio-title .s{font-size:12px; color:#7A7A7A}
+                            .attio-close{border:0; background:transparent; font-size:20px; color:#666; cursor:pointer}
+                            .attio-body{padding:12px 16px 18px;background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px;}
+                          .attio-thread{
+              height: 26dvh;
+              overflow: auto;
+              padding: 10px 0;
+              border: 0px solid #EFEFEF;
+              border-radius: 12px;
+              background: transparent;
+              margin-top: 10px;
+              transition: height .35s ease; /* smooth expand */
+            }
+                              .chat-popup.expanded .attio-thread{
+              height: 50dvh;
+            }
 
-/* Motion sensitivity */
-@media (prefers-reduced-motion: reduce){
-  .attio-thread{ transition: none !important; }
-}
+            /* Motion sensitivity */
+            @media (prefers-reduced-motion: reduce){
+              .attio-thread{ transition: none !important; }
+            }
                 .msg{max-width:75%;width: max-content; padding:10px 12px; border-radius:14px; margin:15px 10px;
                 font-size:16px; line-height:1.35; word-wrap:break-word; box-shadow:0 1px 1px rgba(0,0,0,.04)}
                 .msg.bot{background:#ffffff1a; border:0px solid #E8EEF5; color:#fff; margin-left:10px;border-left: 3px solid #6524EB;}
@@ -617,10 +555,10 @@ function injectCSS() {
                 border:0px solid #E6E6E6; border-radius:14px; padding:6px;z-index: 1;
                     position: relative; width:93%}
                 .composer input{flex:1; border:0; outline:0; padding:10px 12px; font-size:14px;border-radius: 10px 0 0 10px;
-    height: 32px;}
+         height: 32px;}
                 .composer button{border:0; background:#6564eb00; color:#fff; 
                 border-radius:10px; font-weight:600; cursor:pointer; position: absolute;
-    right: -7%;}
+         right: -7%;}
                  @media (max-width:650px) {
                 .chat-popup {
                     max-width: none !important;
@@ -660,11 +598,23 @@ function injectCSS() {
               }
               .attio-end:hover{ background:#c62828 }
               .attio-close {
-                border: 0;
-                background: transparent;
-                font-size: 20px;
-                color: #fff;
-                cursor: pointer;
+                 position: absolute;
+              bottom: -13px;
+              right: 17px;
+              top: auto;
+              width: 44px;
+              display: flex
+          ;
+              align-items: center;
+              justify-content: center;
+              border: 0px solid #ececec;
+              border-radius: 999px;
+              background: #ffffff00;
+              color: #60666f;
+              font-size: 18px;
+              line-height: 1;
+              cursor: pointer;
+              z-index: 5;
               }
                 .msg .time {
               display:block;
@@ -763,7 +713,29 @@ function injectCSS() {
           display:flex; align-items:center; justify-content:center; background:#111; }
         .support-title .t{ font-weight:500; font-size:18px; color:#fff;text-transform: uppercase; }
         .support-title .s{ font-size:12px; color:#D1DCED }
-        .support-close{ border:0; background:transparent; font-size:22px; color:#9aa4b2; cursor:pointer }
+/* Move X button to bottom-right of the support popup */
+.support-popup { position: fixed; } /* already hai, just ensure */
+
+.support-close{
+  position: absolute;
+    bottom: -13px;
+    right: 17px;
+    top: auto;
+    width: 44px;
+    display: flex
+;
+    align-items: center;
+    justify-content: center;
+    border: 0px solid #ececec;
+    border-radius: 999px;
+    background: #ffffff00;
+    color: #60666f;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 5;
+}
+
         .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; min-height:324px }
 
       .big-card{
@@ -964,9 +936,6 @@ const currentSiteURL = window.location.origin;
 const API_URL = "https://rex-bk.truet.net/api/";
 // const API_URL = "http://localhost:2512/api";
 
-
-
-// --- CHAT PERSISTENCE ----
 const CHAT_LS_KEY = "rex_chat_history";
 let typingEl = null;
 function loadChatHistory() {
@@ -979,13 +948,91 @@ function loadChatHistory() {
 }
 
 let __rex_end_called__ = false;
-
-// --- Greeting typing sequence ---
 let __pc_greeting_played = false;
+let __rex_only_user_end_timer = null;
+let __rex_only_user_end_fired = false;
+
+function getHistorySafe() {
+  try {
+    const raw =
+      localStorage.getItem(
+        typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+      ) || "[]";
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+function hasOnlyUserMessages(hist) {
+  if (!Array.isArray(hist) || hist.length === 0) return false;
+  return hist.every((m) => String(m?.role).toLowerCase() === "user");
+}
+function lastUserTs(hist) {
+  for (let i = hist.length - 1; i >= 0; i--) {
+    if (String(hist[i]?.role).toLowerCase() === "user")
+      return hist[i]?.ts || Date.now();
+  }
+  return null;
+}
+
+function clearOnlyUserAutoEndTimer() {
+  if (__rex_only_user_end_timer) {
+    clearTimeout(__rex_only_user_end_timer);
+    __rex_only_user_end_timer = null;
+  }
+}
+
+async function hardEndChatNow() {
+  if (__rex_only_user_end_fired) return;
+  __rex_only_user_end_fired = true;
+
+  const chatId = localStorage.getItem("chat_id");
+  if (!chatId) return;
+
+  try {
+    const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(chatId)}`;
+    const res = await fetch(url, { method: "PATCH" });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
+    }
+  } catch (e) {
+    console.warn("[Rex] only-user auto end failed:", e);
+  } finally {
+    localStorage.removeItem("rex_last_ui");
+    localStorage.removeItem(
+      typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
+    );
+    localStorage.removeItem("chat_id");
+    clearOnlyUserAutoEndTimer();
+    try {
+      document.getElementById("rexChatPopup")?.classList.remove("show");
+    } catch {}
+  }
+}
+function scheduleOnlyUserAutoEnd(idleMs = 1 * 60 * 1000) {
+  clearOnlyUserAutoEndTimer();
+
+  const hist = getHistorySafe();
+  if (!hasOnlyUserMessages(hist)) return;
+
+  const lastTs = lastUserTs(hist) || Date.now();
+  const remain = lastTs + idleMs - Date.now();
+
+  if (remain <= 0) {
+    hardEndChatNow();
+    return;
+  }
+  __rex_only_user_end_timer = setTimeout(() => {
+    const h2 = getHistorySafe();
+    if (hasOnlyUserMessages(h2)) hardEndChatNow();
+  }, remain);
+}
 
 function isGoodbye(text = "") {
   const t = String(text).toLowerCase();
-  // Common English + Hinglish/Hindi variants
   const patterns = [/\bhave a great day!?/];
   return patterns.some((re) => re.test(t));
 }
@@ -993,7 +1040,7 @@ function lockWidgetFor(ms = 3000) {
   const btn = document.getElementById("agentButton");
   if (!btn) return;
   btn.classList.add("disabled");
-  btn.style.pointerEvents = "none"; // click block karega
+  btn.style.pointerEvents = "none";
 
   setTimeout(() => {
     btn.classList.remove("disabled");
@@ -1002,7 +1049,7 @@ function lockWidgetFor(ms = 3000) {
 }
 
 async function endChatArchiveNow({ silent = false } = {}) {
-  if (__rex_end_called__) return; // ensure single fire
+  if (__rex_end_called__) return;
   __rex_end_called__ = true;
 
   try {
@@ -1026,7 +1073,6 @@ async function endChatArchiveNow({ silent = false } = {}) {
   } catch (e) {
     console.error("[Rex] auto end-chat failed:", e);
     if (!silent) {
-      // Optional: show a subtle, non-blocking note in the thread
       appendMessage?.(
         "bot",
         "⚠️ Unable to auto-end the chat. You can close the window.",
@@ -1050,7 +1096,6 @@ async function endChatArchiveNow({ silent = false } = {}) {
 let __rex_close_timer__ = null;
 function startCloseTimer() {
   clearCloseTimer();
-  // 4 minutes
   const WAIT_MS = 4 * 60 * 1000;
 
   __rex_close_timer__ = setTimeout(() => {
@@ -1084,7 +1129,6 @@ function saveChatMessage(role, text) {
   saveChatHistory(arr);
 }
 function extractBotText(resp) {
-  // Prefer the last "agent"/"assistant" message from raw.messages
   const msgs = resp?.raw?.messages || [];
   for (let i = msgs.length - 1; i >= 0; i--) {
     const m = msgs[i];
@@ -1093,24 +1137,21 @@ function extractBotText(resp) {
     if ((role === "agent" || role === "assistant") && c) return c;
   }
 
-  // Fallback: try to clean resp.text by stripping any JSON/tool dump prefix
   let t = (resp?.text || "").trim();
-  // Remove a leading JSON blob (tool output) if present
+
   t = t.replace(/^\s*\{[\s\S]*?\}\s*/m, "").trim();
-  // If it still looks like tool dump, suppress it
+
   if (/"transcript"|\"call_id\"|\"latest\"|^Agent:|^User:/m.test(t)) return "";
   return t;
 }
 
-// --- API: create-chat-completion ---
 async function createChatCompletion(userText) {
-  // ensure chat_id hai
   let chatId = localStorage.getItem("chat_id");
   const agentIdHdr =
     localStorage.getItem("chat_agent_id") || getAgentIdFromScript();
+  const chat_agent_id = localStorage.getItem("chat_agent_id");
 
   if (!chatId) {
-    // safety: session create kar lo if not present
     await createChatSession(localStorage.getItem("chat_agent_id") || undefined);
     chatId = localStorage.getItem("chat_id");
     if (!chatId) throw new Error("chat_id missing; cannot send message");
@@ -1120,39 +1161,46 @@ async function createChatCompletion(userText) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      // sirf tab bhejo jab backend ko zarurat ho:
       ...(agentIdHdr ? { agent_id: agentIdHdr } : {}),
     },
-    body: JSON.stringify({ chat_id: chatId, content: userText }),
+    body: JSON.stringify({ chat_id: chatId, content: userText, chat_agent_id }),
   });
 
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();
-
-  // response text pick
-  // const botText = data?.text ?? data?.raw?.messages?.[0]?.content ?? "";
   const botText = extractBotText(data) || "";
   return { data, botText };
 }
-
 const getAgentIdFromScript = () => {
-  const currentScript = document.getElementById("rex-widget-script");
-  if (!currentScript) {
+  const script = document.getElementById("rex-widget-script");
+  if (!script) {
     console.warn("Script with ID 'rex-widget-script' not found");
-    return null;
+    return localStorage.getItem("agent_id") || null;
   }
-  const rawSrc = currentScript.getAttribute("src");
+
+  const rawSrc = script.getAttribute("src") || "";
   try {
     const url = new URL(rawSrc, window.location.href);
-    const agentId = url.searchParams.get("agentId");
-    const pureId = agentId?.replace("agentId=", "");
-    return pureId;
+    let agentId =
+      url.searchParams.get("agentId") ||
+      script.getAttribute("data-agent-id") ||
+      localStorage.getItem("agent_id");
+
+    if (agentId && agentId.trim()) {
+      agentId = agentId.trim();
+      localStorage.setItem("agent_id", agentId);
+      return agentId;
+    }
+
+    console.warn(
+      "agentId not found in script src / data attribute / localStorage"
+    );
+    return null;
   } catch (err) {
     console.error("Error parsing script src for agentId:", err);
-    return null;
+    return localStorage.getItem("agent_id") || null;
   }
 };
-// helper: localStorage -> only non-empty strings
 function buildRetellDynamicVars() {
   const take = (k) => {
     try {
@@ -1164,18 +1212,13 @@ function buildRetellDynamicVars() {
   };
 
   const vars = {
-    // your 3 image keys (set them earlier in localStorage)
-    img_primary: take("rex_img_primary"), // e.g. agentImg.src
-    img_secondary: take("rex_img_secondary"), // e.g. some icon
-    img_logo: take("rex_img_logo"), // e.g. site logo
-
-    // optional user context
+    img_primary: take("rex_img_primary"),
+    img_secondary: take("rex_img_secondary"),
+    img_logo: take("rex_img_logo"),
     user_email: take("rex_user_email"),
     user_name: take("rex_user_name"),
     user_phone: take("rex_user_phone"),
   };
-
-  // strip null/empty
   const out = {};
   for (const [k, v] of Object.entries(vars)) if (v) out[k] = v;
   return out;
@@ -1242,9 +1285,6 @@ async function primeChatAgentId() {
       window.dispatchEvent(
         new CustomEvent("chat-agent-id:ready", { detail: { chatAgentId } })
       );
-      // if (!localStorage.getItem("chat_id")) {
-      //   await createChatSession(chatAgentId);
-      // }
       console.log("[Rex] chat_agent_id stored:", chatAgentId);
     } else {
       console.warn("[Rex] chat_agent_id not found in response:", data);
@@ -1254,9 +1294,7 @@ async function primeChatAgentId() {
   }
 }
 let __rex_create_session_promise = null;
-// STEP 2: reate-chat-session
 async function createChatSession(agentIdFromStep1) {
-  // if already creating, await the same promise
   if (__rex_create_session_promise) return __rex_create_session_promise;
 
   __rex_create_session_promise = (async () => {
@@ -1279,7 +1317,7 @@ async function createChatSession(agentIdFromStep1) {
       }
       return data;
     } finally {
-      __rex_create_session_promise = null; // release lock
+      __rex_create_session_promise = null;
     }
   })();
 
@@ -1315,7 +1353,6 @@ function createReviewWidget() {
     return;
   }
 
-  // Remove duplicates
   document.querySelectorAll(".floating-agent").forEach((el) => {
     if (el.id !== "agentButton") el.remove();
   });
@@ -1353,7 +1390,6 @@ function createReviewWidget() {
     let callContent = `Call ${agentName}`;
     let agentRole = "GENERAL";
     let agentVoipNumber = "NA";
-    // REUSE or CREATE agent button
     try {
       const agentRes = await fetch(
         `${API_URL}/agent/fetchAgentDetailsFromRetell/${agentId}`,
@@ -1373,6 +1409,12 @@ function createReviewWidget() {
         // isChatEnabled = Boolean(json.chatWidgetEnabled);
         isChatEnabled = true;
         localStorage.setItem("isChatEnabled", String(isChatEnabled));
+        // mins_left = json.mins_left;
+        mins_left = 90;
+        // messageLeft = json.messageLeft;
+        messageLeft = 90;
+        localStorage.setItem("call_mins_left", mins_left);
+        localStorage.setItem("chat_mins_left", messageLeft);
         const kbId = json.knowledgeBaseId || json.knowledgeBaseId;
         if (kbId) localStorage.setItem("knowledge_base_id", String(kbId));
       } catch (e) {
@@ -1493,7 +1535,6 @@ function createReviewWidget() {
       }, 1000);
     }
 
-    // POPUP
     const modal = createElement("div", {
       id: "agentPopup",
       className: "popup",
@@ -1519,14 +1560,12 @@ function createReviewWidget() {
       className: "greendiv",
     });
 
-    // info wrapper
     const infoWrapper = document.createElement("div");
     infoWrapper.className = "agent-info";
 
     const callLabel = document.createElement("p");
     callLabel.className = "call-label";
     callLabel.textContent = `Call ${agentName}`;
-    // CLOSE the call popup and show only widget
     try {
       modal.style.display = "none";
     } catch {}
@@ -1541,7 +1580,6 @@ function createReviewWidget() {
       document.getElementById("rexChatPopup")?.classList.remove("show");
     } catch {}
 
-    // ensure agent button floats normally
     try {
       document.getElementById("agentButton")?.classList.remove("noFloat");
     } catch {}
@@ -1574,7 +1612,6 @@ function createReviewWidget() {
     callBtn.appendChild(phoneIconWrapper);
     callBtn.appendChild(callText);
 
-    /* --- Chat Lilu button --- */
     const chatBtn = createElement("div", {
       id: "start-chat",
       className: "chatdiv",
@@ -1596,10 +1633,10 @@ function createReviewWidget() {
     chatBtn.appendChild(chatIconWrapper);
     chatBtn.appendChild(chatText);
 
-    /* --- Buttons ko stack me daalo --- */
     const buttonStack = createElement("div", { className: "button-stack" });
+    const chat_mins_left = localStorage.getItem("chat_mins_left");
 
-    if (isChatEnabled) {
+    if (isChatEnabled && chat_mins_left > 0) {
       buttonStack.appendChild(chatBtn);
       buttonStack.style.display = "flex";
     } else {
@@ -1608,7 +1645,6 @@ function createReviewWidget() {
 
     buttonStack.appendChild(chatBtn);
     buttonStack.style.display = "none";
-    // ---- INTRO SENDER (once per chat session) ----
     function composeProfileIntro() {
       const name = localStorage.getItem("rex_user_name") || "";
       const email = localStorage.getItem("rex_user_email") || "";
@@ -1617,41 +1653,13 @@ function createReviewWidget() {
       return `My name is ${name}. My email is ${email} and my phone number is ${phone}.`;
     }
 
-    // function hasCompleteProfile() {
-    //   const name = localStorage.getItem("rex_user_name") || "";
-    //   const email = localStorage.getItem("rex_user_email") || "";
-    //   const phone = localStorage.getItem("rex_user_phone") || "";
-    //   const okName = /^[a-zA-Z\s'.-]{2,}$/.test(String(name).trim());
-    //   const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
-    //   const digits = String(phone).replace(/[^\d]/g, "");
-    //   const okPhone = digits.length >= 10 && digits.length <= 15;
-    //   return okName && okEmail && okPhone;
-    // }
-
-    // escape minimal HTML to avoid injection in the streaming text
-    // escape minimal HTML
-    // function escHTML(s = "") {
-    //   return s.replace(
-    //     /[&<>"']/g,
-    //     (m) =>
-    //       ({
-    //         "&": "&amp;",
-    //         "<": "&lt;",
-    //         ">": "&gt;",
-    //         '"': "&quot;",
-    //         "'": "&#39;",
-    //       }[m])
-    //   );
-    // }
-
-    // make a bot bubble with two spans: content + time
     function createBotBubble() {
       const $msgs = document.getElementById("rexMessages");
       const div = document.createElement("div");
       div.className = "msg bot";
 
       const content = document.createElement("span");
-      content.className = "c"; // content holder
+      content.className = "c";
       const time = document.createElement("span");
       time.className = "time";
 
@@ -1664,7 +1672,6 @@ function createReviewWidget() {
       return { el: div, contentEl: content, timeEl: time };
     }
 
-    // stream text into the content span without re-parsing the whole HTML
     async function streamBotTextInto(
       bubble,
       fullText,
@@ -1674,8 +1681,6 @@ function createReviewWidget() {
       while (i < fullText.length) {
         const next = fullText.slice(i, i + chunkSize);
         i += chunkSize;
-
-        // Safe: add as plain text so &quot; -> " render ho
         bubble.contentEl.appendChild(document.createTextNode(next));
 
         bubble.timeEl.textContent = new Date().toLocaleTimeString([], {
@@ -1725,11 +1730,10 @@ function createReviewWidget() {
         if (el) el.remove();
       } catch {}
     }
-    // --- yahi par aapka maybeSendIntroOnOpen rehne do ---
     let __rex_intro_attempted = false;
 
     async function maybeSendIntroOnOpen() {
-      if (__rex_intro_attempted) return; // soft guard
+      if (__rex_intro_attempted) return;
       __rex_intro_attempted = true;
 
       if (!hasCompleteProfile()) return;
@@ -1746,7 +1750,6 @@ function createReviewWidget() {
 
       if (localStorage.getItem(sentKey) === "1") return;
 
-      // optimistic lock so second concurrent call skip kare
       localStorage.setItem(sentKey, "1");
 
       const intro =
@@ -1769,7 +1772,6 @@ function createReviewWidget() {
           saveChatMessage("bot", botText);
         }
       } catch (e) {
-        // call fail ho to lock revert kar do (taaki next open par retry ho sake)
         localStorage.removeItem(sentKey);
         hideIntroTyping();
         console.error("intro send failed:", e);
@@ -1786,17 +1788,39 @@ function createReviewWidget() {
       chatBtn.removeAttribute("aria-disabled");
     }
 
+    function num(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    }
+    function isChatEnabledLS() {
+      return /^(true|1)$/i.test(
+        String(localStorage.getItem("isChatEnabled") ?? "")
+      );
+    }
+    function bothMinsZero() {
+      const chatEnabled = isChatEnabledLS();
+      const chatMins = num(localStorage.getItem("chat_mins_left"));
+      const callMins = num(localStorage.getItem("call_mins_left"));
+      return (!chatEnabled || chatMins <= 0) && callMins <= 0;
+    }
+
     chatBtn.onclick = (e) => {
       e.stopPropagation();
       if (onCall) return;
+      if (chatMinsZero()) {
+        localStorage.setItem("rex_last_ui", "call");
+        openCallOnlyWidget();
+        return;
+      }
+
       localStorage.setItem("rex_last_ui", "chat");
       modal.style.display = "none";
       rexAgent.classList.remove("noFloat");
       ensureUserProfileThen(() => {
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
-        cp.classList.remove("expanded"); // reset
-        void cp.offsetWidth; // reflow to start transition cleanly
+        cp.classList.remove("expanded");
+        void cp.offsetWidth;
         cp.classList.add("expanded");
         clearCloseTimer();
 
@@ -1858,8 +1882,6 @@ function createReviewWidget() {
     popupHeader.appendChild(poweredBy);
     modal.appendChild(popupHeader);
     modal.appendChild(popupBody);
-    // ---------- Attio-style Support UI ----------
-    // ---------- Attio-style Support UI WITH prechat 3-step ----------
     let supportEl = null;
 
     function validateName(v = "") {
@@ -1908,19 +1930,22 @@ function createReviewWidget() {
 
         <div class="field">
          
-          <div class="input-dark"><input id="pcName" type="text" placeholder="John Doe" autocomplete="name"></div>
+          <div class="input-dark"><input id="pcName" type="text" placeholder="John Doe"   autocomplete="off" autocapitalize="off" autocorrect="off"
+  spellcheck="false" aria-autocomplete="none" inputmode="text"></div>
           <div class="err" id="erPcName"></div>
         </div>
 
         <div class="field">
          
-          <div class="input-dark"><input id="pcEmail" type="email" placeholder="email@example.com" autocomplete="email"></div>
+          <div class="input-dark"><input id="pcEmail" type="email" placeholder="email@example.com"   autocomplete="off" autocapitalize="off" autocorrect="off"
+  spellcheck="false" aria-autocomplete="none" inputmode="email"></div>
           <div class="err" id="erPcEmail"></div>
         </div>
 
         <div class="field">
           
-          <div class="input-dark"><input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX" autocomplete="tel"></div>
+          <div class="input-dark"><input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX"  autocomplete="off" autocapitalize="off" autocorrect="off"
+  spellcheck="false" aria-autocomplete="none" inputmode="tel"></div>
           <div class="err" id="erPcPhone"></div>
         </div>
 
@@ -1960,10 +1985,6 @@ function createReviewWidget() {
     </div>
   `;
       document.body.appendChild(supportEl);
-
-      // setTimeout(() => playPrechatGreeting(), 0);
-
-      // close
       supportEl.querySelector(".support-close", ".CloseX").onclick = () => {
         setDefaultUIAfterProfile();
         supportEl.classList.remove("show");
@@ -1972,7 +1993,6 @@ function createReviewWidget() {
         } catch {}
       };
 
-      // elements
       const $name = supportEl.querySelector("#pcName");
       const $email = supportEl.querySelector("#pcEmail");
       const $phone = supportEl.querySelector("#pcPhone");
@@ -1982,70 +2002,96 @@ function createReviewWidget() {
       const $chat = supportEl.querySelector("#pcStartChat");
       const $call = supportEl.querySelector("#pcStartCall");
       const $actions = supportEl.querySelector(".actions-ct");
-      if (!isChatEnabled && $chat) {
+      const chatEnabledFlag = String(
+        isChatEnabled ?? localStorage.getItem("isChatEnabled") ?? ""
+      ).toLowerCase();
+      const chatEnabled = chatEnabledFlag === "true" || chatEnabledFlag === "1";
+      const chatMinsLeft = Number(localStorage.getItem("chat_mins_left"));
+      const callMinsLeft = Number(localStorage.getItem("call_mins_left") || 0);
+      const canShowChat = chatEnabled && chatMinsLeft > 0;
+      const canShowCall = callMinsLeft > 0;
+      if ($actions) $actions.classList.remove("single");
+      if ($chat) {
         $chat.style.display = "none";
-        if ($chat) $chat.remove();
-        if ($actions) $actions.classList.add("single");
-        if ($call) {
-          $call.style.width = "100%";
-          $call.style.flex = "1 1 100%";
-        }
+        $chat.style.flex = "";
+        $chat.style.width = "";
       }
-
-      // preload LS
+      if ($call) {
+        $call.style.display = "none";
+        $call.style.flex = "";
+        $call.style.width = "";
+        $call.setAttribute("aria-disabled", "true");
+      }
+      if (canShowChat && canShowCall) {
+        if ($chat) $chat.style.display = "inline-flex";
+        if ($call) {
+          $call.style.display = "inline-flex";
+          $call.removeAttribute("aria-disabled");
+        }
+        if ($actions) $actions.classList.remove("single");
+      } else if (canShowChat && !canShowCall) {
+        if ($chat) {
+          $chat.style.display = "inline-flex";
+          $chat.style.flex = "1 1 100%";
+        }
+        if ($actions) $actions.classList.add("single");
+      } else if (!canShowChat && canShowCall) {
+        if ($call) {
+          $call.style.display = "inline-flex";
+          $call.style.flex = "1 1 100%";
+          $call.style.width = "100%";
+          $call.removeAttribute("aria-disabled");
+        }
+        if ($actions) $actions.classList.add("single");
+      } else {
+        localStorage.setItem("agent_id", "agent_0498e1599d6ea9e13d09657f79");
+        if ($chat) {
+          $chat.style.display = "none";
+          $chat.style.flex = "";
+          $chat.style.width = "";
+        }
+        if ($call) {
+          $call.style.display = "inline-flex";
+          $call.style.flex = "1 1 100%";
+          $call.style.width = "100%";
+          $call.setAttribute("aria-disabled", "true");
+        }
+        if ($actions) $actions.classList.add("single");
+      }
       $name.value = localStorage.getItem("rex_user_name") || "";
       $email.value = localStorage.getItem("rex_user_email") || "";
       $phone.value = localStorage.getItem("rex_user_phone") || "";
-
-      /* -------- validators -------- */
-      // ↓ replace your current name validator block with this pair
       const vNameSoft = (s) => {
         const t = String(s).trim();
-        return /^[a-zA-Z'.-]{2,}(?:\s+[a-zA-Z'.-]+)*$/.test(t); // min 2 letters, spaces allowed
+        return /^[a-zA-Z'.-]{2,}(?:\s+[a-zA-Z'.-]+)*$/.test(t);
       };
       const vNameHard = (s) => {
         const parts = String(s).trim().split(/\s+/).filter(Boolean);
-        if (parts.length < 1) return false; // at least one word
+        if (parts.length < 1) return false;
         return parts.every((p) => /^[a-zA-Z'.-]{2,}$/.test(p));
       };
       const vEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
-      // const vPhone = (s) => {
-      //   const d = String(s).replace(/[^\d]/g, "");
-      //   return d.length >= 10 && d.length <= 15;
-      // };
-
-      // REPLACE your old vPhone with this:
       const vPhone = (s, el) => {
         const raw = String(s || "").trim();
 
-        // must start with +
         if (!/^\+/.test(raw)) return false;
 
-        // If intl-tel-input is available on this input, use its validator
         if (el && el.__iti && window.intlTelInputUtils) {
           try {
-            // validate the number currently in the input
             if (!el.__iti.isValidNumber()) return false;
 
-            // extra sanity: E.164 length 8–15 digits (ITU E.164)
             const e164 = el.__iti.getNumber(
               intlTelInputUtils.numberFormat.E164
-            ); // "+9198…"
+            );
             const digits = e164.replace(/[^\d]/g, "");
             return digits.length >= 8 && digits <= 15;
-          } catch {
-            // fall through to regex
-          }
+          } catch {}
         }
 
-        // Fallback (no iti): +CC (1–3) + subscriber (6–14) => total 8–17 incl. '+'
         const compact = raw.replace(/\s|-/g, "");
         return /^\+\d{1,3}\d{6,14}$/.test(compact);
       };
 
-      /* -------- touched flags (prevent errors on open) -------- */
-
-      /* -------- save to LS -------- */
       function saveLS() {
         if ($name.value)
           localStorage.setItem("rex_user_name", String($name.value).trim());
@@ -2064,7 +2110,6 @@ function createReviewWidget() {
         setDefaultUIAfterProfile();
       }
 
-      /* -------- error helpers -------- */
       let touched = { name: false, email: false, phone: false };
 
       function setFieldError($input, $errBox, msg) {
@@ -2086,41 +2131,11 @@ function createReviewWidget() {
         setFieldError($phone, $eP, "");
       }
 
-      // live-state check (no forced messages unless touched)
-      // ✅ Replace your current validate(show = true) with this:
-
       function validate(show = true) {
         const okNsoft = vNameSoft($name.value);
         const okE = vEmail($email.value);
         const okP = vPhone($phone.value);
 
-        // if (show) {
-        //   if (touched.name)
-        //     setFieldError(
-        //       $name,
-        //       $eN,
-        //       okNsoft ? "" : "Please enter your full name."
-        //     );
-        //   if (touched.email)
-        //     setFieldError(
-        //       $email,
-        //       $eE,
-        //       okE ? "" : "Please enter a valid email address."
-        //     );
-        //   if (touched.phone)
-        //     setFieldError(
-        //       $phone,
-        //       $eP,
-        //       okP ? "" : "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits)."
-        //     );
-        // }
-
-        // ❌ pehle yahan buttons disable/enable ho rahe the — ab remove:
-        // const okHard = vNameHard($name.value) && okE && okP;
-        // $chat.disabled = !okHard;
-        // $call.disabled = !okHard;
-
-        // Hard validity ab caller par check hoga:
         return vNameHard($name.value) && okE && okP;
       }
 
@@ -2128,10 +2143,9 @@ function createReviewWidget() {
         touched.name = true;
         touched.email = true;
         touched.phone = true;
-        validate(true); // inline errors show
+        validate(true);
       }
 
-      // helper: first invalid for submit (uses HARD name check)
       function firstInvalid() {
         if (!vNameHard($name.value)) return $name;
         if (!vEmail($email.value)) return $email;
@@ -2139,26 +2153,6 @@ function createReviewWidget() {
         return null;
       }
 
-      // Skip guards (next field focus try)
-      // $email.addEventListener("focus", () => {
-      //   if (!$name.value.trim()) {
-      //     $name.focus();
-      //   }
-      // });
-
-      // // Phone focus: only block if previous fields are empty
-      // $phone.addEventListener("focus", () => {
-      //   if (!$name.value.trim()) {
-      //     $name.focus();
-      //     return;
-      //   }
-      //   if (!$email.value.trim()) {
-      //     $email.focus();
-      //     return;
-      //   }
-      // });
-
-      // Live input + blur (only mark this field touched)
       $name.addEventListener("input", () => {
         setFieldError($name, $eN, "");
         validate(false);
@@ -2188,57 +2182,40 @@ function createReviewWidget() {
         validate(true);
       });
 
-      // Enter => full validation; mark all touched so messages appear
-      // [$name, $email, $phone].forEach(($el) => {
-      //   $el.addEventListener("keydown", (e) => {
-      //     if (e.key === "Enter") {
-      //       touched.name = touched.email = touched.phone = true;
-      //       const ok = validate(true); // uses hard check for buttons
-      //       if (!ok) {
-      //         (firstInvalid() || $name).focus();
-      //         return;
-      //       }
-      //       $chat.click();
-      //     }
-      //   });
-      // });
       [$name, $email, $phone].forEach(($el) => {
         $el.addEventListener("keydown", (e) => {
           if (e.key === "Enter") {
-            e.preventDefault(); // ⛔ no auto-advance, no chat/call
+            e.preventDefault();
             return;
           }
         });
       });
-      // $chat.onclick = async () => {
-      //   touched.name = touched.email = touched.phone = true;
-      //   if (!validate(true)) {
-      //     (firstInvalid() || $name).focus();
-      //     return;
-      //   }
-      //   saveLS();
-      //   localStorage.setItem("rex_last_ui", "chat");
-      //   try {
-      //     await ensureChatSession();
-      //   } catch {}
-      //   const cp = getOrCreateChatPopup();
-      //   cp.classList.add("show");
-      //   supportEl.classList.remove("show");
-      //   clearCloseTimer();
-      // };
 
-      // ...getOrCreateSupportPopup() ke andar, elements bind hone ke baad:
+      function setButtonLoading(btn, text = "Please wait…") {
+        if (!btn) return;
+        if (!btn.dataset.originalHtml) btn.dataset.originalHtml = btn.innerHTML;
+        btn.innerHTML = `<span class="rex-spinner"></span>${text}`;
+        btn.disabled = true;
+        btn.setAttribute("aria-busy", "true");
+      }
+
+      function clearButtonLoading(btn) {
+        if (!btn) return;
+        if (btn.dataset.originalHtml) {
+          btn.innerHTML = btn.dataset.originalHtml;
+          delete btn.dataset.originalHtml;
+        }
+        btn.disabled = false;
+        btn.removeAttribute("aria-busy");
+      }
 
       $chat.onclick = async () => {
-        // 🔒 force validation only on click (user typing me free hai)
         touched.name = touched.email = touched.phone = true;
 
-        // current values
         const nameVal = $name.value.trim();
         const emailVal = $email.value.trim();
         const phoneVal = $phone.value.trim();
 
-        // helper: required + format error messaging
         const reqOr = (ok, $input, $errBox, reqMsg, fmtMsg) => {
           const v = $input.value.trim();
           if (!v) {
@@ -2253,7 +2230,6 @@ function createReviewWidget() {
           return true;
         };
 
-     
         const okName = reqOr(
           vNameHard(nameVal),
           $name,
@@ -2276,14 +2252,22 @@ function createReviewWidget() {
           "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits)."
         );
 
-        // ❌ agar koi fail hai to pehle invalid field par focus karke return
         if (!okName || !okEmail || !okPhone) {
           (!okName ? $name : !okEmail ? $email : $phone).focus();
           return;
         }
 
-        // ✅ sab sahi — values save karo aur chat kholo
-        saveLS(); // (aapki existing save function)
+        if ($chat.dataset.busy === "1") return;
+        $chat.dataset.busy = "1";
+
+        setButtonLoading($chat, "Starting chat…");
+        const wasCallDisabled = $call?.disabled ?? false;
+        if ($call) {
+          $call.disabled = true;
+          $call.setAttribute("aria-disabled", "true");
+        }
+
+        saveLS();
         localStorage.setItem("rex_last_ui", "chat");
 
         try {
@@ -2291,8 +2275,8 @@ function createReviewWidget() {
         } catch {}
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
-        cp.classList.remove("expanded"); // reset
-        void cp.offsetWidth; // reflow to start transition cleanly
+        cp.classList.remove("expanded");
+        void cp.offsetWidth;
         cp.classList.add("expanded");
         supportEl.classList.remove("show");
         clearCloseTimer();
@@ -2301,12 +2285,10 @@ function createReviewWidget() {
       $call.onclick = () => {
         touched.name = touched.email = touched.phone = true;
 
-        // current values
         const nameVal = $name.value.trim();
         const emailVal = $email.value.trim();
         const phoneVal = $phone.value.trim();
 
-        // helper: required + format error messaging (same as chat)
         const reqOr = (ok, $input, $errBox, reqMsg, fmtMsg) => {
           const v = $input.value.trim();
           if (!v) {
@@ -2321,7 +2303,6 @@ function createReviewWidget() {
           return true;
         };
 
-        // ✅ hard checks (name/email/phone — tino zaroori)
         const okName = reqOr(
           vNameHard(nameVal),
           $name,
@@ -2344,24 +2325,19 @@ function createReviewWidget() {
           "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits)."
         );
 
-        // ❌ fail → pehle invalid field par focus + stop
         if (!okName || !okEmail || !okPhone) {
           (!okName ? $name : !okEmail ? $email : $phone).focus();
           return;
         }
 
-        // ✅ sab sahi — values save karo aur call flow chalao
         saveLS();
 
-        // koi auto preference na rahe
-        // ❗️Chat disabled case: अगली बार widget click पर call popup खुले
         if (!isChatEnabled) {
-          localStorage.setItem("rex_last_ui", "call"); // 👈 preference save
+          localStorage.setItem("rex_last_ui", "call");
         } else {
           localStorage.setItem("rex_last_ui", "chat");
         }
 
-        // CLOSE all other UIs before starting call
         try {
           supportEl?.classList.remove("show");
         } catch {}
@@ -2373,13 +2349,11 @@ function createReviewWidget() {
           document.getElementById("rexChatPopup")?.classList.remove("show");
         } catch {}
 
-        // OPEN call modal & trigger call
         const mainModal = document.getElementById("agentPopup");
         if (mainModal) mainModal.style.display = "block";
         if (typeof callBtn?.click === "function") callBtn.click();
       };
 
-      // initial state
       setFieldError($name, $eN, "");
       setFieldError($email, $eE, "");
       setFieldError($phone, $eP, "");
@@ -2387,12 +2361,12 @@ function createReviewWidget() {
       validate(false);
       return supportEl;
     }
-    // add once at top of initWidget scope
+
     let __rex_widget_clicking = false;
-    // widget click → yahi UI dikhao jab tak history/pref chat na ho
+
     rexAgent.addEventListener("click", async () => {
       const preferChat = localStorage.getItem("rex_last_ui") === "chat";
-      const preferCall = localStorage.getItem("rex_last_ui") === "call"; // 👈 NEW
+      const preferCall = localStorage.getItem("rex_last_ui") === "call";
       const hasHistory = (loadChatHistory() || []).length > 0;
       const prefer = localStorage.getItem("rex_last_ui");
 
@@ -2406,9 +2380,8 @@ function createReviewWidget() {
         playPrechatGreeting();
         rexAgent.classList.add("noFloat");
         clearCloseTimer?.();
-        return; // yahin ruk jao — call/chat mat kholna
+        return;
       }
-      // 1) hard prefer CALL when chat is off or user asked for call
       if (!chatEnabled || prefer === "call") {
         const modal = document.getElementById("agentPopup");
         if (modal) {
@@ -2418,36 +2391,33 @@ function createReviewWidget() {
           return;
         }
       }
-      // agar chat kholna hai (yahin create session chalta hai) to disable button
+
       if (prefer === "chat" || (chatEnabled && hasCompleteProfile())) {
-        if (__rex_widget_clicking) return; // hard guard
+        if (__rex_widget_clicking) return;
         __rex_widget_clicking = true;
         rexAgent.classList.add("is-busy");
         rexAgent.setAttribute("aria-busy", "true");
 
         try {
           await ensureUserProfileThen(async () => {
-            // IMPORTANT: yahin session create hota hai — is dauran widget disabled rahe
             try {
               await ensureChatSession();
             } catch {}
 
             const cp = getOrCreateChatPopup();
             cp.classList.add("show");
-            cp.classList.remove("expanded"); // reset
-            void cp.offsetWidth; // reflow to start transition cleanly
+            cp.classList.remove("expanded");
+            void cp.offsetWidth;
             cp.classList.add("expanded");
             rexAgent.classList.add("noFloat");
             clearCloseTimer();
           });
         } finally {
-          // session ban gaya (ya fail hua) — widget re-enable
           rexAgent.classList.remove("is-busy");
           rexAgent.removeAttribute("aria-busy");
           __rex_widget_clicking = false;
         }
       } else {
-        // pre-chat details wale flow me session call nahi hoti — widget enabled reh sakta hai
         const sp = getOrCreateSupportPopup();
         sp.classList.add("show");
         playPrechatGreeting();
@@ -2464,6 +2434,9 @@ function createReviewWidget() {
         } catch (err) {
           console.error("Call stop failed:", err);
         }
+        try {
+          localStorage.removeItem("rex_last_ui");
+        } catch {}
         callBtn.classList.remove("reddiv");
         callBtn.classList.add("greendiv");
         phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
@@ -2475,7 +2448,6 @@ function createReviewWidget() {
             : businessName
         } Agent is LIVE</small>`;
         onCall = false;
-        // lockWidgetFor(3000);
       }
     });
 
@@ -2485,7 +2457,7 @@ function createReviewWidget() {
         rexAgent.classList.remove("noFloat");
       }
     });
-    // Create Terms Popup
+
     const termsWrapper = document.createElement("div");
     termsWrapper.className = "terms-wrapper";
     termsWrapper.style.position = "absolute";
@@ -2493,7 +2465,6 @@ function createReviewWidget() {
     termsWrapper.style.zIndex = "11";
     popupBody.appendChild(termsWrapper);
 
-    // Create Terms Popup (inside wrapper)
     const termsPopup = document.createElement("div");
     termsPopup.id = "termsPopup";
     termsPopup.className = "terms-popup";
@@ -2521,29 +2492,34 @@ function createReviewWidget() {
 `;
 
     termsWrapper.appendChild(termsPopup);
-    // Add Event Listener on "Terms of Use"
+
     agentIntro.querySelector(".terms-text").addEventListener("click", () => {
       termsPopup.style.display = "block";
     });
-    // Close button
+
     termsPopup.querySelector(".close-terms").addEventListener("click", () => {
       termsPopup.style.display = "none";
     });
 
     callBtn.onclick = async () => {
       localStorage.setItem("rex_last_ui", "call");
+      let agentId = localStorage.getItem("agent_id");
+      if (!agentId && typeof getAgentIdFromScript === "function") {
+        agentId = getAgentIdFromScript() || "";
+        if (agentId) localStorage.setItem("agent_id", agentId);
+      }
+      const SPECIAL_AGENT = "agent_0498e1599d6ea9e13d09657f79";
+      const endpoint =
+        agentId === SPECIAL_AGENT ? "createRexWebCall" : "createWidegetWebCall";
       if (navigator?.mediaDevices) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
           });
-          // Store the stream globally or in state if needed
           micStream = stream;
         } catch (err) {
           console.error("Microphone access denied or error:", err);
           alert("Please allow microphone access to proceed with the call.");
-          // setPopupMessage("Microphone access is required to test agent.");
-          // setPopupType("failed");
           return;
         }
         if (!onCall) {
@@ -2553,11 +2529,11 @@ function createReviewWidget() {
           callText.innerHTML = `<p>Connecting...</p>`;
           disableChatButton();
           try {
-            const res = await fetch(`${API_URL}/agent/createWidegetWebCall`, {
+            const res = await fetch(`${API_URL}/agent/${endpoint}`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                agent_id: agentId,
+                agent_id: agentId || localStorage.getItem("agent_id"),
                 url: currentSiteURL,
                 retell_llm_dynamic_variables: buildRetellDynamicVars(),
               }),
@@ -2566,7 +2542,6 @@ function createReviewWidget() {
             if (res.ok) {
               const data = await res.json();
 
-              // Validate response structure
               if (data?.access_token && data?.call_id) {
                 const access_token = data.access_token;
                 callId = data.call_id;
@@ -2583,17 +2558,17 @@ function createReviewWidget() {
                     : agentName
                 }</small>`;
                 onCall = true;
-                // Add pulse rings when call starts
+
                 imageWrapper.classList.add("active");
-                // Remove existing rings to avoid duplicates
+
                 imageWrapper
                   .querySelectorAll(".pulse-ring2")
                   .forEach((ring) => ring.remove());
-                // Add three new pulse rings
+
                 for (let i = 0; i < 3; i++) {
                   const ring = document.createElement("span");
                   ring.className = "pulse-ring2";
-                  imageWrapper.insertBefore(ring, agentImg); // Add before agent image
+                  imageWrapper.insertBefore(ring, agentImg);
                 }
               } else {
                 console.error("Invalid response data:", data);
@@ -2612,7 +2587,9 @@ function createReviewWidget() {
           }
         } else {
           await retellWebClient.stopCall();
-          // lockWidgetFor(3000);
+          try {
+            localStorage.removeItem("rex_last_ui");
+          } catch {}
           callBtn.classList.remove("reddiv");
           callBtn.classList.add("greendiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
@@ -2645,74 +2622,14 @@ function createReviewWidget() {
           //   });
         }
       }
-
-      //       // --- NEW CHAT POPUP (closed by default)
-      //       const chatModal = createElement("div", {
-      //         id: "rexChatPopup",
-      //         className: "chat-popup",
-      //       });
-
-      //       const chatHeader = createElement("div", {
-      //         className: "chat-popup-header",
-      //       });
-      //       const chatTitleBox = createElement("div");
-      //       chatTitleBox.innerHTML = `
-      //   <div class="chat-popup-title">${businessName || "Support"}</div>
-      //   <div class="chat-popup-sub">The team can also help</div>
-      // `;
-      //       const chatCloseBtn = createElement("button", {
-      //         className: "chat-popup-close",
-      //         innerHTML: "&times;",
-      //       });
-      //       chatHeader.appendChild(chatTitleBox);
-      //       chatHeader.appendChild(chatCloseBtn);
-
-      //       const chatBody = createElement("div", { className: "chat-popup-body" });
-      //       chatBody.innerHTML = `
-      //   <div class="chat-msg">
-      //     Hi there, welcome! Our team is offline right now, but you can:
-      //     <ul style="margin:8px 0 0 18px;">
-      //       <li>Search our Help Center, available 24/7</li>
-      //       <li>Leave a note and we'll get back to you</li>
-      //     </ul>
-      //   </div>
-
-      //   <div id="rexChatPopupMount"></div>
-
-      //   <div class="chat-actions">
-      //     <input id="rexChatEmail" type="email" placeholder="email@example.com" />
-      //     <button id="rexChatSend">Send</button>
-      //   </div>
-      // `;
-      //       chatModal.appendChild(chatHeader);
-      //       chatModal.appendChild(chatBody);
-      //       document.body.appendChild(chatModal);
-
-      //       // handlers
-      //       chatCloseBtn.onclick = () => chatModal.classList.remove("show");
-      //       document.getElementById("rexChatSend").onclick = () => {
-      //         const v = (document.getElementById("rexChatEmail").value || "").trim();
-      //         if (!v) {
-      //           alert("Please enter an email");
-      //           return;
-      //         }
-      //         // yahan aap apna POST call kar sakte ho
-      //         alert("Message sent. We'll reach out soon.");
-      //         chatModal.classList.remove("show");
-      //       };
-      //     };
     };
 
     let chatModalEl = null;
 
-    // ===== PRE-CHAT DETAILS FLOW (Name -> Email -> Phone) =====
-
-    // LocalStorage keys
     const LS_USER_NAME = "rex_user_name";
     const LS_USER_EMAIL = "rex_user_email";
     const LS_USER_PHONE = "rex_user_phone";
 
-    // Simple validators
     function validateName(v = "") {
       const s = String(v).trim();
       return /^[a-zA-Z\s'.-]{2,}$/.test(s);
@@ -2722,13 +2639,11 @@ function createReviewWidget() {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
     }
     function validatePhone(v = "") {
-      // Accept +, digits, spaces, dashes; store digits only (with optional +country)
       const s = String(v).trim();
       const digits = s.replace(/[^\d]/g, "");
       return digits.length >= 10 && digits.length <= 15;
     }
 
-    // Helpers to get/set profile
     function getUserProfile() {
       return {
         name: localStorage.getItem(LS_USER_NAME) || "",
@@ -2746,12 +2661,11 @@ function createReviewWidget() {
       if (email)
         localStorage.setItem(LS_USER_EMAIL, String(email).trim().toLowerCase());
       if (phone) {
-        const digits = String(phone).replace(/[^\d+]/g, ""); // keep + and digits
+        const digits = String(phone).replace(/[^\d+]/g, "");
         localStorage.setItem(LS_USER_PHONE, digits);
       }
     }
 
-    // -------- UI: Step Modal ----------
     let preChatModalEl = null;
     function getOrCreatePreChatModal() {
       if (preChatModalEl) return preChatModalEl;
@@ -2798,9 +2712,8 @@ function createReviewWidget() {
   `;
       document.body.appendChild(preChatModalEl);
 
-      // Events
       const $x = preChatModalEl.querySelector("#rexPreX");
-      const $cancel = preChatModalEl.querySelector("#rexPreCancel"); // may not exist
+      const $cancel = preChatModalEl.querySelector("#rexPreCancel");
 
       [$x, $cancel].filter(Boolean).forEach((btn) => {
         btn.onclick = () => hidePreChatModal();
@@ -2810,27 +2723,24 @@ function createReviewWidget() {
 
     function computePreStep() {
       const { name, email, phone } = getUserProfile();
-      if (!validateName(name)) return 0; // ask name
-      if (!validateEmail(email)) return 1; // ask email
-      if (!validatePhone(phone)) return 2; // ask phone
-      return 3; // everything complete
+      if (!validateName(name)) return 0;
+      if (!validateEmail(email)) return 1;
+      if (!validatePhone(phone)) return 2;
+      return 3;
     }
 
     function onPreBack() {
-      // Save current field text before going back (so user ke edits na lost hon)
       const $input = preChatModalEl.querySelector("#rexPreInput");
       const raw = ($input.value || "").trim();
 
       if (_preStep === 1) {
-        // we were on Email, go back to Name
-        _preData.email = raw; // preserve whatever they typed
+        _preData.email = raw;
         _preStep = 0;
       } else if (_preStep === 2) {
-        // we were on Phone, go back to Email
-        _preData.phone = raw; // preserve typed phone
+        _preData.phone = raw;
         _preStep = 1;
       } else {
-        return; // already at first step
+        return;
       }
 
       applyStepUI();
@@ -2844,14 +2754,11 @@ function createReviewWidget() {
 
       const el = getOrCreatePreChatModal();
 
-      // Pull saved values so input pre-fills correctly
       const { name, email, phone } = getUserProfile();
       _preData = { name, email, phone };
 
-      // 🔑 decide which step to show
       _preStep = computePreStep();
 
-      // If everything is already there, skip modal and open chat
       if (_preStep === 3) {
         hidePreChatModal();
         if (typeof _queuedOpenChat === "function") {
@@ -2873,8 +2780,7 @@ function createReviewWidget() {
       if (preChatModalEl) preChatModalEl.style.display = "none";
     }
 
-    // Step machine
-    let _preStep = 0; // 0=name, 1=email, 2=phone
+    let _preStep = 0;
     let _preData = { name: "", email: "", phone: "" };
 
     function applyStepUI() {
@@ -2887,7 +2793,6 @@ function createReviewWidget() {
 
       $err.style.display = "none";
 
-      // Show/hide Back
       if (_preStep === 0) {
         $back.style.display = "none";
       } else {
@@ -2917,7 +2822,6 @@ function createReviewWidget() {
         $next.textContent = "Start chat";
       }
 
-      // Bind next each render (idempotent)
       preChatModalEl.querySelector("#rexPreNext").onclick = onPreNext;
       preChatModalEl.querySelector("#rexPreBack").onclick = onPreBack;
       $input.onkeydown = (e) => {
@@ -2925,9 +2829,7 @@ function createReviewWidget() {
       };
     }
 
-    // Throws on network failure so caller won't proceed to startVoiceCall().
     async function archiveOpenChatIfAny() {
-      // hard logs to see exactly kya hua
       const chatId = localStorage.getItem("chat_id");
       const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
       console.log("[Rex] archiveOpenChatIfAny: start", {
@@ -2943,7 +2845,6 @@ function createReviewWidget() {
           return "skip";
         }
 
-        // Read history safely
         let hist = [];
         try {
           const raw =
@@ -2967,7 +2868,6 @@ function createReviewWidget() {
         });
 
         if (!hasUserMsg || !knowledgeBaseId) {
-          // → END (PATCH)
           const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(
             chatId
           )}`;
@@ -2978,7 +2878,7 @@ function createReviewWidget() {
             const txt = await res.text().catch(() => "");
             throw new Error(`end-chat HTTP ${res.status}: ${txt}`);
           }
-          // cleanup
+
           localStorage.removeItem("rex_last_ui");
           localStorage.removeItem(
             typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
@@ -2987,7 +2887,6 @@ function createReviewWidget() {
           console.log("[Rex] archiveOpenChatIfAny: END done + cleaned");
           return "end";
         } else {
-          // → ARCHIVE (POST)
           const url = `${API_URL}/agent/end-chat-archive`;
           console.log("[Rex] ARCHIVE via POST →", url);
           const res = await fetch(url, {
@@ -3002,7 +2901,7 @@ function createReviewWidget() {
             const txt = await res.text().catch(() => "");
             throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
           }
-          // cleanup
+
           localStorage.removeItem("rex_last_ui");
           localStorage.removeItem(
             typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
@@ -3013,7 +2912,7 @@ function createReviewWidget() {
         }
       } catch (e) {
         console.warn("[Rex] archiveOpenChatIfAny failed:", e);
-        throw e; // ← important: stop the call flow
+        throw e;
       }
     }
     function onPreNext() {
@@ -3021,44 +2920,11 @@ function createReviewWidget() {
       const $err = preChatModalEl.querySelector("#rexPreErr");
       const raw = ($input.value || "").trim();
 
-      // if (_preStep === 0) {
-      //   if (!validateName(raw)) {
-      //     $err.textContent =
-      //       "Please enter your full name (letters only, min 2 characters).";
-      //     $err.style.display = "block";
-      //     return;
-      //   }
-      //   _preData.name = raw;
-      //   saveUserProfile({ name: raw });
-      //   _preStep = 1;
-      //   applyStepUI();
-      //   return;
-      // }
-
-      // if (_preStep === 1) {
-      //   if (!validateEmail(raw)) {
-      //     $err.textContent = "Please enter a valid email address.";
-      //     $err.style.display = "block";
-      //     return;
-      //   }
-      //   _preData.email = raw;
-      //   saveUserProfile({ email: raw });
-      //   _preStep = 2;
-      //   applyStepUI();
-      //   return;
-      // }
-
-      // step 2: phone
-      // if (!validatePhone(raw)) {
-      //   $err.textContent = "Please enter a valid phone number with country code (e.g. +91 98XXXXXXXX) number (10–15 digits).";
-      //   $err.style.display = "block";
-      //   return;
-      // }
       _preData.phone = raw;
       saveUserProfile({ phone: raw });
 
       hidePreChatModal();
-      // When finished, call the queued opener (if any)
+
       if (typeof _queuedOpenChat === "function") {
         const fn = _queuedOpenChat;
         _queuedOpenChat = null;
@@ -3067,12 +2933,77 @@ function createReviewWidget() {
     }
 
     let _queuedOpenChat = null;
-    /**
-     * Gatekeeper: ensure we have name+email+phone before opening chat.
-     * If complete -> immediately run openChatFn(). Else -> show the pre-chat modal and queue it.
-     */
+
+    // function ensureUserProfileThen(openChatFn) {
+    //   // Safe number parser (handles null/undefined/empty)
+    //   const toNum = (v) => {
+    //     const n = Number(v);
+    //     return Number.isFinite(n) ? n : 0;
+    //   };
+
+    //   const chatLeft = toNum(localStorage.getItem("chat_mins_left"));
+    //   const callLeft = toNum(localStorage.getItem("call_mins_left"));
+
+    //   // 1) Dono zero
+    //   if (bothMinsZero && bothMinsZero()) {
+    //     localStorage.setItem("rex_last_ui", "call");
+    //     localStorage.setItem("agent_id", "agent_0498e1599d6ea9e13d09657f79");
+    //     openCallOnlyWidget();
+    //     return;
+    //   }
+
+    //   // 2) Sirf CALL minutes bache (call > 0, chat = 0) => call UI
+    //   if (callLeft > 0 && chatLeft === 0) {
+    //     localStorage.setItem("rex_last_ui", "call");
+    //     // NOTE: agent_id ko touch nahi karna
+    //     openCallOnlyWidget();
+    //     return;
+    //   }
+
+    //   // 3) Warna normal flow (chat allowed)
+    //   if (hasCompleteProfile && hasCompleteProfile()) {
+    //     openChatFn();
+    //   } else {
+    //     _queuedOpenChat = openChatFn;
+    //     showPreChatModal();
+    //   }
+    // }
+
+    // small inline confirm modal
+
     function ensureUserProfileThen(openChatFn) {
-      if (hasCompleteProfile()) {
+      const toNum = (v) => {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+      };
+
+      const chatLeft = toNum(localStorage.getItem("chat_mins_left"));
+      const callLeft = toNum(localStorage.getItem("call_mins_left"));
+
+      const openCallAfterWrites = (setAgentId) => {
+        localStorage.setItem("rex_last_ui", "call");
+        if (setAgentId) {
+          localStorage.setItem("agent_id", "agent_0498e1599d6ea9e13d09657f79");
+        }
+        const run = () => {
+          if (typeof openCallOnlyWidget === "function") openCallOnlyWidget();
+        };
+        if (typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(() => requestAnimationFrame(run));
+        } else {
+          setTimeout(run, 0);
+        }
+      };
+
+      if (callLeft === 0 && chatLeft === 0) {
+        openCallAfterWrites(true);
+        return;
+      }
+      if (callLeft > 0 && chatLeft === 0) {
+        openCallAfterWrites(false);
+        return;
+      }
+      if (typeof hasCompleteProfile === "function" && hasCompleteProfile()) {
         openChatFn();
       } else {
         _queuedOpenChat = openChatFn;
@@ -3080,8 +3011,6 @@ function createReviewWidget() {
       }
     }
 
-    // small inline confirm modal
-    // small inline confirm modal
     function makeEndConfirm(parentEl) {
       let overlay = null,
         okCb = null,
@@ -3130,18 +3059,12 @@ function createReviewWidget() {
 
         $cancel.onclick = () => close(false);
 
-        // ✅ OK = condition-based END/ARCHIVE
         $ok.onclick = async () => {
           try {
             setBusy(true, "Ending…");
-            // वही logic: "end" | "archive" | "skip"
+
             const result = await archiveOpenChatIfAny();
 
-            // optional: छोटे feedback के लिए
-            // $text.textContent = result === "end" ? "Chat ended." :
-            //                     result === "archive" ? "Chat archived." : "No open chat.";
-
-            // caller को control देना हो तो okCb() call करके बंद कर दो:
             if (typeof okCb === "function") {
               try {
                 okCb(result);
@@ -3152,11 +3075,10 @@ function createReviewWidget() {
             console.error("[Rex] End/Archive failed from confirm:", err);
             $text.textContent = "Failed to end chat. Please try again.";
             setBusy(false);
-            return; // modal खुला रहने दो ताकि user दोबारा try कर सके
+            return;
           }
         };
 
-        // focus first button
         setTimeout(() => $cancel.focus(), 0);
 
         function escHandler(e) {
@@ -3191,12 +3113,10 @@ function createReviewWidget() {
       return { open };
     }
 
-    // ===== END PRE-CHAT FLOW =====
-
     function getOrCreateChatPopup() {
       if (chatModalEl) return chatModalEl;
 
-      const logoUrl = "https://rexptin.truet.net/images/favicon-final.svg"; // change if needed
+      const logoUrl = "https://rexptin.truet.net/images/favicon-final.svg";
 
       chatModalEl = document.createElement("div");
       chatModalEl.id = "rexChatPopup";
@@ -3239,76 +3159,39 @@ function createReviewWidget() {
           <div class="composer">
             <input id="rexInput" type="text" placeholder="Type a message…" />
             <button id="rexSend" type="button">
-  <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="33" cy="33" r="33" fill="#C4C4C4" fill-opacity="0.1"/>
-<circle cx="33" cy="32.9998" r="27" fill="#6524EB"/>
-<path d="M18.0045 29.3431C17.9665 30.1118 18.1686 30.8732 18.5829 31.5218C18.9971 32.1704 19.603 32.6738 20.3163 32.9624L28.3068 36.2539L32.2735 32.2864C32.4668 32.1062 32.7225 32.0081 32.9867 32.0128C33.251 32.0174 33.5031 32.1245 33.6899 32.3114C33.8768 32.4983 33.9838 32.7505 33.9885 33.0147C33.9931 33.279 33.8951 33.5348 33.7149 33.7281L29.7496 37.6956L33.0404 45.6877C33.3181 46.3742 33.7953 46.9616 34.4103 47.3738C35.0254 47.786 35.75 48.0042 36.4904 47.9999H36.659C37.428 47.9717 38.1692 47.7047 38.7796 47.236C39.3901 46.7674 39.8394 46.1202 40.0654 45.3844L46.828 23.8618C47.0329 23.2096 47.0552 22.5136 46.8924 21.8496C46.7296 21.1856 46.388 20.579 45.9047 20.0955C45.4214 19.6121 44.8148 19.2704 44.1509 19.1076C43.4871 18.9448 42.7913 18.9671 42.1392 19.1721L20.6209 25.936C19.885 26.1618 19.2377 26.6111 18.7688 27.2217C18.3 27.8323 18.0328 28.5737 18.0045 29.3431Z" fill="white"/>
-</svg>
+          <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="33" cy="33" r="33" fill="#C4C4C4" fill-opacity="0.1"/>
+        <circle cx="33" cy="32.9998" r="27" fill="#6524EB"/>
+        <path d="M18.0045 29.3431C17.9665 30.1118 18.1686 30.8732 18.5829 31.5218C18.9971 32.1704 19.603 32.6738 20.3163 32.9624L28.3068 36.2539L32.2735 32.2864C32.4668 32.1062 32.7225 32.0081 32.9867 32.0128C33.251 32.0174 33.5031 32.1245 33.6899 32.3114C33.8768 32.4983 33.9838 32.7505 33.9885 33.0147C33.9931 33.279 33.8951 33.5348 33.7149 33.7281L29.7496 37.6956L33.0404 45.6877C33.3181 46.3742 33.7953 46.9616 34.4103 47.3738C35.0254 47.786 35.75 48.0042 36.4904 47.9999H36.659C37.428 47.9717 38.1692 47.7047 38.7796 47.236C39.3901 46.7674 39.8394 46.1202 40.0654 45.3844L46.828 23.8618C47.0329 23.2096 47.0552 22.5136 46.8924 21.8496C46.7296 21.1856 46.388 20.579 45.9047 20.0955C45.4214 19.6121 44.8148 19.2704 44.1509 19.1076C43.4871 18.9448 42.7913 18.9671 42.1392 19.1721L20.6209 25.936C19.885 26.1618 19.2377 26.6111 18.7688 27.2217C18.3 27.8323 18.0328 28.5737 18.0045 29.3431Z" fill="white"/>
+        </svg>
 
-</button>
+        </button>
           </div>
         </div>
  
-    <div class="PoweredBy">
-      <span><a href="https://www.rxpt.us/" target="_blank" rel="noopener noreferrer">Powered by rxpt.us</a></span>
-      </div>
+      <div class="PoweredBy">
+        <span><a href="https://www.rxpt.us/" target="_blank" rel="noopener noreferrer">Powered by rxpt.us</a></span>
+        </div>
 
 `;
 
       document.body.appendChild(chatModalEl);
       const endConfirm = makeEndConfirm(chatModalEl);
 
-      // silently archive any open chat (no reload)
-      // async function archiveOpenChatIfAny() {
-      //   try {
-      //     const chatId = localStorage.getItem("chat_id");
-      //     const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
-      //     if (!chatId || !knowledgeBaseId) return;
-
-      //     const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
-      //       method: "POST",
-      //       headers: { "Content-Type": "application/json" },
-      //       body: JSON.stringify({
-      //         knowledge_base_id: knowledgeBaseId,
-      //         chat_id: chatId,
-      //       }),
-      //     });
-      //     if (!res.ok) {
-      //       const txt = await res.text().catch(() => "");
-      //       throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
-      //     }
-
-      //     // local cleanup (no reload)
-      //     localStorage.removeItem("rex_last_ui");
-      //     localStorage.removeItem(CHAT_LS_KEY);
-      //     localStorage.removeItem("chat_id");
-      //   } catch (e) {
-      //     console.warn("[Rex] archiveOpenChatIfAny failed:", e);
-      //   }
-      // }
-
-      // Replace your existing function with this one
-      // ✅ Condition-based: END (no user msg) vs ARCHIVE (has user msg)
-      // Returns one of: "end" | "archive" | "skip"
-
-      // start the voice call (mic → createWidegetWebCall → connect → UI)
       async function startVoiceCall() {
         try {
           callBtn.disabled = true;
 
-          // sirf text, koi loader nahi
           callLabel.textContent = "Connecting…";
           callText.textContent = "Connecting…";
 
-          // mic permission
           await navigator.mediaDevices.getUserMedia({ audio: true });
 
-          // create call
           const res = await fetch(`${API_URL}/agent/createWidegetWebCall`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              agent_id: agentId,
+              agent_id: localStorage.getItem("agent_id"),
               url: currentSiteURL,
               retell_llm_dynamic_variables: buildRetellDynamicVars(),
             }),
@@ -3322,7 +3205,6 @@ function createReviewWidget() {
           callId = data.call_id;
           await retellWebClient.startCall({ accessToken: data.access_token });
 
-          // connected UI
           callLabel.textContent = "Connected";
           callBtn.classList.remove("greendiv");
           callBtn.classList.add("reddiv");
@@ -3332,7 +3214,6 @@ function createReviewWidget() {
           }</small>`;
           onCall = true;
 
-          // rings
           imageWrapper.classList.add("active");
           imageWrapper
             .querySelectorAll(".pulse-ring2")
@@ -3351,7 +3232,6 @@ function createReviewWidget() {
         }
       }
 
-      // ---- Inline "Start call?" confirm INSIDE chat popup ----
       function openCallConfirmInsideChat() {
         const overlay = document.createElement("div");
         overlay.className = "rex-confirm-overlay";
@@ -3375,25 +3255,23 @@ function createReviewWidget() {
 
         overlay.querySelector('[data-act="ok"]').onclick = async () => {
           try {
+            clearOnlyUserAutoEndTimer();
             clearInactivityTimers?.();
 
             callLabel.textContent = "Ending previous chat…";
             callText.innerHTML = `<span class="rex-spinner"></span><p>Ending previous chat…</p>`;
 
-            // Only call the end/archive step if a previous chat exists.
             const hadOpenChat = !!localStorage.getItem("chat_id");
             let endStatus = "skip";
 
             if (hadOpenChat) {
-              endStatus = await archiveOpenChatIfAny(); // "end" | "archive" | "skip"
+              endStatus = await archiveOpenChatIfAny();
             } else {
               console.log("[Rex] No open chat found. Skipping end/archive.");
             }
 
             console.log("[Rex] proceed to call? endStatus =", endStatus);
 
-            // If end/archive threw, we would be in catch-block already.
-            // Now proceed to call UI and start the call:
             chatModalEl.classList.remove("show");
             modal.style.display = "block";
             document.getElementById("agentButton")?.classList.add("noFloat");
@@ -3408,7 +3286,6 @@ function createReviewWidget() {
         };
       }
 
-      // call icon को naya confirm दिखाने के लिए bind करें
       const $callIcon = chatModalEl.querySelector("#rexCallIconBtn");
       if ($callIcon) {
         $callIcon.onclick = (e) => {
@@ -3417,13 +3294,13 @@ function createReviewWidget() {
         };
       }
 
-      // Safe bindings AFTER element exists
       const $endBtn = chatModalEl.querySelector(".attio-end");
       const $closeBtn = chatModalEl.querySelector(".attio-close");
 
       if ($closeBtn) {
         $closeBtn.onclick = () => {
           chatModalEl.classList.remove("show");
+          clearOnlyUserAutoEndTimer();
           try {
             clearInactivityTimers();
             startCloseTimer();
@@ -3463,58 +3340,15 @@ function createReviewWidget() {
                 const $msgs = chatModalEl.querySelector("#rexMessages");
                 if ($msgs) $msgs.innerHTML = "";
                 chatModalEl.classList.remove("show");
-                window.location.reload();
+                // window.location.reload();
               } catch (e) {
                 console.error("end-chat failed:", e);
               }
             },
-            onCancel: () => {
-              // kuch nahi karna; simply close
-            },
+            onCancel: () => {},
           });
         };
       }
-
-      // if ($endBtn) {
-      //   $endBtn.onclick = async () => {
-      //     const ok = window.confirm("Are you sure you want to end this chat?");
-      //     if (!ok) return;
-      //     try {
-      //       clearInactivityTimers();
-      //       const chatId = localStorage.getItem("chat_id");
-      //       const knowledgeBaseId = localStorage.getItem("knowledge_base_id");
-
-      //       if (chatId && knowledgeBaseId) {
-      //         const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
-      //           method: "POST",
-      //           headers: { "Content-Type": "application/json" },
-      //           body: JSON.stringify({
-      //             knowledge_base_id: knowledgeBaseId,
-      //             chat_id: chatId,
-      //           }),
-      //         });
-
-      //         if (!res.ok) {
-      //           const txt = await res.text().catch(() => "");
-      //           throw new Error(`end-chat-archive HTTP ${res.status}: ${txt}`);
-      //         }
-      //       }
-      //       localStorage.removeItem("rex_last_ui");
-      //       // clear local state and close popup (no input disabling)
-      //       localStorage.removeItem(CHAT_LS_KEY);
-      //       localStorage.removeItem("chat_id");
-      //       // wipe thread so reopening shows fresh state without page refresh
-      //       const $msgs = chatModalEl.querySelector("#rexMessages");
-      //       if ($msgs) $msgs.innerHTML = "";
-      //       chatModalEl.classList.remove("show");
-      //       window.location.reload();
-      //     } catch (e) {
-      //       console.error("end-chat failed:", e);
-      //     }
-      //   };
-      // }
-
-      // close handler
       chatModalEl.querySelector(".attio-close").onclick = () => {
         chatModalEl.classList.remove("expanded");
         chatModalEl.classList.remove("show");
@@ -3524,7 +3358,6 @@ function createReviewWidget() {
         } catch {}
       };
 
-      // helpers
       const $msgs = chatModalEl.querySelector("#rexMessages");
       const $input = chatModalEl.querySelector("#rexInput");
       const $send = chatModalEl.querySelector("#rexSend");
@@ -3550,14 +3383,14 @@ function createReviewWidget() {
 
         const div = document.createElement("div");
         div.className = `msg ${role}`;
-        // content + time line
+
         div.innerHTML = `${ESC(text)}<span class="time">${timeStr}</span>`;
         $msgs.appendChild(div);
         $msgs.scrollTop = $msgs.scrollHeight;
       }
 
       function showTyping() {
-        if (typingEl) return; // already visible
+        if (typingEl) return;
         typingEl = document.createElement("div");
         typingEl.className = "msg bot typing";
         typingEl.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
@@ -3570,7 +3403,6 @@ function createReviewWidget() {
         typingEl.remove();
         typingEl = null;
       }
-      // === INACTIVITY (scoped to chat popup) ===
       const FIRST_WAIT = 2 * 60 * 1000;
       const SECOND_WAIT = 3 * 60 * 1000;
       const THIRD_WAIT = 4 * 60 * 1000;
@@ -3654,7 +3486,7 @@ function createReviewWidget() {
               chatModalEl.classList.remove("show");
             }
             clearInactivityTimers();
-            window.location.reload();
+            // window.location.reload();
           }
         }, FIRST_WAIT + SECOND_WAIT + THIRD_WAIT);
       }
@@ -3663,12 +3495,6 @@ function createReviewWidget() {
         inactivityLocked = false;
         scheduleInactivityTimers();
       }
-
-      // --- render saved history BEFORE greeting ---
-      // const hist = loadChatHistory();
-      // if (hist.length) {
-      //   hist.forEach((m) => appendMessage(m.role, m.text));
-      // }
 
       async function sendMessage() {
         const t = ($input.value || "").trim();
@@ -3691,30 +3517,27 @@ function createReviewWidget() {
 
         resetInactivityTimers();
         clearCloseTimer();
+        clearOnlyUserAutoEndTimer();
         const tsNow = Date.now();
         appendMessage("user", t, tsNow);
         saveChatMessage("user", t);
+        scheduleOnlyUserAutoEnd();
         $input.value = "";
         $input.disabled = true;
         $send.disabled = true;
 
-        // ---- SHOW TYPING while waiting ----
         showTyping();
 
         try {
-          // API hit
           const { botText } = await createChatCompletion(payload);
           const reply = botText || "…";
 
-          // ---- HIDE TYPING before posting reply ----
           hideTyping();
 
-          // appendMessage("bot", reply);
-          // appendMessage("bot", reply, Date.now());
-          // create an empty bubble and stream into it
           const bubble = createBotBubble();
           await streamBotTextInto(bubble, reply, { chunkSize: 3, delay: 18 });
           saveChatMessage("bot", reply);
+          clearOnlyUserAutoEndTimer();
           try {
             if (isGoodbye(reply)) {
               setTimeout(async () => {
@@ -3729,7 +3552,6 @@ function createReviewWidget() {
         } catch (e) {
           console.error(e);
 
-          // ---- HIDE TYPING on error ----
           hideTyping();
 
           const errMsg = "Sorry, couldn't send your message. Please try again.";
@@ -3744,6 +3566,7 @@ function createReviewWidget() {
 
       $send.onclick = sendMessage;
       $input.addEventListener("keydown", (e) => {
+        scheduleOnlyUserAutoEnd();
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           sendMessage();
@@ -3754,6 +3577,7 @@ function createReviewWidget() {
         hist.forEach((m) => appendMessage(m.role, m.text, m.ts || Date.now()));
       }
       renderHistory();
+      scheduleOnlyUserAutoEnd();
       scheduleInactivityTimers();
       (async () => {
         try {
@@ -3767,36 +3591,6 @@ function createReviewWidget() {
   };
 
   injectCSS();
-
-  async function loadIntlTelInputAssets() {
-    const cssHref =
-      "https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.12/build/css/intlTelInput.css";
-    const jsSrc =
-      "https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.12/build/js/intlTelInput.min.js";
-    const utils =
-      "https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.12/build/js/utils.js";
-
-    // inject CSS (idempotent)
-    if (!document.querySelector(`link[href="${cssHref}"]`)) {
-      const l = document.createElement("link");
-      l.rel = "stylesheet";
-      l.href = cssHref;
-      document.head.appendChild(l);
-    }
-
-    // load script if not present
-    if (!window.intlTelInput) {
-      await new Promise((res, rej) => {
-        const s = document.createElement("script");
-        s.src = jsSrc;
-        s.onload = res;
-        s.onerror = rej;
-        document.head.appendChild(s);
-      });
-    }
-
-    return { utilsUrl: utils };
-  }
 
   (async () => {
     await initWidget();
