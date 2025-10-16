@@ -1,7 +1,8 @@
 // User Script
 function injectCSS() {
   const style = document.createElement("style");
-  style.innerHTML = `
+
+style.innerHTML = `
     @keyframes float {
      0% { transform: translateY(0); }
      50% { transform: translateY(-8px); }
@@ -928,7 +929,6 @@ function injectCSS() {
         }
 
         
-
 
 `;
   document.head.appendChild(style);
@@ -2259,26 +2259,30 @@ function createReviewWidget() {
       <div class="big-card">
       
 
-        <div class="field">
-         
-          <div class="input-dark"><input id="pcName" type="text" placeholder="John Doe"   autocomplete="off" autocapitalize="off" autocorrect="off"
-  spellcheck="false" aria-autocomplete="none" inputmode="text"></div>
-          <div class="err" id="erPcName"></div>
-        </div>
+  <div class="field">
+    <div class="input-dark">
+        <input id="pcName" type="text" placeholder="John Doe" autocomplete="off" autocapitalize="off" autocorrect="off"
+               spellcheck="false" aria-autocomplete="none" inputmode="text" maxlength="30">
+    </div>
+    <div class="err" id="erPcName"></div>
+</div>
 
-        <div class="field">
-         
-          <div class="input-dark"><input id="pcEmail" type="email" placeholder="email@example.com"   autocomplete="off" autocapitalize="off" autocorrect="off"
-  spellcheck="false" aria-autocomplete="none" inputmode="email"></div>
-          <div class="err" id="erPcEmail"></div>
-        </div>
+<div class="field">
+    <div class="input-dark">
+        <input id="pcEmail" type="email" placeholder="email@example.com" autocomplete="off" autocapitalize="off" autocorrect="off"
+               spellcheck="false" aria-autocomplete="none" inputmode="email" maxlength="50">
+    </div>
+    <div class="err" id="erPcEmail"></div>
+</div>
 
-        <div class="field">
-          
-          <div class="input-dark"><input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX"  autocomplete="off" autocapitalize="off" autocorrect="off"
-  spellcheck="false" aria-autocomplete="none" inputmode="tel"></div>
-          <div class="err" id="erPcPhone"></div>
-        </div>
+<div class="field">
+    <div class="input-dark">
+        <input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX" autocomplete="off" autocapitalize="off" autocorrect="off"
+               spellcheck="false" aria-autocomplete="none" inputmode="tel" maxlength="12">
+    </div>
+    <div class="err" id="erPcPhone"></div>
+</div>
+
 
        
       </div>
@@ -2348,9 +2352,12 @@ function createReviewWidget() {
       const callMinsLeft = Number(localStorage.getItem("call_mins_left"));
       const addOnsLeft = toNum(localStorage.getItem("addOnsMins"));
       const allZero =
-        chatMinsLeft === 0 && callMinsLeft === 0 && addOnsLeft === 0;
+      chatMinsLeft === 0 && callMinsLeft === 0 && addOnsLeft === 0;
       const canShowChat = chatEnabled && chatMinsLeft > 0;
-      const canShowCall = callMinsLeft > 0 || addOnsLeft > 0;
+      // const canShowChat = (chatEnabled && chatMinsLeft > 0) || addOnsLeft > 0;
+      const canShowCall = callMinsLeft > 0 || (addOnsLeft > 0 && chatMinsLeft === 0);
+      // const canShowCall = callMinsLeft > 0 || addOnsLeft > 0;
+
       if ($actions) $actions.classList.remove("single");
       if ($chat) {
         $chat.style.display = "none";
@@ -2363,49 +2370,9 @@ function createReviewWidget() {
         $call.style.width = "";
         $call.setAttribute("aria-disabled", "true");
       }
-      // if (canShowChat && canShowCall) {
-      //   if ($chat) $chat.style.display = "inline-flex";
-      //   if ($call) {
-      //     $call.style.display = "inline-flex";
-      //     $call.removeAttribute("aria-disabled");
-      //   }
-      //   if ($actions) $actions.classList.remove("single");
-      // } else if (canShowChat && !canShowCall) {
-      //   if ($chat) {
-      //     $chat.style.display = "inline-flex";
-      //     $chat.style.flex = "1 1 100%";
-      //   }
-      //   if ($actions) $actions.classList.add("single");
-      // } else if (!canShowChat && canShowCall) {
-      //   if ($call) {
-      //     $call.style.display = "inline-flex";
-      //     $call.style.flex = "1 1 100%";
-      //     $call.style.width = "100%";
-      //     $call.removeAttribute("aria-disabled");
-      //   }
-      //   if ($actions) $actions.classList.add("single");
-      // } else {
-      //   localStorage.setItem("agent_id", "agent_0498e1599d6ea9e13d09657f79");
-      //   if ($chat) {
-      //     $chat.style.display = "none";
-      //     $chat.style.flex = "";
-      //     $chat.style.width = "";
-      //   }
-      //   if ($call) {
-      //     $call.style.display = "inline-flex";
-      //     $call.style.flex = "1 1 100%";
-      //     $call.style.width = "100%";
-      //     $call.setAttribute("aria-disabled", "true");
-      //   }
-      //   if ($actions) $actions.classList.add("single");
       if (allZero) {
-        // 🔒 Force REX
         localStorage.setItem("agent_id", SPECIAL_REX_AGENT);
-
-        // chat bilkul hide
         if ($chat) $chat.style.display = "none";
-
-        // call button single layout me (disabled)
         if ($call) {
           $call.style.display = "inline-flex";
           $call.style.flex = "1 1 100%";
@@ -2435,7 +2402,6 @@ function createReviewWidget() {
         }
         if ($actions) $actions.classList.add("single");
       } else {
-        // default fallback (usually unreachable now)
         localStorage.setItem("agent_id", SPECIAL_REX_AGENT);
         if ($chat) $chat.style.display = "none";
         if ($call) {
@@ -3119,7 +3085,7 @@ function createReviewWidget() {
 
       <label id="rexPreLabel" style="display:block;font-size:13px;margin-bottom:6px">Your full name</label>
       <input id="rexPreInput" type="text" placeholder="John Doe"
-             style="width:93%;padding:11px 12px;border:1px solid #E6E6E6;border-radius:10px;font-size:14px;outline:0"/>
+             style="width:93%;padding:11px 12px;border:1px solid #E6E6E6;border-radius:10px;font-size:14px;outline:0";maxlength="30"/>
 
       <div id="rexPreErr" style="color:#d93025;font-size:12px;margin-top:6px;display:none"></div>
 
