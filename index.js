@@ -2162,7 +2162,7 @@ function createReviewWidget() {
 <div class="field">
     <div class="input-dark">
         <input id="pcPhone" type="tel" placeholder="+1 98XXXXXXXX" autocomplete="off" autocapitalize="off" autocorrect="off"
-               spellcheck="false" aria-autocomplete="none" inputmode="tel" maxlength="12">
+               spellcheck="false" aria-autocomplete="none" inputmode="tel" maxlength="15">
     </div>
     <div class="err" id="erPcPhone"></div>
 </div>
