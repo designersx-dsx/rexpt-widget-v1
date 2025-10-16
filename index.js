@@ -1,8 +1,7 @@
 // User Script
 function injectCSS() {
   const style = document.createElement("style");
-
-style.innerHTML = `
+  style.innerHTML = `
     @keyframes float {
      0% { transform: translateY(0); }
      50% { transform: translateY(-8px); }
@@ -518,6 +517,7 @@ style.innerHTML = `
                 border-radius: 0 !important;
                 transform: none !important;
               }
+                
             }
                             .attio-header{display:flex; align-items:center; justify-content:space-between;
                             padding:12px 16px; border-bottom:1px solid #EFEFEF}
@@ -555,7 +555,7 @@ style.innerHTML = `
                 .composer{display:flex; gap:8px; align-items:center; margin-top:10px;
                 border:0px solid #E6E6E6; border-radius:14px; padding:6px;z-index: 1;
                     position: relative; width:93%}
-                .composer input{flex:1; border:0; outline:0; padding:10px 12px; font-size:14px;border-radius: 10px 0 0 10px;
+                .composer input{flex:1; border:0; outline:0; padding:8px 12px; font-size:14px;border-radius: 10px 0 0 10px;
          height: 32px;}
                 .composer button{border:0; background:#6564eb00; color:#fff; 
                 border-radius:10px; font-weight:600; cursor:pointer; position: absolute;
@@ -687,8 +687,8 @@ style.innerHTML = `
           position: fixed;
           bottom: 155px;
           right: 20px;
-          max-width: 290px;
-          width: 90%;
+          max-width: 500px;
+          width: 100%;
           background: #fff;
           border-radius: 16px;
           border: 1px solid #ECECEC;
@@ -909,8 +909,12 @@ style.innerHTML = `
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
-          .support-popup{ max-width:none !important; width:100% !important; left:0 !important; right:0 !important; border-radius:0 !important }
-          .big-card{ min-height:34dvh; padding-bottom:96px }
+          .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
+          .big-card{ padding-bottom:96px }
+          .support-body{
+             height: 50dvh;
+             overflow: auto;
+          }
         }
           @media (max-width:370px){
           .big-card{ min-height:45dvh; padding-bottom:96px }
@@ -926,10 +930,7 @@ style.innerHTML = `
         .typing-dots i:nth-child(3){ animation-delay:.3s }
         @keyframes pcBlink { 0%{transform:translateY(0);opacity:.3}
           50%{transform:translateY(-3px);opacity:1} 100%{transform:translateY(0);opacity:.3}
-        }
-
-        
-
+        }      
 `;
   document.head.appendChild(style);
 }
@@ -2352,10 +2353,11 @@ function createReviewWidget() {
       const callMinsLeft = Number(localStorage.getItem("call_mins_left"));
       const addOnsLeft = toNum(localStorage.getItem("addOnsMins"));
       const allZero =
-      chatMinsLeft === 0 && callMinsLeft === 0 && addOnsLeft === 0;
+        chatMinsLeft === 0 && callMinsLeft === 0 && addOnsLeft === 0;
       const canShowChat = chatEnabled && chatMinsLeft > 0;
       // const canShowChat = (chatEnabled && chatMinsLeft > 0) || addOnsLeft > 0;
-      const canShowCall = callMinsLeft > 0 || (addOnsLeft > 0 && chatMinsLeft === 0);
+      const canShowCall =
+        callMinsLeft > 0 || (addOnsLeft > 0 && chatMinsLeft === 0);
       // const canShowCall = callMinsLeft > 0 || addOnsLeft > 0;
 
       if ($actions) $actions.classList.remove("single");
