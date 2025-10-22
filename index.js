@@ -2254,7 +2254,7 @@ function createReviewWidget() {
       
     <div class="support-header">
       <div class="support-brand">
-        <div class="support-logo"><img src="${logoUrl}" alt="" style="width:100%;height:100%"/></div>
+        <div class="support-logo">    <img src="https://rexptin.vercel.app/${avatar}"  alt="" style="width:100%;height:100%"/></div>
         <div class="support-title">
           <div class="t">${agentName || "Support"}</div>
           <div class="s">Customer Success Agent</div>
