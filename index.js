@@ -1567,6 +1567,7 @@ async function createChatSession(agentIdFromStep1) {
   return __rex_create_session_promise;
 }
 function pingBeep() {
+  if (window.__rex_only_call_mode__ || document.hidden) return;
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const o = ctx.createOscillator();
@@ -1778,29 +1779,83 @@ function createReviewWidget() {
     agentWrapper.appendChild(badge2);
     rexAgent.appendChild(agentWrapper);
 
+    // function playPrechatGreeting(
+    //   rootEl = document.getElementById("rexSupportPopup")
+    // ) {
+    //   if (!rootEl) return;
+    //   const $msg = rootEl.querySelector("#pcGreetingMsg");
+    //   const $dots = rootEl.querySelector("#pcTyping");
+    //   let $form =
+    //     rootEl.querySelector("#pcFormWrap") ||
+    //     rootEl.querySelector(".big-card");
+    //   let $action = rootEl.querySelector(".ChatCallBtn");
+    //   if (!$msg || !$dots || !$form) return;
+
+    //   const LINES = [
+    //     `Hello! Welcome to ${businessName} `,
+    //     `Could you please share a few details before we continue?`,
+    //   ];
+    //   const typeText = (el, text, speed = 10) =>
+    //     new Promise((res) => {
+    //       let i = 0;
+    //       const step = () => {
+    //         if (i < text.length) {
+    //           el.appendChild(document.createTextNode(text[i]));
+    //           i++;
+    //           setTimeout(step, speed);
+    //         } else {
+    //           res();
+    //         }
+    //       };
+    //       step();
+    //     });
+    //   $dots.style.display = "inline-flex";
+    //   setTimeout(async () => {
+    //     $dots.style.display = "none";
+    //     $msg.textContent = "";
+    //     for (let i = 0; i < LINES.length; i++) {
+    //       await typeText($msg, LINES[i], 10);
+    //       await new Promise((r) => setTimeout(r, 150));
+    //     }
+    //     await new Promise((r) => setTimeout(r, 1000));
+    //     $form.classList.add("show", "fade-in");
+    //     $action.classList.add("show", "fade-in");
+    //   }, 1000);
+    // }
+
     function playPrechatGreeting(
       rootEl = document.getElementById("rexSupportPopup")
     ) {
       if (!rootEl) return;
       const $msg = rootEl.querySelector("#pcGreetingMsg");
       const $dots = rootEl.querySelector("#pcTyping");
-      let $form =
+      const $form =
         rootEl.querySelector("#pcFormWrap") ||
         rootEl.querySelector(".big-card");
-      let $action = rootEl.querySelector(".ChatCallBtn");
-      if (!$msg || !$dots || !$form) return;
+      const $action = rootEl.querySelector(".ChatCallBtn");
+      if (!$msg || !$dots || !$form || !$action) return;
 
       const LINES = [
         `Hello! Welcome to ${businessName} `,
         `Could you please share a few details before we continue?`,
       ];
+
+      // --- same page session me 2nd+ open par: static (no typing)
+      if (window.__pc_greeting_played) {
+        $dots.style.display = "none";
+        $msg.textContent = LINES.join("");
+        $form.classList.add("show", "fade-in");
+        $action.classList.add("show", "fade-in");
+        return;
+      }
+
+      // --- first open in this page session: show typing, then mark played
       const typeText = (el, text, speed = 10) =>
         new Promise((res) => {
           let i = 0;
           const step = () => {
             if (i < text.length) {
-              el.appendChild(document.createTextNode(text[i]));
-              i++;
+              el.appendChild(document.createTextNode(text[i++]));
               setTimeout(step, speed);
             } else {
               res();
@@ -1808,18 +1863,24 @@ function createReviewWidget() {
           };
           step();
         });
+
       $dots.style.display = "inline-flex";
       setTimeout(async () => {
         $dots.style.display = "none";
         $msg.textContent = "";
+
         for (let i = 0; i < LINES.length; i++) {
           await typeText($msg, LINES[i], 10);
           await new Promise((r) => setTimeout(r, 150));
         }
-        await new Promise((r) => setTimeout(r, 1000));
+
+        // mark for this page session only (reload -> resets)
+        window.__pc_greeting_played = true;
+
+        await new Promise((r) => setTimeout(r, 300));
         $form.classList.add("show", "fade-in");
         $action.classList.add("show", "fade-in");
-      }, 1000);
+      }, 400);
     }
 
     const modal = createElement("div", {
@@ -2315,6 +2376,7 @@ function createReviewWidget() {
       const hasChatEntitlement =
         chatEnabled && (chatMinsLeft > 0 || addOnsMins > 0); // (1) & (2)
       const hasCallEntitlement = callMinsLeft > 0; // (2) & (3)
+      window.__rex_only_call_mode__ = hasCallEntitlement && !hasChatEntitlement;
       const allZero = chatMinsLeft <= 0 && addOnsMins <= 0 && callMinsLeft <= 0; // (4)
 
       // reset UI
@@ -2684,6 +2746,7 @@ function createReviewWidget() {
     rexAgent.addEventListener("click", async () => {
       if (onCall || isCallPopupOpen()) {
         pingBeep?.();
+        if (!window.__rex_only_call_mode__) pingBeep?.();
         return;
       }
       const preferChat = localStorage.getItem("rex_last_ui") === "chat";
@@ -3507,6 +3570,7 @@ function createReviewWidget() {
         chatEnabled && (chatLeft > 0 || addOnsMins > 0); // (1) & (2)
       const hasCallEntitlement = callLeft > 0; // (2) & (3)
       const allZero = chatLeft <= 0 && callLeft <= 0 && addOnsMins <= 0; // (4)
+      window.__rex_only_call_mode__ = hasCallEntitlement && !hasChatEntitlement;
 
       const openCallAfterWrites = (forceSpecialAgent) => {
         localStorage.setItem("rex_last_ui", "call");
