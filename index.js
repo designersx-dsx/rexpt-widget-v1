@@ -798,7 +798,7 @@ function injectCSS() {
         .status-text {
           vertical-align: middle;
         }
-        .field{ margin-top:5px }
+        .field{ margin-top:12px }
         .label{ font-size:15px; color:#070a10; margin-bottom:6px; transition:.18s }
         .field:focus-within .label{ color:#111827; transform:translateY(-1px) }
 
@@ -824,7 +824,7 @@ function injectCSS() {
         50%{transform:translateX(4px)}75%{transform:translateX(-2px)}100%{transform:translateX(0)} }
         .input-dark.error::after{ width:100%; background:#ef4444 }
         .input-dark.error input{ color:#fff }
-        .err{ color:#ef4444; font-size:11px; margin-top:1px; display:none }
+        .err{ color:#ef4444; font-size:11px; margin-top:0px; display:none; position: absolute; }
         .err.show{ display:block; animation:shakeX .25s }
 
          .actions-ct {
@@ -914,12 +914,12 @@ function injectCSS() {
 
         @media (max-width:650px){
           .support-popup{
-                  max-width: unset !important; 
-          // max-width:500px !important;
-           width:100% !important; left:0 !important; right:0 !important; border-radius:10px !important }
+                  max-width: 320px !important; 
+          
+           width:90% !important;  right:24px !important; border-radius:15px !important }
           
           .support-body{
-             height: 45dvh;
+             height: 48dvh;
              overflow: auto;
           }
         }
