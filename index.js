@@ -944,6 +944,7 @@ function injectCSS() {
           letter-spacing: normal; 
         }
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
+        
 
         @media (max-width:650px){
           .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
