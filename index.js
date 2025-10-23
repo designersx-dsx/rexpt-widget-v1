@@ -29,7 +29,7 @@ function injectCSS() {
       
 
         #rexSupportPopup .support-body,
-        #agentPopup .popup-body,
+        // #agentPopup .popup-body,
         #rexChatPopup .chat-body {
           max-height: 70vh;               
           overflow-y: auto;
@@ -745,8 +745,8 @@ function injectCSS() {
     border: 0px solid #ececec;
     border-radius: 999px;
     background: #ffffff00;
-    color: #60666f;
-    font-size: 18px;
+    color: #BCBCBC;
+    font-size: 24px;
     line-height: 1;
     cursor: pointer;
     z-index: 5;
@@ -811,7 +811,7 @@ function injectCSS() {
         .status-text {
           vertical-align: middle;
         }
-        .field{ margin-top:5px }
+        .field{ margin-top:12px }
         .label{ font-size:15px; color:#070a10; margin-bottom:6px; transition:.18s }
         .field:focus-within .label{ color:#111827; transform:translateY(-1px) }
 
@@ -837,7 +837,7 @@ function injectCSS() {
         50%{transform:translateX(4px)}75%{transform:translateX(-2px)}100%{transform:translateX(0)} }
         .input-dark.error::after{ width:100%; background:#ef4444 }
         .input-dark.error input{ color:#fff }
-        .err{ color:#ef4444; font-size:12px; margin-top:6px; display:none }
+        .err{ color:#ef4444; font-size:12px; margin-top:1px; display:none; position:absolute; }
         .err.show{ display:block; animation:shakeX .25s }
 
          .actions-ct {
@@ -926,16 +926,14 @@ function injectCSS() {
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
-          .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
-          .big-card{ padding-bottom:60px }
+          .support-popup{ max-width:320px !important; width:90% !important; right:20px !important; border-radius:20px !important }
+          
           .support-body{
-             height: 50dvh;
+             height: 45dvh;
              overflow: auto;
           }
         }
-          @media (max-width:370px){
-          .big-card{ min-height:45dvh; padding-bottom:96px }
-        }
+         
           .typing-dots {
           display: inline-flex; gap: 4px; margin-left: 8px; vertical-align: middle;
         }
