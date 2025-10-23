@@ -913,7 +913,8 @@ function injectCSS() {
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
-          .support-popup{ 
+          .support-popup{
+                  max-width: unset !important; 
           // max-width:500px !important;
            width:100% !important; left:0 !important; right:0 !important; border-radius:10px !important }
           
