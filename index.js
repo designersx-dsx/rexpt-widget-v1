@@ -8,19 +8,20 @@ function injectCSS() {
      100% { transform: translateY(0); }
    }
 
-.rex-overlay{
+   .rex-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 1000;          /* below your popups (1001/1002) */
+  background: rgba(0,0,0,.35);
+  z-index: 1000;            
   display: none;
+    pointer-events: none;   
 }
-.rex-overlay.show{ display:block; }
 
-/* keep: your body.rex-scroll-lock (already good) */
-
-/* tiny fix you have: add the missing # here */
-.pulse-ring2:nth-child(3){ border-color: #28364A; }
+.rex-overlay.show {
+  display: block;
+    pointer-events: auto;   /* open hone par, saara background block */
+  cursor: not-allowed;
+}
 
 :root { --rex-scroll-top: 0px; }
 
@@ -1006,7 +1007,6 @@ function getHistorySafe() {
     return [];
   }
 }
-
 
 function hasOnlyUserMessages(hist) {
   if (!Array.isArray(hist) || hist.length === 0) return false;
@@ -3925,6 +3925,64 @@ function createReviewWidget() {
 
       document.body.appendChild(chatModalEl);
       const endConfirm = makeEndConfirm(chatModalEl);
+
+      (function () {
+        const body = document.body;
+
+        // create/find overlay once
+        let overlay = document.querySelector(".rex-overlay");
+        if (!overlay) {
+          overlay = document.createElement("div");
+          overlay.className = "rex-overlay";
+          document.body.appendChild(overlay);
+        }
+
+        // helpers to lock/unlock scroll and remember position
+        function lockScroll() {
+          const y = window.scrollY || document.documentElement.scrollTop || 0;
+          body.dataset.rexScrollTop = String(y);
+          body.style.top = `-${y}px`;
+          body.classList.add("rex-scroll-lock");
+        }
+        function unlockScroll() {
+          const y = parseInt(body.dataset.rexScrollTop || "0", 10);
+          body.classList.remove("rex-scroll-lock");
+          body.style.top = "";
+          delete body.dataset.rexScrollTop;
+          window.scrollTo({ top: y, left: 0 });
+        }
+
+        // keep overlay/scroll in sync with chatModalEl visibility
+        function syncOverlayAndScroll() {
+          if (chatModalEl.classList.contains("show")) {
+            overlay.classList.add("show");
+            lockScroll();
+          } else {
+            overlay.classList.remove("show");
+            unlockScroll();
+          }
+        }
+
+        // clicking the dim background should close the widget (optional)
+        overlay.addEventListener(
+          "click",
+          (e) => {
+            e.stopPropagation();
+            chatModalEl.classList.remove("show"); // this will trigger sync()
+          },
+          { passive: true }
+        );
+
+        // observe class changes on chatModalEl to auto-toggle overlay/scroll
+        const mo = new MutationObserver(syncOverlayAndScroll);
+        mo.observe(chatModalEl, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+
+        // run once for initial state
+        syncOverlayAndScroll();
+      })();
 
       // add once at module scope
       let isCreatingCall = false;
