@@ -8,17 +8,19 @@ function injectCSS() {
      100% { transform: translateY(0); }
    }
 
-   .rex-overlay {
+.rex-overlay{
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 1000;            
+  background: rgba(0,0,0,.45);
+  z-index: 1000;          /* below your popups (1001/1002) */
   display: none;
 }
+.rex-overlay.show{ display:block; }
 
-.rex-overlay.show {
-  display: block;
-}
+/* keep: your body.rex-scroll-lock (already good) */
+
+/* tiny fix you have: add the missing # here */
+.pulse-ring2:nth-child(3){ border-color: #28364A; }
 
 :root { --rex-scroll-top: 0px; }
 
@@ -945,6 +947,7 @@ function injectCSS() {
           letter-spacing: normal; 
         }
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
+        
 
         @media (max-width:650px){
           .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
@@ -1003,6 +1006,7 @@ function getHistorySafe() {
     return [];
   }
 }
+
 
 function hasOnlyUserMessages(hist) {
   if (!Array.isArray(hist) || hist.length === 0) return false;
