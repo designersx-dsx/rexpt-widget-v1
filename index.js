@@ -914,9 +914,9 @@ function injectCSS() {
 
         @media (max-width:650px){
           .support-popup{
-                  max-width: unset !important; 
-          // max-width:500px !important;
-           width:100% !important; left:0 !important; right:0 !important; border-radius:10px !important }
+                  max-width: 320px !important; 
+          
+           width:90% !important;  right:24px !important; border-radius:15px !important }
           
           .support-body{
              height: 48dvh;
