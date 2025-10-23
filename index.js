@@ -24,7 +24,22 @@ function injectCSS() {
     body {
       margin: 0;
       font-family: sans-serif;
+
     }
+      
+
+        #rexSupportPopup .support-body,
+        #agentPopup .popup-body,
+        #rexChatPopup .chat-body {
+          max-height: 70vh;               
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch; 
+        }
+        .rex-scroll-padding {
+          scroll-padding-top: 12px;
+        }
+
+
     .floating-agent {
       position: fixed;
       bottom: 24px;
@@ -735,7 +750,6 @@ function injectCSS() {
     line-height: 1;
     cursor: pointer;
     z-index: 5;
-    -webkit-text-stroke: 1px #60666f;
 }
 
         .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; min-height:324px }
@@ -778,12 +792,11 @@ function injectCSS() {
         border-radius: 10px;      /* golai jaisa effect */
         padding: 10px 15px;
         display: inline-block;    /* message bubble jaisa lage */
-        max-width: 95%;
+        max-width: 80%;
         margin-bottom: 10px;
         font-size: 14px;
         color: #ffffffff;              /* text thoda readable ho */
         box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
-        margin-right: 20px;
         }
 
         .status-dot {
@@ -798,7 +811,7 @@ function injectCSS() {
         .status-text {
           vertical-align: middle;
         }
-        .field{ margin-top:12px }
+        .field{ margin-top:5px }
         .label{ font-size:15px; color:#070a10; margin-bottom:6px; transition:.18s }
         .field:focus-within .label{ color:#111827; transform:translateY(-1px) }
 
@@ -824,7 +837,7 @@ function injectCSS() {
         50%{transform:translateX(4px)}75%{transform:translateX(-2px)}100%{transform:translateX(0)} }
         .input-dark.error::after{ width:100%; background:#ef4444 }
         .input-dark.error input{ color:#fff }
-        .err{ color:#ef4444; font-size:11px; margin-top:0px; display:none; position: absolute; }
+        .err{ color:#ef4444; font-size:12px; margin-top:6px; display:none }
         .err.show{ display:block; animation:shakeX .25s }
 
          .actions-ct {
@@ -913,19 +926,16 @@ function injectCSS() {
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
-          .support-popup{
-                  max-width: 320px !important; 
-          
-           width:90% !important;  right:24px !important; border-radius:15px !important }
-          
+          .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
+          .big-card{ padding-bottom:60px }
           .support-body{
-             height: 48dvh;
+             height: 50dvh;
              overflow: auto;
           }
         }
-        //   @media (max-width:370px){
-        //   .big-card{ min-height:45dvh; padding-bottom:96px }
-        // }
+          @media (max-width:370px){
+          .big-card{ min-height:45dvh; padding-bottom:96px }
+        }
           .typing-dots {
           display: inline-flex; gap: 4px; margin-left: 8px; vertical-align: middle;
         }
@@ -1070,6 +1080,22 @@ async function hardEndChatNow() {
     window.location.reload();
     return;
   }
+}
+function lockBodyScroll() {
+  if (document.body.classList.contains("rex-scroll-lock")) return;
+  const y = window.scrollY || window.pageYOffset || 0;
+  document.body.dataset.rexScrollY = String(y);
+  document.body.classList.add("rex-scroll-lock");
+  document.body.style.top = `-${y}px`;
+}
+
+function unlockBodyScroll() {
+  if (!document.body.classList.contains("rex-scroll-lock")) return;
+  const y = parseInt(document.body.dataset.rexScrollY || "0", 10);
+  document.body.classList.remove("rex-scroll-lock");
+  document.body.style.top = "";
+  delete document.body.dataset.rexScrollY;
+  window.scrollTo(0, y);
 }
 
 function scheduleOnlyUserAutoEnd(idleMs = 4 * 60 * 1000) {
@@ -1790,23 +1816,34 @@ function createReviewWidget() {
     //   if (!rootEl) return;
     //   const $msg = rootEl.querySelector("#pcGreetingMsg");
     //   const $dots = rootEl.querySelector("#pcTyping");
-    //   let $form =
+    //   const $form =
     //     rootEl.querySelector("#pcFormWrap") ||
     //     rootEl.querySelector(".big-card");
-    //   let $action = rootEl.querySelector(".ChatCallBtn");
-    //   if (!$msg || !$dots || !$form) return;
+    //   const $action = rootEl.querySelector(".ChatCallBtn");
+    //   if (!$msg || !$dots || !$form || !$action) return;
 
     //   const LINES = [
     //     `Hello! Welcome to ${businessName} `,
     //     `Could you please share a few details before we continue?`,
     //   ];
+
+    //   // --- same page session me 2nd+ open par: static (no typing)
+    //   if (window.__pc_greeting_played) {
+    //     $dots.style.display = "none";
+    //     $msg.textContent = LINES.join("");
+    //     $form.classList.add("show", "fade-in");
+    //     $action.classList.add("show", "fade-in");
+
+    //     return;
+    //   }
+
+    //   // --- first open in this page session: show typing, then mark played
     //   const typeText = (el, text, speed = 10) =>
     //     new Promise((res) => {
     //       let i = 0;
     //       const step = () => {
     //         if (i < text.length) {
-    //           el.appendChild(document.createTextNode(text[i]));
-    //           i++;
+    //           el.appendChild(document.createTextNode(text[i++]));
     //           setTimeout(step, speed);
     //         } else {
     //           res();
@@ -1814,18 +1851,24 @@ function createReviewWidget() {
     //       };
     //       step();
     //     });
+
     //   $dots.style.display = "inline-flex";
     //   setTimeout(async () => {
     //     $dots.style.display = "none";
     //     $msg.textContent = "";
+
     //     for (let i = 0; i < LINES.length; i++) {
     //       await typeText($msg, LINES[i], 10);
     //       await new Promise((r) => setTimeout(r, 150));
     //     }
-    //     await new Promise((r) => setTimeout(r, 1000));
+
+    //     // mark for this page session only (reload -> resets)
+    //     window.__pc_greeting_played = true;
+
+    //     await new Promise((r) => setTimeout(r, 300));
     //     $form.classList.add("show", "fade-in");
     //     $action.classList.add("show", "fade-in");
-    //   }, 1000);
+    //   }, 400);
     // }
 
     function playPrechatGreeting(
@@ -1845,16 +1888,33 @@ function createReviewWidget() {
         `Could you please share a few details before we continue?`,
       ];
 
-      // --- same page session me 2nd+ open par: static (no typing)
-      if (window.__pc_greeting_played) {
+      // agar already played, to direct show + scroll
+      const doRevealAndScroll = () => {
         $dots.style.display = "none";
         $msg.textContent = LINES.join("");
         $form.classList.add("show", "fade-in");
         $action.classList.add("show", "fade-in");
+
+        // >>> SCROLL TO CALL BUTTON (internal)
+        // scroll host = .support-body (internal scrolling), not page body
+        const scrollHost = rootEl.querySelector(".support-body") || rootEl;
+        scrollHost.classList.add("rex-scroll-padding");
+        const target = $action; // Chat/Call button wrapper
+        try {
+          const top =
+            target.getBoundingClientRect().top -
+            scrollHost.getBoundingClientRect().top +
+            scrollHost.scrollTop -
+            8; // 8px padding
+          scrollHost.scrollTo({ top, behavior: "smooth" });
+        } catch {}
+      };
+
+      if (window.__pc_greeting_played) {
+        doRevealAndScroll();
         return;
       }
 
-      // --- first open in this page session: show typing, then mark played
       const typeText = (el, text, speed = 10) =>
         new Promise((res) => {
           let i = 0;
@@ -1879,12 +1939,24 @@ function createReviewWidget() {
           await new Promise((r) => setTimeout(r, 150));
         }
 
-        // mark for this page session only (reload -> resets)
         window.__pc_greeting_played = true;
 
         await new Promise((r) => setTimeout(r, 300));
         $form.classList.add("show", "fade-in");
         $action.classList.add("show", "fade-in");
+
+        // >>> SCROLL TO CALL BUTTON (internal)
+        const scrollHost = rootEl.querySelector(".support-body") || rootEl;
+        scrollHost.classList.add("rex-scroll-padding");
+        const target = $action;
+        try {
+          const top =
+            target.getBoundingClientRect().top -
+            scrollHost.getBoundingClientRect().top +
+            scrollHost.scrollTop -
+            8;
+          scrollHost.scrollTo({ top, behavior: "smooth" });
+        } catch {}
       }, 400);
     }
 
@@ -2177,6 +2249,7 @@ function createReviewWidget() {
         void cp.offsetWidth;
         cp.classList.add("expanded");
         clearCloseTimer();
+        lockBodyScroll();
 
         if (window.ChatLily?.mount) {
           window.ChatLily.mount("#rexChatPopupMount", {
@@ -2664,6 +2737,7 @@ function createReviewWidget() {
         cp.classList.add("expanded");
         supportEl.classList.remove("show");
         clearCloseTimer();
+        lockBodyScroll();
       };
 
       $call.onclick = () => {
@@ -2736,6 +2810,23 @@ function createReviewWidget() {
         const mainModal = document.getElementById("agentPopup");
         if (mainModal) mainModal.style.display = "block";
         if (typeof callBtn?.click === "function") callBtn.click();
+        // >>> scroll to Call button
+        setTimeout(() => {
+          try {
+            const host = mainModal?.querySelector(".popup-body");
+            const target = mainModal?.querySelector(
+              ".greendiv, .reddiv, #start-call"
+            );
+            if (host && target) {
+              const top =
+                target.getBoundingClientRect().top -
+                host.getBoundingClientRect().top +
+                host.scrollTop -
+                8;
+              host.scrollTo({ top, behavior: "smooth" });
+            }
+          } catch {}
+        }, 100);
       };
 
       setFieldError($name, $eN, "");
@@ -2769,8 +2860,10 @@ function createReviewWidget() {
         playPrechatGreeting();
         rexAgent.classList.add("noFloat");
         clearCloseTimer?.();
+        lockBodyScroll();
         return;
       }
+
       if (!chatEnabled || prefer === "call") {
         const modal = document.getElementById("agentPopup");
         if (modal) {
@@ -2778,6 +2871,24 @@ function createReviewWidget() {
           setWidgetLocked(true);
           rexAgent.classList.add("noFloat");
           clearCloseTimer?.();
+          lockBodyScroll();
+
+          setTimeout(() => {
+            try {
+              const host = modal.querySelector(".popup-body");
+              const target = modal.querySelector(
+                ".greendiv, .reddiv, #start-call"
+              );
+              if (host && target) {
+                const top =
+                  target.getBoundingClientRect().top -
+                  host.getBoundingClientRect().top +
+                  host.scrollTop -
+                  8;
+                host.scrollTo({ top, behavior: "smooth" });
+              }
+            } catch {}
+          }, 100);
           return;
         }
       }
@@ -2801,6 +2912,7 @@ function createReviewWidget() {
             cp.classList.add("expanded");
             rexAgent.classList.add("noFloat");
             clearCloseTimer();
+            lockBodyScroll();
           });
         } finally {
           rexAgent.classList.remove("is-busy");
@@ -2813,12 +2925,14 @@ function createReviewWidget() {
         playPrechatGreeting();
         rexAgent.classList.add("noFloat");
         clearCloseTimer();
+        unlockBodyScroll();
       }
     });
     closeButton.addEventListener("click", async () => {
       modal.style.display = "none";
       rexAgent.classList.remove("noFloat");
       setWidgetLocked(false);
+      unlockBodyScroll();
 
       if (onCall) {
         try {
@@ -2854,6 +2968,7 @@ function createReviewWidget() {
         modal.style.display = "none";
         rexAgent.classList.remove("noFloat");
         setWidgetLocked(false);
+        unlockBodyScroll();
       }
     });
 
