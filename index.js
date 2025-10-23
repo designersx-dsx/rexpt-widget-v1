@@ -7,6 +7,21 @@ function injectCSS() {
      50% { transform: translateY(-8px); }
      100% { transform: translateY(0); }
    }
+
+   .rex-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 1000;            
+  display: none;
+}
+
+.rex-overlay.show {
+  display: block;
+}
+
+:root { --rex-scroll-top: 0px; }
+
    @keyframes pulse-ring {
      0% {
        transform: scale(0.9);
@@ -30,6 +45,7 @@ function injectCSS() {
         overflow: hidden !important;
         position: fixed;
         width: 100%;
+        touch-action: none; 
       }
 
         #rexSupportPopup .support-body,
