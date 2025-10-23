@@ -822,7 +822,7 @@ function injectCSS() {
         50%{transform:translateX(4px)}75%{transform:translateX(-2px)}100%{transform:translateX(0)} }
         .input-dark.error::after{ width:100%; background:#ef4444 }
         .input-dark.error input{ color:#fff }
-        .err{ color:#ef4444; font-size:12px; margin-top:6px; display:none }
+        .err{ color:#ef4444; font-size:11px; margin-top:1px; display:none }
         .err.show{ display:block; animation:shakeX .25s }
 
          .actions-ct {
@@ -912,15 +912,15 @@ function injectCSS() {
 
         @media (max-width:650px){
           .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
-          .big-card{ padding-bottom:60px }
+          
           .support-body{
-             height: 50dvh;
+             height: 41dvh;
              overflow: auto;
           }
         }
-          @media (max-width:370px){
-          .big-card{ min-height:45dvh; padding-bottom:96px }
-        }
+        //   @media (max-width:370px){
+        //   .big-card{ min-height:45dvh; padding-bottom:96px }
+        // }
           .typing-dots {
           display: inline-flex; gap: 4px; margin-left: 8px; vertical-align: middle;
         }
