@@ -735,6 +735,7 @@ function injectCSS() {
     line-height: 1;
     cursor: pointer;
     z-index: 5;
+    -webkit-text-stroke: 1px #60666f;
 }
 
         .support-body{ padding: 20px 20px 20px; background: radial-gradient(circle at 50% 30%, #263b5aea 3%, #19273C 40%);border-radius: 0px 0px 20px 20px; min-height:324px }
@@ -777,11 +778,12 @@ function injectCSS() {
         border-radius: 10px;      /* golai jaisa effect */
         padding: 10px 15px;
         display: inline-block;    /* message bubble jaisa lage */
-        max-width: 80%;
+        max-width: 95%;
         margin-bottom: 10px;
         font-size: 14px;
         color: #ffffffff;              /* text thoda readable ho */
         box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
+        margin-right: 20px;
         }
 
         .status-dot {
@@ -911,10 +913,12 @@ function injectCSS() {
         @keyframes rexSpin{ to{ transform: rotate(360deg); } }
 
         @media (max-width:650px){
-          .support-popup{ max-width:500px !important; width:88% !important; left:0 !important; right:0 !important; border-radius:0 !important }
+          .support-popup{ 
+          // max-width:500px !important;
+           width:100% !important; left:0 !important; right:0 !important; border-radius:10px !important }
           
           .support-body{
-             height: 41dvh;
+             height: 45dvh;
              overflow: auto;
           }
         }
