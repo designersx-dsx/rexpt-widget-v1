@@ -58,6 +58,7 @@ function injectCSS() {
       background: #0CDD24;
       z-index: 11;
     }
+    
 
    .agent-wrapper img {
      width: 100%;
