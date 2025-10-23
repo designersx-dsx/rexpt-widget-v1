@@ -734,8 +734,8 @@ function injectCSS() {
 
 .support-close{
   position: absolute;
-    bottom: -13px;
-    right: 17px;
+    bottom: -12px;
+    right: 16px;
     top: auto;
     width: 44px;
     display: flex
@@ -792,11 +792,12 @@ function injectCSS() {
         border-radius: 10px;      /* golai jaisa effect */
         padding: 10px 15px;
         display: inline-block;    /* message bubble jaisa lage */
-        max-width: 80%;
+        max-width: 95%;
         margin-bottom: 10px;
         font-size: 14px;
         color: #ffffffff;              /* text thoda readable ho */
         box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* halka shadow */
+        margin-right: 20px
         }
 
         .status-dot {
@@ -821,7 +822,7 @@ function injectCSS() {
         }
         .input-dark::before{ content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:#fff }
         .input-dark::after{
-          content:""; position:absolute; left:0; bottom:0; height:2px; width:0;
+          content:""; position:absolute; left:0; bottom:-1px; height:1px; width:0;
           background:linear-gradient(90deg,#6c5ce7,#8a7bfa); transition:width .2s ease, opacity .2s; opacity:1;
         }
         .input-dark:hover::after{ width:100%; opacity:.5 }
