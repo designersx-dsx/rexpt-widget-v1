@@ -831,6 +831,7 @@ function injectCSS() {
         .input-dark input{
           flex:1; border:0; outline:0; background:transparent;
           color:#fff; font-size:16px; line-height:1.2; padding:0 0 2px 0;
+          width: 100%;
         }
         .input-dark input::placeholder{ color:#9aa4b2 }
 
