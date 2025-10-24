@@ -1706,7 +1706,7 @@ function createReviewWidget() {
     let callId = "";
     let onCall = false;
     let userId = "";
-    let businessName = "Rexptin";
+    let businessName = "Rexpt";
     let avatar = "";
     let callContent = `Call ${agentName}`;
     let agentRole = "GENERAL";
