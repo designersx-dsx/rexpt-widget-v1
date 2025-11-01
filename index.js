@@ -920,7 +920,7 @@ function injectCSS() {
         .support-popup .actions-ct.single .btn {
           width: 100%;
         }
-        #agentButton.disabled { opacity: .6; cursor: not-allowed; }
+        #agentButton.disabled { cursor: not-allowed; }
 
         #pcGreetingMsg {
           letter-spacing: normal; 
@@ -1266,7 +1266,7 @@ async function endChatArchiveNow({ silent = false } = {}) {
     // ---- SOFT RELOAD WIDGET (no page refresh) ----
     try {
       // 1) remove any existing popups to avoid duplicate IDs
-      ["agentPopup", "rexChatPopup", "rexSupportPopup"].forEach((id) => {
+      ["rexChatPopup", "rexSupportPopup"].forEach((id) => {
         document.getElementById(id)?.remove();
       });
 
@@ -3322,13 +3322,13 @@ function createReviewWidget() {
 
           const data = { agentId: getAgentIdFromScript(), callId: callId };
 
-          modal.style.display = "none";
-          document.getElementById("agentButton")?.classList.remove("noFloat");
+          // modal.style.display = "none";
+          // document.getElementById("agentButton")?.classList.remove("noFloat");
 
           // ---- SOFT RELOAD WIDGET (no page refresh) ----
           try {
             ["agentPopup", "rexChatPopup", "rexSupportPopup"].forEach((id) => {
-              document.getElementById(id)?.remove();
+              // document.getElementById(id)?.remove();
             });
             window.__REX_WIDGET_INITIALIZED__ = false;
 
