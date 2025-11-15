@@ -963,7 +963,7 @@ function injectCSS() {
 }
 
 const currentSiteURL = window.location.origin;
-const API_URL = "https://rexptin.truet.net/api/";
+const API_URL = "https://rexptin.truet.net/api";
 // const API_URL = "http://localhost:2512/api";
 const CHAT_LS_KEY = "rex_chat_history";
 let typingEl = null;
@@ -1069,24 +1069,24 @@ async function hardEndChatNow() {
     // --- LS cleanup ---
     try {
       localStorage.removeItem("rex_last_ui");
-    } catch { }
+    } catch {}
     try {
       localStorage.removeItem(
         typeof CHAT_LS_KEY === "string" ? CHAT_LS_KEY : "rex_chat_history"
       );
-    } catch { }
+    } catch {}
     try {
       localStorage.removeItem("chat_id");
-    } catch { }
+    } catch {}
     try {
       localStorage.removeItem("rex_intro_inline");
-    } catch { }
+    } catch {}
     try {
       clearOnlyUserAutoEndTimer?.();
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexChatPopup")?.classList.remove("show");
-    } catch { }
+    } catch {}
     window.location.reload();
     return;
   }
@@ -1203,26 +1203,26 @@ async function endChatArchiveNow({ silent = false } = {}) {
   } finally {
     try {
       localStorage.removeItem("rex_last_ui");
-    } catch { }
+    } catch {}
     try {
       localStorage.removeItem("chat_id");
-    } catch { }
+    } catch {}
     try {
       localStorage.removeItem("rex_intro_inline");
-    } catch { }
+    } catch {}
     try {
       localStorage.setItem(CHAT_KEY, "[]");
-    } catch { }
+    } catch {}
 
     try {
       clearInactivityTimers?.();
-    } catch { }
+    } catch {}
     try {
       clearOnlyUserAutoEndTimer?.();
-    } catch { }
+    } catch {}
     try {
       clearCloseTimer?.();
-    } catch { }
+    } catch {}
 
     // ---- HARD UI TEARDOWN (no page reload) ----
     try {
@@ -1237,28 +1237,28 @@ async function endChatArchiveNow({ silent = false } = {}) {
             window.typingEl.remove?.();
             window.typingEl = null;
           }
-        } catch { }
+        } catch {}
         cp.remove();
       }
 
       // support/prechat modals off
       try {
         document.getElementById("rexSupportPopup")?.classList.remove("show");
-      } catch { }
+      } catch {}
       try {
         const pcm = document.getElementById("rexPreChatModal");
         if (pcm) pcm.style.display = "none";
-      } catch { }
+      } catch {}
 
       // launcher back to normal
       try {
         document.getElementById("agentButton")?.classList.remove("noFloat");
-      } catch { }
+      } catch {}
 
       // drop outer refs if any
       try {
         window.chatModalEl = null;
-      } catch { }
+      } catch {}
     } catch (e) {
       console.warn("[Rex] UI teardown failed:", e);
     }
@@ -1301,7 +1301,7 @@ async function endChatArchiveNow({ silent = false } = {}) {
     // optional: refresh in-widget state (no network)
     try {
       loadChatHistory?.();
-    } catch { }
+    } catch {}
   }
 }
 let __rex_close_timer__ = null;
@@ -1332,7 +1332,7 @@ function clearCloseTimer() {
 function saveChatHistory(arr) {
   try {
     localStorage.setItem(CHAT_LS_KEY, JSON.stringify(arr));
-  } catch { }
+  } catch {}
 }
 function saveChatMessage(role, text) {
   const arr = loadChatHistory();
@@ -1622,7 +1622,7 @@ function pingBeep() {
     g.connect(ctx.destination);
     o.start();
     o.stop(ctx.currentTime + 0.16);
-  } catch { }
+  } catch {}
 }
 function createReviewWidget() {
   if (window.__REX_WIDGET_INITIALIZED__) {
@@ -1728,7 +1728,7 @@ function createReviewWidget() {
         localStorage.setItem("call_mins_left", String(json.mins_left ?? ""));
         localStorage.setItem("chat_mins_left", String(json.messageLeft ?? ""));
         localStorage.setItem("addOnsMins", String(json.addOnsMins ?? ""));
-
+        localStorage.setItem("knowledge_base_id", String(json.knowledgeBaseId));
         enforceRexIfNoMinutes();
 
         console.log(json, "json of wfwe");
@@ -1744,8 +1744,8 @@ function createReviewWidget() {
         // mins_left = 90;
         messageLeft = json.messageLeft;
         // messageLeft = 90;
-        const kbId = json.knowledgeBaseId || json.knowledgeBaseId;
-        if (kbId) localStorage.setItem("knowledge_base_id", String(kbId));
+        const kbId = json.knowledgeBaseId;
+        // if (kbId) localStorage.setItem("knowledge_base_id", String(kbId));
       } catch (e) {
         console.log("Response is not JSON");
       }
@@ -1917,7 +1917,7 @@ function createReviewWidget() {
             scrollHost.scrollTop -
             8; // 8px padding
           scrollHost.scrollTo({ top, behavior: "smooth" });
-        } catch { }
+        } catch {}
       };
 
       if (window.__pc_greeting_played) {
@@ -1966,7 +1966,7 @@ function createReviewWidget() {
             scrollHost.scrollTop -
             8;
           scrollHost.scrollTo({ top, behavior: "smooth" });
-        } catch { }
+        } catch {}
       }, 400);
     }
 
@@ -1978,10 +1978,10 @@ function createReviewWidget() {
 
     const popupHeader = createElement("div", { className: "popup-header" });
     const poweredBy = createElement("a", {
-      href: "https://www.rexpt.us/",
+      href: "https://www.rxpt.ai/",
       target: "_blank",
       rel: "noopener noreferrer",
-      innerHTML: "Powered by rexpt.us",
+      innerHTML: "Powered by rxpt.ai",
     });
     const popupBody = createElement("div", { className: "popup-body" });
     const imageWrapper = document.createElement("div");
@@ -2003,21 +2003,21 @@ function createReviewWidget() {
     callLabel.textContent = `Call ${agentName}`;
     try {
       modal.style.display = "none";
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexSupportPopup")?.classList.remove("show");
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexPreChatModal")?.style &&
         (document.getElementById("rexPreChatModal").style.display = "none");
-    } catch { }
+    } catch {}
     try {
       document.getElementById("rexChatPopup")?.classList.remove("show");
-    } catch { }
+    } catch {}
 
     try {
       document.getElementById("agentButton")?.classList.remove("noFloat");
-    } catch { }
+    } catch {}
     const phoneNumber = document.createElement("h2");
     phoneNumber.className = "phone-number";
     phoneNumber.textContent = JSON.parse(agentVoipNumber);
@@ -2036,11 +2036,13 @@ function createReviewWidget() {
       className: "callText",
     });
 
-    callText.innerHTML = `<p>Call <span class="agentTag">${agentName.length > 10 ? `${agentName.substring(0, 7)}..` : agentName
-      }</span></p><small>${businessName?.length > 10
+    callText.innerHTML = `<p>Call <span class="agentTag">${
+      agentName.length > 10 ? `${agentName.substring(0, 7)}..` : agentName
+    }</span></p><small>${
+      businessName?.length > 10
         ? `${businessName.substring(0, 8)}..`
         : businessName
-      } Agent is LIVE</small>`;
+    } Agent is LIVE</small>`;
 
     callBtn.appendChild(phoneIconWrapper);
     callBtn.appendChild(callText);
@@ -2142,7 +2144,7 @@ function createReviewWidget() {
         div.innerHTML = `${text}<span class="time">${timeStr}</span>`;
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
-      } catch { }
+      } catch {}
     }
     function showIntroTyping() {
       try {
@@ -2155,14 +2157,14 @@ function createReviewWidget() {
         el.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
         msgs.appendChild(el);
         msgs.scrollTop = msgs.scrollHeight;
-      } catch { }
+      } catch {}
     }
 
     function hideIntroTyping() {
       try {
         const el = document.getElementById("rexTypingIntro");
         if (el) el.remove();
-      } catch { }
+      } catch {}
     }
     let __rex_intro_attempted = false;
 
@@ -2177,7 +2179,7 @@ function createReviewWidget() {
           await createChatSession(
             localStorage.getItem("chat_agent_id") || undefined
           );
-        } catch { }
+        } catch {}
       }
       const chatId = localStorage.getItem("chat_id") || "nochat";
       const sentKey = `rex_intro_sent_${chatId}`;
@@ -2189,7 +2191,8 @@ function createReviewWidget() {
       const intro =
         `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
         `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
-        `and my phone number is ${localStorage.getItem("rex_user_phone") || ""
+        `and my phone number is ${
+          localStorage.getItem("rex_user_phone") || ""
         }.`;
 
       if (!intro.trim()) return;
@@ -2418,7 +2421,7 @@ function createReviewWidget() {
       
     </div>
     <div class="PoweredBy">
-      <span><a href="https://www.rxpt.us/" target="_blank" rel="noopener noreferrer">Powered by rxpt.us</a></span>
+      <span><a href="https://www.rxpt.ai/" target="_blank" rel="noopener noreferrer">Powered by rxpt.ai</a></span>
 
     </div>
   `;
@@ -2428,7 +2431,7 @@ function createReviewWidget() {
         supportEl.classList.remove("show");
         try {
           startCloseTimer();
-        } catch { }
+        } catch {}
       };
 
       // put this near your helpers
@@ -2549,7 +2552,7 @@ function createReviewWidget() {
             );
             const digits = e164.replace(/[^\d]/g, "");
             return digits.length >= 8 && digits <= 15;
-          } catch { }
+          } catch {}
         }
 
         const compact = raw.replace(/\s|-/g, "");
@@ -2736,7 +2739,7 @@ function createReviewWidget() {
 
         try {
           await ensureChatSession();
-        } catch { }
+        } catch {}
         const cp = getOrCreateChatPopup();
         cp.classList.add("show");
         cp.classList.remove("expanded");
@@ -2805,14 +2808,14 @@ function createReviewWidget() {
 
         try {
           supportEl?.classList.remove("show");
-        } catch { }
+        } catch {}
         try {
           document.getElementById("rexPreChatModal")?.style &&
             (document.getElementById("rexPreChatModal").style.display = "none");
-        } catch { }
+        } catch {}
         try {
           document.getElementById("rexChatPopup")?.classList.remove("show");
-        } catch { }
+        } catch {}
 
         const mainModal = document.getElementById("agentPopup");
         if (mainModal) mainModal.style.display = "block";
@@ -2832,7 +2835,7 @@ function createReviewWidget() {
                 8;
               host.scrollTo({ top, behavior: "smooth" });
             }
-          } catch { }
+          } catch {}
         }, 100);
       };
 
@@ -2894,7 +2897,7 @@ function createReviewWidget() {
                   8;
                 host.scrollTo({ top, behavior: "smooth" });
               }
-            } catch { }
+            } catch {}
           }, 100);
           return;
         }
@@ -2910,7 +2913,7 @@ function createReviewWidget() {
           await ensureUserProfileThen(async () => {
             try {
               await ensureChatSession();
-            } catch { }
+            } catch {}
 
             const cp = getOrCreateChatPopup();
             cp.classList.add("show");
@@ -2949,15 +2952,17 @@ function createReviewWidget() {
         }
         try {
           localStorage.removeItem("rex_last_ui");
-        } catch { }
+        } catch {}
         callBtn.classList.remove("reddiv");
         callBtn.classList.add("greendiv");
         phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
-        callText.innerHTML = `<p>Call <span class="agentTag">${agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
-          }</span></p><small>${businessName.length > 10
+        callText.innerHTML = `<p>Call <span class="agentTag">${
+          agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
+        }</span></p><small>${
+          businessName.length > 10
             ? `${businessName.substring(0, 8)}..`
             : businessName
-          } Agent is LIVE</small>`;
+        } Agent is LIVE</small>`;
         onCall = false;
         setWidgetLocked(false);
       }
@@ -2967,7 +2972,7 @@ function createReviewWidget() {
       if (e.target === modal) {
         try {
           if (onCall) await retellWebClient.stopCall();
-        } catch { }
+        } catch {}
         onCall = false;
         setWidgetLocked(false);
         modal.style.display = "none";
@@ -2996,13 +3001,15 @@ function createReviewWidget() {
     </span>
     <h2>Terms of Use
     </h2>
-    <p> By clicking the Call button to talk to Rexpt AI agent on ${businessName?.length > 15
+    <p> By clicking the Call button to talk to Rexpt AI agent on ${
+      businessName?.length > 15
         ? `${businessName.substring(0, 20)}..`
         : businessName
-      } named ${agentName}, You Agree to Terms of Use for Rexpt AI Agents published on <a href="https://www.rexpt.in/Terms-Condition" target="_blank" style="color: #007bff; text-decoration: underline;">TERMS & CONDITIONS</a>. Each time You interact with this Al agent, You consent to the recording, storage, and sharing of my communications with ${businessName?.length > 15
+    } named ${agentName}, You Agree to Terms of Use for Rexpt AI Agents published on <a href="https://www.rexpt.in/Terms-Condition" target="_blank" style="color: #007bff; text-decoration: underline;">TERMS & CONDITIONS</a>. Each time You interact with this Al agent, You consent to the recording, storage, and sharing of my communications with ${
+      businessName?.length > 15
         ? `${businessName.substring(0, 20)}..`
         : businessName
-      }, Rexpt & Other third-party service providers, and as described in the <a href="https://www.rexpt.in/Privacy-Policy" target="_blank" style="color: #007bff; text-decoration: underline;">
+    }, Rexpt & Other third-party service providers, and as described in the <a href="https://www.rexpt.in/Privacy-Policy" target="_blank" style="color: #007bff; text-decoration: underline;">
     Privacy Policy</a>. If you do not wish to have your conversations recorded, please refrain from using this service & DO NOT MAKE THE CALL.
     </p>
   </div>
@@ -3265,10 +3272,11 @@ function createReviewWidget() {
             callBtn.classList.remove("greendiv");
             callBtn.classList.add("reddiv");
             phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
-            callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${agentName.length > 10
+            callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
+              agentName.length > 10
                 ? `${agentName.substring(0, 8)}..`
                 : agentName
-              }</small>`;
+            }</small>`;
             onCall = true;
 
             imageWrapper.classList.add("active");
@@ -3301,17 +3309,19 @@ function createReviewWidget() {
           await retellWebClient.stopCall();
           try {
             localStorage.removeItem("rex_last_ui");
-          } catch { }
+          } catch {}
           setWidgetLocked(false);
           callBtn.classList.remove("reddiv");
           callBtn.classList.add("greendiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Phone-call.svg";
-          callText.innerHTML = `<p style="color:white">Call <span class="agentTag">${agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
-            }</span></p>
-        <small>${businessName.length > 10
-              ? `${businessName.substring(0, 8)}..`
-              : businessName
-            } Agent is LIVE</small>`;
+          callText.innerHTML = `<p style="color:white">Call <span class="agentTag">${
+            agentName.length > 8 ? `${agentName.substring(0, 8)}..` : agentName
+          }</span></p>
+        <small>${
+          businessName.length > 10
+            ? `${businessName.substring(0, 8)}..`
+            : businessName
+        } Agent is LIVE</small>`;
           onCall = false;
           callLabel.textContent = `Call ${agentName}`;
           imageWrapper.classList.remove("active");
@@ -3487,7 +3497,7 @@ function createReviewWidget() {
       try {
         const _modal = document.getElementById("agentPopup");
         if (_modal) _modal.style.display = "none";
-      } catch { }
+      } catch {}
 
       const el = getOrCreatePreChatModal();
 
@@ -3791,7 +3801,7 @@ function createReviewWidget() {
             if (typeof okCb === "function") {
               try {
                 okCb(result);
-              } catch { }
+              } catch {}
             }
             close(true);
           } catch (err) {
@@ -3854,15 +3864,16 @@ function createReviewWidget() {
             </div>
             <div class="attio-title" style="line-height:1">
               <div class="t" style="font-weight:700;font-size:20px;color:#fff; text-transform:uppercase"> ${agentName.substring(
-        0,
-        7
-      )}</div>
+                0,
+                7
+              )}</div>
               <div class="s" style="font-size:12px;color:#D1DCED">Customer Success Agent</div>
             </div>
           </div>
 
             <div style="display:flex;align-items:center;gap:6px">
         <!-- NEW: Call icon button -->
+           <button class="attio-end">End chat</button> 
         <button class="attio-call btn secondary" id="rexCallIconBtn" aria-label="Start call">
           
           <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3872,7 +3883,7 @@ function createReviewWidget() {
 
         
 
-      <!--  <button class="attio-end">End chat</button> -->
+
         <button class="attio-close" aria-label="Close">&times;</button>
       </div>
         </div>
@@ -3893,7 +3904,7 @@ function createReviewWidget() {
         </div>
  
       <div class="PoweredBy">
-        <span><a href="https://www.rxpt.us/" target="_blank" rel="noopener noreferrer">Powered by rxpt.us</a></span>
+        <span><a href="https://www.rxpt.ai/" target="_blank" rel="noopener noreferrer">Powered by rxpt.ai</a></span>
         </div>
 
 `;
@@ -3944,8 +3955,9 @@ function createReviewWidget() {
           callBtn.classList.remove("greendiv");
           callBtn.classList.add("reddiv");
           phoneIcon.src = "https://rexptin.vercel.app/svg/Hangup.svg";
-          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
-            }</small>`;
+          callText.innerHTML = `<p>Hang up Now</p><small>In Call with ${
+            agentName.length > 10 ? `${agentName.substring(0, 8)}..` : agentName
+          }</small>`;
           onCall = true;
 
           imageWrapper.classList.add("active");
@@ -4132,7 +4144,7 @@ function createReviewWidget() {
           try {
             clearInactivityTimers();
             startCloseTimer();
-          } catch { }
+          } catch {}
         };
       }
 
@@ -4143,10 +4155,10 @@ function createReviewWidget() {
               try {
                 clearInactivityTimers();
                 const chatId = localStorage.getItem("chat_id");
-                const knowledgeBaseId =
-                  localStorage.getItem("knowledge_base_id");
+                // const knowledgeBaseId =
+                //   localStorage.getItem("knowledge_base_id");
 
-                if (chatId && knowledgeBaseId) {
+                if (chatId) {
                   const res = await fetch(`${API_URL}/agent/end-chat-archive`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -4173,7 +4185,7 @@ function createReviewWidget() {
                 console.error("end-chat failed:", e);
               }
             },
-            onCancel: () => { },
+            onCancel: () => {},
           });
         };
       }
@@ -4183,7 +4195,7 @@ function createReviewWidget() {
         try {
           clearInactivityTimers();
           startCloseTimer();
-        } catch { }
+        } catch {}
       };
 
       const $msgs = chatModalEl.querySelector("#rexMessages");
@@ -4194,13 +4206,13 @@ function createReviewWidget() {
         s.replace(
           /[&<>"']/g,
           (m) =>
-          ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-          }[m])
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[m])
         );
       function appendMessage(role, text, ts) {
         const when = ts || Date.now();
@@ -4311,8 +4323,6 @@ function createReviewWidget() {
 
             if (chatId) {
               // == EXACT LOGIC ==
-              // if (!hasUserMsg || !knowledgeBaseId)  -> PATCH end-chat
-              // else                                   -> POST end-chat-archive
               if (!hasUserMsg || !knowledgeBaseId) {
                 const url = `${API_URL}/Chatbot/end-chat/${encodeURIComponent(
                   chatId
@@ -4345,23 +4355,23 @@ function createReviewWidget() {
             // LS cleanup
             try {
               localStorage.removeItem("rex_last_ui");
-            } catch { }
+            } catch {}
             try {
               localStorage.removeItem(CHAT_LS_KEY);
-            } catch { }
+            } catch {}
             try {
               localStorage.removeItem("chat_id");
-            } catch { }
+            } catch {}
             try {
               localStorage.removeItem("rex_intro_inline");
-            } catch { }
+            } catch {}
 
             // UI close
             try {
               if (chatModalEl) {
                 chatModalEl.classList.remove("show");
               }
-            } catch { }
+            } catch {}
 
             clearInactivityTimers();
 
@@ -4422,7 +4432,8 @@ function createReviewWidget() {
           const intro =
             `My name is ${localStorage.getItem("rex_user_name") || ""}. ` +
             `My email is ${localStorage.getItem("rex_user_email") || ""} ` +
-            `and my phone number is ${localStorage.getItem("rex_user_phone") || ""
+            `and my phone number is ${
+              localStorage.getItem("rex_user_phone") || ""
             }.`;
           payload = `${intro}\n${t}`.trim();
           localStorage.setItem("rex_intro_inline", "1");
@@ -4495,7 +4506,7 @@ function createReviewWidget() {
       (async () => {
         try {
           await maybeSendIntroOnOpen();
-        } catch { }
+        } catch {}
       })();
       return chatModalEl;
     }
